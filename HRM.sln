@@ -1,0 +1,223 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1022
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM.Core", "HRM.Core\HRM.Core.csproj", "{561DD54E-542C-4B07-86F0-6B41364975EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM.Repository", "HRM.Repository\HRM.Repository.csproj", "{D0479C80-A944-4419-A212-04C1570B51D8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2CD96A75-B131-407D-B089-C4EB8C4E9FD3}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM.WebAPI", "HRM.WebAPI\HRM.WebAPI.csproj", "{778CDF8C-5F82-4FAD-AB7D-CD0A41BFF0FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Changes", "Changes", "{74D1BBB8-6D3A-4323-908B-F3E751E86561}"
+	ProjectSection(SolutionItems) = preProject
+		Changes\CreateDBObjects.sql = Changes\CreateDBObjects.sql
+		DB-31Mar20.sql = DB-31Mar20.sql
+		Changes\DBChanges.sql = Changes\DBChanges.sql
+		DBObjects - 31Mar20.sql = DBObjects - 31Mar20.sql
+		Changes\SystemDesign.xlsx = Changes\SystemDesign.xlsx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dll", "dll", "{8704FA65-D1D5-4090-B565-8BD9490778D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{1F40F919-8EE6-4D28-9A35-2B9EEE08C9A1}"
+	ProjectSection(SolutionItems) = preProject
+		dll\core\antlr.runtime.dll = dll\core\antlr.runtime.dll
+		dll\core\Common.Logging.dll = dll\core\Common.Logging.dll
+		dll\core\HRM.Core.dll = dll\core\HRM.Core.dll
+		dll\core\Spring.Core.dll = dll\core\Spring.Core.dll
+		dll\core\Validation.dll = dll\core\Validation.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repository", "repository", "{20FAFC08-6708-4989-B24B-8DD31CA70CDE}"
+	ProjectSection(SolutionItems) = preProject
+		dll\repository\antlr.runtime.dll = dll\repository\antlr.runtime.dll
+		dll\repository\Common.Logging.dll = dll\repository\Common.Logging.dll
+		dll\repository\HRM.Core.dll = dll\repository\HRM.Core.dll
+		dll\repository\HRM.Repository.dll = dll\repository\HRM.Repository.dll
+		dll\repository\Spring.Core.dll = dll\repository\Spring.Core.dll
+		dll\repository\Validation.dll = dll\repository\Validation.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "webapi", "webapi", "{32A0D737-19E8-4961-A469-68E679A3478F}"
+	ProjectSection(SolutionItems) = preProject
+		dll\webapi\antlr.runtime.dll = dll\webapi\antlr.runtime.dll
+		dll\webapi\Antlr3.Runtime.dll = dll\webapi\Antlr3.Runtime.dll
+		dll\webapi\Common.Logging.dll = dll\webapi\Common.Logging.dll
+		dll\webapi\EntityFramework.dll = dll\webapi\EntityFramework.dll
+		HRM.WebAPI\bin\HRM.ADO.Core.dll = HRM.WebAPI\bin\HRM.ADO.Core.dll
+		dll\webapi\HRM.Core.dll = dll\webapi\HRM.Core.dll
+		dll\webapi\HRM.Repository.dll = dll\webapi\HRM.Repository.dll
+		dll\webapi\HRM.WebAPI.dll = dll\webapi\HRM.WebAPI.dll
+		dll\webapi\Microsoft.Practices.EnterpriseLibrary.Caching.dll = dll\webapi\Microsoft.Practices.EnterpriseLibrary.Caching.dll
+		dll\webapi\Microsoft.Practices.EnterpriseLibrary.Common.dll = dll\webapi\Microsoft.Practices.EnterpriseLibrary.Common.dll
+		dll\webapi\Microsoft.Practices.EnterpriseLibrary.Data.dll = dll\webapi\Microsoft.Practices.EnterpriseLibrary.Data.dll
+		dll\webapi\Microsoft.Practices.EnterpriseLibrary.Security.Cache.CachingStore.dll = dll\webapi\Microsoft.Practices.EnterpriseLibrary.Security.Cache.CachingStore.dll
+		dll\webapi\Microsoft.Practices.EnterpriseLibrary.Security.dll = dll\webapi\Microsoft.Practices.EnterpriseLibrary.Security.dll
+		dll\webapi\Microsoft.Practices.ObjectBuilder2.dll = dll\webapi\Microsoft.Practices.ObjectBuilder2.dll
+		dll\webapi\Microsoft.Web.Infrastructure.dll = dll\webapi\Microsoft.Web.Infrastructure.dll
+		dll\webapi\Newtonsoft.Json.dll = dll\webapi\Newtonsoft.Json.dll
+		dll\webapi\Spring.Core.dll = dll\webapi\Spring.Core.dll
+		dll\webapi\System.Net.Http.dll = dll\webapi\System.Net.Http.dll
+		dll\webapi\System.Net.Http.Formatting.dll = dll\webapi\System.Net.Http.Formatting.dll
+		dll\webapi\System.Net.Http.WebRequest.dll = dll\webapi\System.Net.Http.WebRequest.dll
+		dll\webapi\System.Web.Helpers.dll = dll\webapi\System.Web.Helpers.dll
+		dll\webapi\System.Web.Http.dll = dll\webapi\System.Web.Http.dll
+		dll\webapi\System.Web.Http.WebHost.dll = dll\webapi\System.Web.Http.WebHost.dll
+		dll\webapi\System.Web.Mvc.dll = dll\webapi\System.Web.Mvc.dll
+		dll\webapi\System.Web.Optimization.dll = dll\webapi\System.Web.Optimization.dll
+		dll\webapi\System.Web.Providers.dll = dll\webapi\System.Web.Providers.dll
+		dll\webapi\System.Web.Razor.dll = dll\webapi\System.Web.Razor.dll
+		dll\webapi\System.Web.WebPages.Deployment.dll = dll\webapi\System.Web.WebPages.Deployment.dll
+		dll\webapi\System.Web.WebPages.dll = dll\webapi\System.Web.WebPages.dll
+		dll\webapi\System.Web.WebPages.Razor.dll = dll\webapi\System.Web.WebPages.Razor.dll
+		dll\webapi\Validation.dll = dll\webapi\Validation.dll
+		dll\webapi\WebGrease.dll = dll\webapi\WebGrease.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM.ADO.Core", "HRM.ADO.Core\HRM.ADO.Core.csproj", "{4924ED87-F236-4757-99F0-3AD358BF29CA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adocore", "adocore", "{0D57F830-FB84-4557-B4FD-D52D571D3928}"
+	ProjectSection(SolutionItems) = preProject
+		HRM.ADO.Core\bin\Debug\HRM.ADO.Core.dll = HRM.ADO.Core\bin\Debug\HRM.ADO.Core.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM.WinService", "HRM.WinService\HRM.WinService.csproj", "{5DECF7B5-08F7-46AB-9BD7-2FD614B63BB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM.WinServiceLibrary", "HRM.WinServiceLibrary\HRM.WinServiceLibrary.csproj", "{69E13077-1ADE-4465-935F-4C91252B3B11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM.WinServiceTest", "HRM.WinServiceTest\HRM.WinServiceTest.csproj", "{A1684245-A7DE-4EE5-BAA6-DA5814BF5369}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB 4Mar20", "DB 4Mar20", "{B706E961-AEC8-4563-BA39-01600180DA56}"
+	ProjectSection(SolutionItems) = preProject
+		Rigelonic HR DB.sql = Rigelonic HR DB.sql
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{561DD54E-542C-4B07-86F0-6B41364975EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{561DD54E-542C-4B07-86F0-6B41364975EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{561DD54E-542C-4B07-86F0-6B41364975EB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{561DD54E-542C-4B07-86F0-6B41364975EB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{561DD54E-542C-4B07-86F0-6B41364975EB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{561DD54E-542C-4B07-86F0-6B41364975EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{561DD54E-542C-4B07-86F0-6B41364975EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{561DD54E-542C-4B07-86F0-6B41364975EB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{561DD54E-542C-4B07-86F0-6B41364975EB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{561DD54E-542C-4B07-86F0-6B41364975EB}.Release|x86.ActiveCfg = Release|Any CPU
+		{D0479C80-A944-4419-A212-04C1570B51D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0479C80-A944-4419-A212-04C1570B51D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0479C80-A944-4419-A212-04C1570B51D8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D0479C80-A944-4419-A212-04C1570B51D8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D0479C80-A944-4419-A212-04C1570B51D8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D0479C80-A944-4419-A212-04C1570B51D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0479C80-A944-4419-A212-04C1570B51D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0479C80-A944-4419-A212-04C1570B51D8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D0479C80-A944-4419-A212-04C1570B51D8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D0479C80-A944-4419-A212-04C1570B51D8}.Release|x86.ActiveCfg = Release|Any CPU
+		{778CDF8C-5F82-4FAD-AB7D-CD0A41BFF0FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{778CDF8C-5F82-4FAD-AB7D-CD0A41BFF0FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{778CDF8C-5F82-4FAD-AB7D-CD0A41BFF0FF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{778CDF8C-5F82-4FAD-AB7D-CD0A41BFF0FF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{778CDF8C-5F82-4FAD-AB7D-CD0A41BFF0FF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{778CDF8C-5F82-4FAD-AB7D-CD0A41BFF0FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{778CDF8C-5F82-4FAD-AB7D-CD0A41BFF0FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{778CDF8C-5F82-4FAD-AB7D-CD0A41BFF0FF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{778CDF8C-5F82-4FAD-AB7D-CD0A41BFF0FF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{778CDF8C-5F82-4FAD-AB7D-CD0A41BFF0FF}.Release|x86.ActiveCfg = Release|Any CPU
+		{4924ED87-F236-4757-99F0-3AD358BF29CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4924ED87-F236-4757-99F0-3AD358BF29CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4924ED87-F236-4757-99F0-3AD358BF29CA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4924ED87-F236-4757-99F0-3AD358BF29CA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4924ED87-F236-4757-99F0-3AD358BF29CA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4924ED87-F236-4757-99F0-3AD358BF29CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4924ED87-F236-4757-99F0-3AD358BF29CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4924ED87-F236-4757-99F0-3AD358BF29CA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4924ED87-F236-4757-99F0-3AD358BF29CA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4924ED87-F236-4757-99F0-3AD358BF29CA}.Release|x86.ActiveCfg = Release|Any CPU
+		{5DECF7B5-08F7-46AB-9BD7-2FD614B63BB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DECF7B5-08F7-46AB-9BD7-2FD614B63BB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DECF7B5-08F7-46AB-9BD7-2FD614B63BB3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5DECF7B5-08F7-46AB-9BD7-2FD614B63BB3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5DECF7B5-08F7-46AB-9BD7-2FD614B63BB3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5DECF7B5-08F7-46AB-9BD7-2FD614B63BB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DECF7B5-08F7-46AB-9BD7-2FD614B63BB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DECF7B5-08F7-46AB-9BD7-2FD614B63BB3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5DECF7B5-08F7-46AB-9BD7-2FD614B63BB3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5DECF7B5-08F7-46AB-9BD7-2FD614B63BB3}.Release|x86.ActiveCfg = Release|Any CPU
+		{69E13077-1ADE-4465-935F-4C91252B3B11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69E13077-1ADE-4465-935F-4C91252B3B11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69E13077-1ADE-4465-935F-4C91252B3B11}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{69E13077-1ADE-4465-935F-4C91252B3B11}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{69E13077-1ADE-4465-935F-4C91252B3B11}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{69E13077-1ADE-4465-935F-4C91252B3B11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69E13077-1ADE-4465-935F-4C91252B3B11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69E13077-1ADE-4465-935F-4C91252B3B11}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{69E13077-1ADE-4465-935F-4C91252B3B11}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{69E13077-1ADE-4465-935F-4C91252B3B11}.Release|x86.ActiveCfg = Release|Any CPU
+		{A1684245-A7DE-4EE5-BAA6-DA5814BF5369}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1684245-A7DE-4EE5-BAA6-DA5814BF5369}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1684245-A7DE-4EE5-BAA6-DA5814BF5369}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A1684245-A7DE-4EE5-BAA6-DA5814BF5369}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A1684245-A7DE-4EE5-BAA6-DA5814BF5369}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A1684245-A7DE-4EE5-BAA6-DA5814BF5369}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1684245-A7DE-4EE5-BAA6-DA5814BF5369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1684245-A7DE-4EE5-BAA6-DA5814BF5369}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A1684245-A7DE-4EE5-BAA6-DA5814BF5369}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A1684245-A7DE-4EE5-BAA6-DA5814BF5369}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1F40F919-8EE6-4D28-9A35-2B9EEE08C9A1} = {8704FA65-D1D5-4090-B565-8BD9490778D4}
+		{20FAFC08-6708-4989-B24B-8DD31CA70CDE} = {8704FA65-D1D5-4090-B565-8BD9490778D4}
+		{32A0D737-19E8-4961-A469-68E679A3478F} = {8704FA65-D1D5-4090-B565-8BD9490778D4}
+		{0D57F830-FB84-4557-B4FD-D52D571D3928} = {8704FA65-D1D5-4090-B565-8BD9490778D4}
+		{B706E961-AEC8-4563-BA39-01600180DA56} = {74D1BBB8-6D3A-4323-908B-F3E751E86561}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BC5C40E7-9C17-4126-9DDB-71B758809CE9}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 8
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://deeraf.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = HRM.ADO.Core\\HRM.ADO.Core.csproj
+		SccProjectName1 = HRM.ADO.Core
+		SccLocalPath1 = HRM.ADO.Core
+		SccProjectUniqueName2 = HRM.Core\\HRM.Core.csproj
+		SccProjectName2 = HRM.Core
+		SccLocalPath2 = HRM.Core
+		SccProjectUniqueName3 = HRM.Repository\\HRM.Repository.csproj
+		SccProjectName3 = HRM.Repository
+		SccLocalPath3 = HRM.Repository
+		SccProjectUniqueName4 = HRM.WebAPI\\HRM.WebAPI.csproj
+		SccProjectName4 = HRM.WebAPI
+		SccLocalPath4 = HRM.WebAPI
+		SccProjectUniqueName5 = HRM.WinService\\HRM.WinService.csproj
+		SccProjectName5 = HRM.WinService
+		SccLocalPath5 = HRM.WinService
+		SccProjectUniqueName6 = HRM.WinServiceLibrary\\HRM.WinServiceLibrary.csproj
+		SccProjectName6 = HRM.WinServiceLibrary
+		SccLocalPath6 = HRM.WinServiceLibrary
+		SccProjectUniqueName7 = HRM.WinServiceTest\\HRM.WinServiceTest.csproj
+		SccProjectName7 = HRM.WinServiceTest
+		SccLocalPath7 = HRM.WinServiceTest
+	EndGlobalSection
+EndGlobal

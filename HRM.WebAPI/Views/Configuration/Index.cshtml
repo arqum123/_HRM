@@ -1,0 +1,66 @@
+﻿@model List<HRM.Core.Entities.Configuration>
+@{
+    ViewBag.Title = "System Configuration";
+}
+	<link href="/assets/toggle/css/bootstrap-toggle.css" rel="stylesheet">
+	<link href="/assets/toggle/doc/stylesheet.css" rel="stylesheet">
+
+
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-gear"></i>System Configuration</h3>
+    @using (Html.BeginForm("Index", "Configuration", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "BrowseAttendanceDataForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            @for (int i = 0; Model != null && i < Model.Count; i++)
+            {
+                <label class="col-sm-4 control-label lblforinput">@Model[i].Name</label>
+                @Html.HiddenFor(x => x[i].Type)
+                @Html.HiddenFor(x => x[i].Id)
+                @Html.HiddenFor(x => x[i].Name)
+                @Html.HiddenFor(x => x[i].IsActive)
+                @Html.HiddenFor(x => x[i].CreationDate)
+                @Html.HiddenFor(x => x[i].UpdateDate)
+                @Html.HiddenFor(x => x[i].UpdateBy)
+                @Html.HiddenFor(x => x[i].UserIp)
+                switch (@Model[i].Type.ToUpper())
+                {
+                    case "BOOLEAN":
+                    case "BOOL":
+                    case "BIT":
+                <div class="col-sm-6">
+                    @*@Html.CheckBox(Model[i].Name, Convert.ToBoolean(Convert.ToInt32(Model[i].Value)),new {@class="form-control configCheck"})*@
+                    @Html.CheckBoxFor(x => x[i].BoolValue, new { @class="form-control",@style="width:5%; height:20px;",data_toggle="toggle"})
+
+                </div>
+            <br />
+            <br />
+                        break;
+                }
+            }
+        </div>
+        <br />
+        <br />
+        <div class="form-group">
+            <label class="col-sm-4 control-label lblforinput">&nbsp;</label>
+            <div class="col-sm-6">
+                <input type="submit" value="Save" class="btn btn-success" />
+            </div>
+        </div>
+            if (!String.IsNullOrWhiteSpace(ViewBag.Message))
+            {
+        <br />
+        <br />
+        <div class="form-group">
+            <label class="col-sm-4 control-label lblforinput">&nbsp;</label>
+            <div class="col-sm-6">
+                @ViewBag.Message
+            </div>
+        </div>
+            }
+    }
+</div>
+	<script src="/assets/toggle/doc/script.js"></script>
+	<script src="/assets/toggle/js/bootstrap-toggle.js"></script>
+
+

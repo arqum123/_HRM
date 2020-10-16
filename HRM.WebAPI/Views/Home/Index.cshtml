@@ -1,0 +1,117 @@
+@{
+    ViewBag.Title = "HRMS - Dashboard";
+}
+<link rel="stylesheet" type="text/css" href="/assets/widgets/charts/xcharts/xcharts.css">
+<script type="text/javascript" src="/assets/js-core/d3.js"></script>
+<script type="text/javascript" src="/assets/widgets/charts/xcharts/xcharts.js"></script>
+@Html.Partial("DashboardStats");
+<div class="row">
+    <div class="col-md-12">
+        <div class="content-box border-top border-blue-alt mrg25B">
+            <h3 class="content-box-header">Last Week Statistics <small>(On time and Late Comer)</small><div class="btn-group btn-group-sm float-right" data-toggle="buttons">
+            </div>
+            </h3>
+            <div class="content-box-wrapper">
+                <figure style="width: 95%; margin: 0 auto; display: block; height: 300px" id="chart-example"></figure>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .color1
+    {
+        fill:#ff5757;
+    }
+     .color0
+    {
+        fill:#8eca3f;
+    }
+</style>
+<script type="text/javascript">
+    var data = [{
+        "xScale": "ordinal", "comp": [], "main": [{ "className": ".main.l1", "data": [{ "y": 78, "x": "2012-11-19T00:00:00" }, { "y": 82, "x": "2012-11-20T00:00:00" }, { "y": 87, "x": "2012-11-21T00:00:00" }, { "y": 81, "x": "2012-11-22T00:00:00" }, { "y": 75, "x": "2012-11-23T00:00:00" }, { "y": 77, "x": "2012-11-24T00:00:00" }] },
+                                                  { "className": ".main.l2", "data": [{ "y": 22, "x": "2012-11-19T00:00:00" }, { "y": 28, "x": "2012-11-20T00:00:00" }, { "y": 13, "x": "2012-11-21T00:00:00" }, { "y": 19, "x": "2012-11-22T00:00:00" }, { "y": 25, "x": "2012-11-23T00:00:00" }, { "y": 23, "x": "2012-11-24T00:00:00" }] }], "type": "bar", "yScale": "linear"
+    }];
+    var graphGenerated = 1;
+    $(function () {
+        GetGraphData();
+        setInterval('GetGraphData()', 60000);
+    }());
+    function GetGraphData() {
+        if (graphGenerated == 0)
+            return;
+        graphGenerated = 0;
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetDashboardGraphData',
+            dataType: "json",
+            success: function (result) {
+                GenerateGraph(result);
+                graphGenerated = 1;
+            }
+        });
+        
+    }
+    function GenerateGraph(statsData) {
+        var tt = document.createElement('div'),
+                leftOffset = -(~~$('html').css('padding-left').replace('px', '') + ~~$('body').css('margin-left').replace('px', '')),
+                topOffset = -32;
+        tt.className = 'tooltip top fade in';
+        document.body.appendChild(tt);
+
+        for (i = 0; i < 6; i++) {
+            data[0].main[0].data[i].x = statsData[i].dtAttendanceString;
+            data[0].main[1].data[i].x = statsData[i].dtAttendanceString;
+            data[0].main[0].data[i].y = statsData[i].OnTimeCount;
+            data[0].main[1].data[i].y = statsData[i].LateCount;
+        }
+
+        var order = [0],
+                i = 0,
+                xFormat = d3.time.format('%A'),
+                chart = new xChart('line-dotted', data[order[i]], '#chart-example', {
+                    axisPaddingTop: 5,
+                    dataFormatX: function (x) {
+                        return new Date(x);
+                    },
+                    tickFormatX: function (x) {
+                        return xFormat(x);
+                    },
+                    mouseover: function (d, i) {
+                        var pos = $(this).offset();
+                        $(tt).html('<div class="arrow"></div><div class="tooltip-inner">' + d3.time.format('%A')(d.x) + ': ' + d.y + '</div>')
+                                .css({ top: topOffset + pos.top, left: pos.left + leftOffset })
+                                .show();
+                    },
+                    mouseout: function (x) {
+                        $(tt).hide();
+                    },
+                    timing: 1250
+                }),
+                rotateTimer,
+                toggles = d3.selectAll('#upd-chart a'),
+                t = 3500;
+
+        function updateChart(i) {
+            var d = data[i];
+            chart.setData(d);
+            toggles.classed('active', function () {
+                return (d3.select(this).attr('data-type') === d.type);
+            });
+            return d;
+        }
+
+        toggles.on('click', function (d, i) {
+            clearTimeout(rotateTimer);
+            updateChart(i);
+        });
+
+        function rotateChart() {
+            i += 1;
+            i = (i >= order.length) ? 0 : i;
+            var d = updateChart(order[i]);
+            rotateTimer = setTimeout(rotateChart, t);
+        }
+        rotateTimer = setTimeout(rotateChart, t);
+    }
+</script>

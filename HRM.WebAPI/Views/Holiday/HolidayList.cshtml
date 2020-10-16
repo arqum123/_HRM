@@ -1,0 +1,81 @@
+﻿@model HRM.Core.Model.VMHolidayModel
+@{
+    ViewBag.Title = "HRMS - View Holiday List";
+    WebGrid grid = new WebGrid(Model.HolidayList, canSort: true, canPage: true, rowsPerPage: 10);//whenever rowsperpage will be changed, change it in script as well
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Holidays List</h3>
+    @using (Html.BeginForm("HolidayList", "Holiday", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "HolidayListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        if (Model.HolidayList != null && Model.HolidayList.Count > 0)
+        {
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("Name", "Name", format: @<text><a title="Click here to Edit Holiday" href="/Holiday?id=@item.Id">@item.Name</a></text>),
+                grid.Column("Date", header: "Date", format: (item) => item.Date != null ? string.Format("{0:dd-MMM-yyyy}", item.Date) : Html.Raw("N/A")),
+                grid.Column("Description", header: "Description", format: (item) => (item.Detail != null && item.Detail != "") ? item.Detail : Html.Raw("N/A")),
+                grid.Column("", header: "Action", format: @<text><a id="Delete_@item.Id" href="javascript:;" onclick="javascript:return DeleteHoliday(this);">Delete</a></text>)
+                )
+        )
+        }
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        $('.datatable tbody tr').each(function () {
+            var Holiday = new Date($('td:eq(2)', this).html());
+            var currDate = new Date();
+            //alert(chkDate);
+            
+            if (currDate > Holiday) {
+                $(this).find('a').removeAttr('href').removeAttr('onclick').attr('title', 'You can not edit holiday in past');
+            }
+        });
+
+        var pagenmbr = 1;
+        var rowsPerPage = 10;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1);
+        if (hashes.indexOf('page') >= 0)
+            pagenmbr = hashes.substring(hashes.indexOf('page') + 5);
+
+        $('.datatable tbody tr').each(function () {
+            var sno = $(this).find('td:first').html();
+            $(this).find('td:first').html(((rowsPerPage * pagenmbr) - rowsPerPage) + parseInt(sno));
+        });
+    });
+
+    function DeleteHoliday(objAnch) {
+        var str = $(objAnch).attr("id").split("_");
+        if (str[0] == 'Delete') {
+            id = str[1];
+
+            var flag = confirm('Are you sure to delete this record ?');
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: 'deleteholiday?id=' + id,
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data) {
+                            location.reload();
+                            return;
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+        }
+    }
+</script>

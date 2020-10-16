@@ -1,0 +1,166 @@
+﻿@model HRM.Core.Model.VMAttendanceModel
+@{
+    ViewBag.Title = "HRMS - Daily Attendance Report";
+    WebGrid grid = new WebGrid(Model.AttendanceSummaryList, canSort: true, canPage: false, rowsPerPage: 10);
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Daily Attendance Report
+        <div class="col-sm-3" style="float: right;">
+            <a href="javascript:;" onclick="Print(1);" style="float: right">
+                <img src="/assets/images/printer.png" style="width: 20px" />&nbsp;Print</a>
+        </div>
+    </h3>
+    @using (Html.BeginForm("DailySummary", "Attendance", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "DailyAttendanceListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+        <div class="form-group">
+            <label for="StartDate" class="col-sm-4 control-label lblforinput">From: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.StartDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control startdate" })
+                <a href="javascript:void();" class="floatright settoday">Set Today</a>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="BranchID" class="col-sm-4 control-label lblforinput">Branch: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m=>m.BranchId, ViewBag.Branch as SelectList, "All Branch", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Department: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.DepartmentID, ViewBag.Department as SelectList, "All Department", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="SalaryTypeID" class="col-sm-4 control-label lblforinput">Employee Cateogory: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.SalaryTypeId, ViewBag.SalaryType as SelectList, "All Category", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="ShiftID" class="col-sm-4 control-label lblforinput">Shift: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.ShiftId, ViewBag.Shift as SelectList, "All Shift", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Search</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+    
+   
+    @if (Model.AttendanceSummaryList != null && Model.AttendanceSummaryList.Count > 0)
+    {
+         <input type="button" value="View Report" class="btn btn-block btn-success" onclick="PopupCenter('@ViewBag.DailySummmaryReportUrl','DailySummaryReport', 595 ,842 )" style="width:120px;float:right"/>
+         <p>&nbsp;</p>
+
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("DepartmentName", header: "Department", format: @<text><a target="_blank" title="Detail" href="/Attendance/DailyDetail2?departmentId=@item.DepartmentId&branchid=@item.BranchId&shiftId=@Model.ShiftId&salaryTypeId=@Model.SalaryTypeId&date=@Model.StartDate">@item.DepartmentName</a></text>),
+                grid.Column("BranchName","Branch"),
+                grid.Column("Total","Total"),
+                grid.Column("Present","Present"),
+                grid.Column("Absent","Absent"),
+                grid.Column("OffDay","Off Day"),
+                grid.Column("Late","Late"),
+                grid.Column("Early","Early"),
+                grid.Column("OverTime","Over Time"),
+                grid.Column("FullDay","Full Day")
+                )
+        )
+    }
+    @*<iframe src="~/Reports/web_forms/daily_summary.aspx" id="if_daily_sum" width="97%" height="760"></iframe>*@
+</div>
+<iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
+
+<script>
+    function PopupCenter(url, title, w, h) {
+        // Fixes dual-screen position                         Most browsers      Firefox
+        var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+        var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+
+        var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+        var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+        var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+        var top = ((height / 2) - (h / 2)) + dualScreenTop;
+        var newWindow = window.open(url, title, 'scrollbars=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+
+        // Puts focus on the newWindow
+        if (window.focus) {
+            newWindow.focus();
+        }
+    }
+    var links = $('a[href*=page], a[href*=sort]'), form = $('form');
+    links.click(function () {
+        form.attr("action", this.href);
+        $(this).attr("href", "javascript:");
+        form.submit();
+    });
+    $(document).ready(function () {
+        var startdate = new Date($('.startdate').val())
+        $('.startdate').val((startdate.getMonth() + 1) + '/' + startdate.getDate() + '/' + startdate.getFullYear());
+
+        $("option[value='-1']").remove();
+    });
+
+    $('.settoday').click(function () {
+        var startdate = new Date()
+        $('.startdate').val((startdate.getMonth() + 1) + '/' + startdate.getDate() + '/' + startdate.getFullYear());
+    });
+    function Print(img) {
+        debugger;
+        //var printElement = $(".page-box").clone();
+        var printElement = $("body").clone();
+        printElement.find("h3>div").hide();
+        printElement.find(".form-group .tblLegends").hide();
+        printElement.find("form").hide();
+        printElement.find("#page-header").hide();
+        printElement.find("#page-sidebar").hide();
+
+        printElement.find("a").each(function (e) { $(this).attr("href", "#"); });
+        if (img == 0)
+            printElement.find("img").hide();
+
+        $(printElement[0]).prepend("<span class='test'>Print Date: @DateTime.Now.ToString() </span> | " +
+        "<span class='test'>Date: @Model.StartDate.ToString("MM/dd/yy") </span> | " +
+        "<span class='test'>Dept: @(ViewBag.BranchName!=null? ViewBag.BranchName.ToString() :"Any") > @(ViewBag.DeptName!=null? ViewBag.DeptName.ToString():"Any") </span>" +
+        "<span class='test'>Cat: @(ViewBag.SalaryTypeName!=null? ViewBag.SalaryTypeName.ToString() :"Any") | Shift: @(ViewBag.ShiftName!=null? ViewBag.ShiftName.ToString():"Any") </span>" +
+        "");
+
+        printDivCSS = new String('<link rel="stylesheet" type="text/css" href="/assets/helpers/helpers-all.css">');
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/elements/elements-all.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/fontawesome/fontawesome.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/linecons/linecons.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/snippets/snippets-all.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/applications/mailbox.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/layout.css">';
+        printDivCSS += '<link id="layout-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/layout-color.css">';
+        printDivCSS += '<link id="framework-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/framework-color.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/border-radius.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/helpers/colors.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/custom.css">';
+
+        window.frames["print_frame"].document.body.innerHTML = printDivCSS + ' ' + printElement.html();
+        window.frames["print_frame"].window.focus();
+        $(window.frames["print_frame"].document.body).css("height", parseInt($("#sb-site").css("height").replace("px")) + 4000 + "px");
+        setTimeout(function () {
+            window.frames["print_frame"].window.print();
+        }, 1000);
+    }
+</script>

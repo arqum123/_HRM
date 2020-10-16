@@ -1,0 +1,43 @@
+﻿@model HRM.Core.Model.VMShiftModel
+@{
+    ViewBag.Title = "HRMS - View Shifts List";
+    WebGrid grid = new WebGrid(Model.ShiftList, canSort: true, canPage: true, rowsPerPage: 10);//whenever rowsperpage will be changed, change it in script as well
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Shifts List</h3>
+    @using (Html.BeginForm("ShiftList", "Shift", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "ShiftListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        if (Model.ShiftList != null && Model.ShiftList.Count > 0)
+        {
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("Name", "Name", format: @<text><a title="Click here to Edit Shift" href="/Shift?id=@item.Id">@item.Name</a></text>),
+                grid.Column("Description", header: "Description", format: (item) => (item.Description != null && item.Description != "") ? item.Description : Html.Raw("N/A")),
+                grid.Column("OffDays", header: "Off Days", format: @<text><a target="_blank" title="Click here to View Shift Off Days History" href="/Shift/OffDayHistory?id=@item.Id">@((item.OffDays != null && item.OffDays != "") ? item.OffDays : Html.Raw("N/A"))</a></text>)
+                )
+        )
+        }
+    }
+</div>
+<script>
+$(document).ready(function () {
+        var pagenmbr = 1;
+        var rowsPerPage = 10;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1);
+        if (hashes.indexOf('page') >= 0)
+            pagenmbr = hashes.substring(hashes.indexOf('page') + 5);
+
+        $('.datatable tbody tr').each(function () {
+            var sno = $(this).find('td:first').html();
+            $(this).find('td:first').html(((rowsPerPage * pagenmbr) - rowsPerPage) + parseInt(sno));
+        });
+});
+</script>

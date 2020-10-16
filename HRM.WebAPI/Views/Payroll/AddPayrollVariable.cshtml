@@ -1,0 +1,147 @@
+﻿@model HRM.Core.Entities.VMADDPayrollModel
+@{
+    ViewBag.Title = "HRMS - Add Payroll Variable";
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-plus"></i>Add New Payroll Variable</h3>
+    @using (Html.BeginForm("AddPayrollVariable", "Payroll", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "AddPayrollVariableForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.Id)
+
+        <div class="form-group">
+            <label for="Value" class="col-sm-4 control-label lblforinput">Variable Name</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.PayrollVariableName, new { maxlength = "20", @class = "form-control", placeholder = "Variable Name", @id = "PayrollVariableName" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="Value" class="col-sm-4 control-label lblforinput" id="Type">Type</label>
+            <div class="col-sm-6">
+
+                @Html.DropDownListFor(m => m.IsAttendace, new List<SelectListItem>
+        {
+        new SelectListItem { Text = "Attendance", Value = "true"},
+        new SelectListItem { Text = "Non-Attendance", Value = "false"}
+        }, "Select Type",new{ @name= "IsAttendance", @class= "form-control IsAttendance", @id="IsAttendance"})
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="FormulaType" class="col-sm-4 control-label lblforinput" id="Unit">Unit</label>
+            <div class="col-sm-6">
+                <div class="radio-inline radio-info">
+                    <label>
+                        @Html.RadioButtonFor(m => m.IsCheck, "false", new { @id = "IsUnit", @class = "custom-radio IsUnit", @Value = "IsUnit", @disabled = "disabled" })
+                        Amount
+                    </label>
+                </div>
+                <div class="radio-inline radio-info">
+                    <label>
+                        @Html.RadioButtonFor(m => m.IsCheck, "false", new { @id = "IsPercentage", @class = "custom-radio IsPercentage", @Value = "IsPercentage", @disabled = "disabled" })
+                        Percentage
+                    </label>
+                </div>
+
+                <div class="radio-inline radio-info">
+                    <label>
+                        @Html.RadioButtonFor(m => m.IsCheck, "false", new { @id = "IsDay", @class = "custom-radio IsDay", @Value = "IsDay", @disabled = "disabled" })
+                        Day
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Value" class="col-sm-4 control-label lblforinput">Salary Type</label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.SalaryTypeId, ViewBag.SalaryType as SelectList, "All TYPE", new { @class = "form-control", @id = "SalaryType", @disabled = "disabled" })
+
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label for="Value" class="col-sm-4 control-label lblforinput">Occurance</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.Occurance, new { maxlength = "20", @class = "form-control", @id = "Occurance", placeholder = "Occurance", @disabled = "disabled" })
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Value" class="col-sm-4 control-label lblforinput">Value</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.Value, new { maxlength = "10", @class = "form-control", placeholder = "Value", @id = "Value", @disabled = "disabled" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success savepayrollpolicy">Save</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+
+
+    }
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("select.IsAttendance").change(function () {
+  
+            var IsAttendance = $(this).children("option:selected").val();
+   
+            if (IsAttendance == 'true') {  //Type Attendance   
+                $("#Value").prop('disabled', false);
+                $("#Occurance").prop('disabled', false);
+                $("#SalaryType").prop('disabled', false);
+                $(".IsUnit").prop('disabled', false);
+                $(".IsPercentage").prop('disabled', false);
+                $(".IsDay").prop('disabled', false);       
+            }
+            if (IsAttendance == 'false') { //Type Non-Attendance 
+                $("#Value").prop('disabled', false);
+                $("#Occurance").prop('disabled', true);
+                $("#SalaryType").prop('disabled', false);
+                $(".IsUnit").prop('disabled', false);
+                $(".IsPercentage").prop('disabled', false);
+                $(".IsDay").prop('disabled', true);
+            }
+        });
+
+
+      //Checkboxes Enabling SalaryType Dropdown
+        //$('#IsUnit').click(function () {
+        //    count++;
+        //    alert(count);
+        //    if ($(this).is(':checked')) {
+        //        $("#SalaryType").prop('disabled', true);
+        //    }
+        //     //radio buton check start
+        //    $('#IsUnit').val('true');
+         
+        //});
+
+        //$('#IsPercentage').click(function () {
+
+        //    if ($(this).is(':checked')) {
+        //        $("#SalaryType").prop('disabled', false);
+        //    }
+        //    //radio buton check start
+        //    $('#IsPercentage').val('true');
+        //});
+   
+        //$('#IsDay').click(function () {
+        //    if ($(this).is(':checked')) {
+        //        $("#SalaryType").prop('disabled', true);
+        //    }
+        //     //radio buton check start
+        //    $('#IsDay').val('true');
+        //});
+    });
+</script>

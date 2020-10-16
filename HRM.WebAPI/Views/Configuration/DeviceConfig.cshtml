@@ -1,0 +1,104 @@
+﻿@model HRM.Core.Entities.Device
+@{
+    ViewBag.Title = "Device Configuration";
+}
+
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-gear"></i>
+        @if (Model.Id == 0)
+        {
+            <span>Add New Device</span>
+        }
+        else
+        {
+            <span>Configure Device</span>
+        }
+    </h3>
+    @using (Html.BeginForm("DeviceConfig", "Configuration", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "BrowseAttendanceDataForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+        <div class="form-group">
+            @Html.HiddenFor(x => x.Id)
+            @Html.HiddenFor(x => x.MachineId)
+            @Html.HiddenFor(x => x.IsActive)
+            @Html.HiddenFor(x => x.CreationDate)
+            @Html.HiddenFor(x => x.UserIp)
+            @Html.HiddenFor(x => x.UpdateBy)
+            @Html.HiddenFor(x => x.UpdateDate)
+            <label class="col-sm-4 control-label lblforinput">Device ID:</label>
+            <div class="col-sm-6">@Html.TextBoxFor(x => x.DeviceId, new { @class="form-control"})</div>
+             <label class="col-sm-4 control-label lblforinput">Device Modal:</label>
+            <div class="col-sm-6">@Html.DropDownListFor(x => x.DeviceModalId,(SelectList)ViewBag.DeviceModalList, new { @class="form-control"})</div>
+            <label class="col-sm-4 control-label lblforinput">Connection Type:</label>
+            <div class="col-sm-6">@Html.DropDownListFor(x => x.ConnectionTypeId,(SelectList)ViewBag.DeviceConnectionTypeList, new { @class="form-control"})</div>
+            <label id="lblIPAddress" class="col-sm-4 control-label lblforinput">IP Address:</label>
+            <div id="divIPAddress" class="col-sm-6">@Html.TextBoxFor(x => x.IpAddress, new { @class="form-control"})</div>
+            <label id="lblPortNumber" class="col-sm-4 control-label lblforinput">Port:</label>
+            <div id="divPortNumber" class="col-sm-6">@Html.TextBoxFor(x => x.PortNumber, new { @class="form-control"})</div>
+            <label id="lblPassword" class="col-sm-4 control-label lblforinput">Password:</label>
+            <div id="divPassword" class="col-sm-6">@Html.TextBoxFor(x => x.Password, new { @class="form-control"})</div>
+            <label id="lblComPort" class="col-sm-4 control-label lblforinput">Com Port:</label>
+            <div id="divComPort" class="col-sm-6">@Html.DropDownListFor(x => x.ComPort,(SelectList)ViewBag.ComPortList, new { @class="form-control"})</div>
+            <label id="lblBaudRate" class="col-sm-4 control-label lblforinput">Baud Rate:</label>
+            <div id="divBaudRate" class="col-sm-6">@Html.DropDownListFor(x => x.Baudrate,(SelectList)ViewBag.BraudRateList, new { @class="form-control"})</div>
+            <label  class="col-sm-4 control-label lblforinput">Branch:</label>
+            <div class="col-sm-6">@Html.DropDownListFor(x => x.BranchId,(SelectList)ViewBag.BranchList, new { @class="form-control"})</div>
+        </div>
+        <br />
+        <br />
+        <div class="form-group">
+            <label class="col-sm-4 control-label lblforinput">&nbsp;</label>
+            <div class="col-sm-6">
+                <input type="submit" value="Save" />
+            </div>
+        </div>
+            if (!String.IsNullOrWhiteSpace(ViewBag.Message))
+            {
+        <br />
+        <br />
+        <div class="form-group">
+            <label class="col-sm-4 control-label lblforinput">&nbsp;</label>
+            <div class="col-sm-6">
+                @ViewBag.Message
+            </div>
+        </div>
+            }
+    }
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#ConnectionTypeId").change(
+            function () {
+                SetControl();
+            });
+        SetControl();
+    });
+    function SetControl() {
+        //Network
+        if ($("#ConnectionTypeId").val() == "1") {
+            $("#ComPort").hide().val("0"); $("#lblComPort").hide(); $("#divComPort").hide();
+            $("#Baudrate").hide().val("0"); $("#lblBaudRate").hide(); $("#divBaudRate").hide();
+            $("#IpAddress").show(); $("#lblIPAddress").show(); $("#divIPAddress").show();
+            $("#PortNumber").show(); $("#lblPortNumber").show(); $("#divPortNumber").show();
+            $("#Password").show(); $("#lblPassword").show(); $("#divPassword").show();
+        }
+        //Serial
+        else if ($("#ConnectionTypeId").val() == "2") {
+            $("#ComPort").show(); $("#lblComPort").show(); $("#divComPort").show();
+            $("#Baudrate").show(); $("#lblBaudRate").show(); $("#divBaudRate").show();
+            $("#IpAddress").hide().val(""); $("#lblIPAddress").hide(); $("#divIPAddress").hide();
+            $("#PortNumber").hide().val("0"); $("#lblPortNumber").hide(); $("#divPortNumber").hide();
+            $("#Password").hide().val(""); $("#lblPassword").hide(); $("#divPassword").hide();
+        }
+        //USB
+        else if ($("#ConnectionTypeId").val() == "3") {
+            $("#ComPort").show(); $("#lblComPort").show(); $("#divComPort").show();
+            $("#Baudrate").hide().val("0"); $("#lblBaudRate").hide(); $("#divBaudRate").hide();
+            $("#IpAddress").hide().val(""); $("#lblIPAddress").hide(); $("#divIPAddress").hide();
+            $("#PortNumber").hide().val("0"); $("#lblPortNumber").hide(); $("#divPortNumber").hide();
+            $("#Password").hide().val(""); $("#lblPassword").hide(); $("#divPassword").hide();
+        }
+    }
+</script>

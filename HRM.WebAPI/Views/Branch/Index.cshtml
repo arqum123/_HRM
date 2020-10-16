@@ -1,0 +1,54 @@
+﻿@model List<HRM.Core.Entities.Branch>
+@{
+    ViewBag.Title = "HRMS - View Branch";
+    WebGrid grid = new WebGrid(Model, canSort: true, canPage: true, rowsPerPage: 10);
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Branch List<span class="pull-right"><i class="glyph-icon icon-plus"></i>@Html.ActionLink(" Add New Branch", "Create", null, new { @class = "bg-blue" })</span></h3>
+    @using (Html.BeginForm("Index", "Branch", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "form-horizontal customclass" }))
+    {
+        if (Model != null)
+        {
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+            grid.Column(header: "SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+            grid.Column("Name", "Name", format: @<text><a title="Click here to Edit Branch" href="/Branch/Create?bid=@item.Id">@item.Name</a></text>)
+            )
+        )
+        }
+    }
+</div>
+
+<script>
+    function RemoveBranch(objAnch) {
+        var str = $(objAnch).attr("id").split("_");
+        if (str[0] == 'Delete') {
+            id = str[1];
+
+            var flag = confirm('Are you sure to delete this record ?');
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: 'branch/deletebranch?id=' + id,
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data) {
+                            location.reload();
+                            return;
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+        }
+    }
+</script>

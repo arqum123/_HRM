@@ -1,0 +1,181 @@
+﻿@model HRM.Core.Model.VMAttendanceModel
+@{
+    ViewBag.Title = "HRMS - View Users List";
+    WebGrid grid = new WebGrid(Model.UserList, canSort: true, canPage: true, rowsPerPage: 10);//whenever rowsperpage will be changed, change it in script as well
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Users List</h3>
+    @using (Html.BeginForm("UserList", "User", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "UserListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Department: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.DepartmentID, ViewBag.Department as SelectList, "All Department", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="UserName" class="col-sm-4 control-label lblforinput">User Name</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.UserName, new { maxlength = "200", @class = "form-control", placeholder = "User Name" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success searchdata">Search</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+    @if (Model.UserList != null && Model.UserList.Count > 0)
+    {
+    <div class="col-sm-11"></div><div class="col-sm-1" style="float: right;"><a href="PrintUserList?departmentId=@Model.DepartmentID&userName=@Model.UserName&branchId=@HRM.Core.Helper.AuthBase.BranchId" target="_blank"><img src="/assets/images/printer.png" style="width: 20px;" />&nbsp;Print</a></div>
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("ID", "Emp ID"),
+                grid.Column("FirstName", "Name", format: @<text><img width="36" src="@(item.ImagePath == "" ? "/assets/images/anonymoususer.jpg": item.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a title="Click here to Edit User" href="/User?id=@item.Id">@item.FirstName</a></text>),
+                grid.Column("Department.Name", header: "Department", format: (item) => item.Department != null ? Html.Raw(string.Format("<text><a target='_blank' title='Click here to view User Departments History' href='/Department/DepartmentHistory?id=" + @item.Id + "'>" + @item.Department.Name + "</a></text>")) : Html.Raw("N/A")),
+                grid.Column("UserContactEmail.Detail", header: "Email Address", format: (item) => (item.UserContactEmail!=null && item.UserContactEmail.Detail != null && item.UserContactEmail.Detail != "") ? item.UserContactEmail.Detail : Html.Raw("N/A")),
+                grid.Column("UserContactMobile.Detail", header: "Mobile Number", format: (item) => (item.UserContactMobile!=null && item.UserContactMobile.Detail != null && item.UserContactMobile.Detail != "") ? item.UserContactMobile.Detail : Html.Raw("N/A")),
+                grid.Column("Designation", header: "Designation", format: (item) => (item.Designation != null && item.Designation != "") ? item.Designation : Html.Raw("N/A")),
+                grid.Column("Salary", header: "Salary", format: (item) => item.Salary != null ? item.Salary : Html.Raw("N/A")),
+                grid.Column("", header: "Action", format: @<text><a id="Delete_@item.Id" href="javascript:;" onclick="javascript:return DeleteUser(this);">Delete</a></text>)
+                )
+        )
+    }
+</div>
+<script>
+    var links = $('a[href*=page], a[href*=sort]'), form = $('form');
+    links.click(function () {
+        form.attr("action", this.href);
+        $(this).attr("href", "javascript:");
+        form.submit();
+    });
+
+    $(document).ready(function () {
+        $("option[value='-1']").remove();
+
+        var pagenmbr = 1;
+        var rowsPerPage = 10;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1);
+        if (hashes.indexOf('page') >= 0)
+            pagenmbr = hashes.substring(hashes.indexOf('page') + 5);
+
+        $('.datatable tbody tr').each(function () {
+            var sno = $(this).find('td:first').html();
+            $(this).find('td:first').html(((rowsPerPage * pagenmbr) - rowsPerPage) + parseInt(sno));
+        });
+    });
+
+    $("#UserName").blur(function () {
+        var keyEvent = $.Event("keydown");
+        keyEvent.keyCode = $.ui.keyCode.ENTER;
+        $(this).trigger(keyEvent);
+    }).autocomplete({
+        minLength: 3,
+        autoFocus: true,
+        open: function () { $(this).removeClass("ui-autocomplete-loading"); },
+        source: function (request, response) {
+            $(".ErrorMessage").text("");
+            $(".ViewBagErrorMessage").text("");
+            $.ajax({
+                url: '@Url.Action("SearchUserList", "User")',
+                type: 'POST',
+                dataType: 'json',
+                data: { ShiftID: "", DepartmentId: $("#DepartmentID").val(), UserName: request.term, recCount: 5 },
+                success: function (data) {
+                    if (data != null) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.FirstName + " <" + (item.UserContactEmail.Detail != "" ? item.UserContactEmail.Detail : "No Email Address") + ">",
+                                value: item.FirstName,
+                                encryptedID: item.EncryptedID,
+                                id: item.ID
+                            };
+                        }))
+                    }
+                    else {
+                        $("#UserName").removeClass("ui-autocomplete-loading");
+                        $(".ErrorMessage").text("No Users Found");
+                        $(".ViewBagErrorMessage").text("");
+                    }
+                }
+            })
+        },
+        select: function (event, ui) {
+            var label = ui.item.label;
+            label = label.substring(0, label.indexOf(' <'));
+            var value = ui.item.encryptedID;
+            var id = ui.item.id;
+
+            this.value = "";
+            this.focus();
+            $("#UserName").val(label);
+            //$("#UserName").attr('readonly', true);
+            //window.location = "ViewDetail?key=" + value;
+            return false;
+        },
+        change: function (event, ui) {
+            var referenceValue = $(this).val();
+            var matches = false;
+
+            $(".ui-autocomplete li").each(function () {
+                if ($(this).text() == referenceValue) {
+                    matches = true;
+                    return false;
+                }
+            });
+
+            //if (!matches) {
+            //    this.value = "";
+            //    this.focus();
+            //    this.style.border = "solid 1px red";
+            //    $(this).removeClass("ui-autocomplete-loading");
+            //    $(".ErrorMessage").text("No Customer Found");
+            //    $(".ViewBagErrorMessage").text("");
+            //}
+            //else {
+            //    this.style.border = "";
+            //}
+        },
+        messages: {
+            noResults: "", results: ""
+        }
+    })
+
+    function DeleteUser(objAnch) {
+        var str = $(objAnch).attr("id").split("_");
+        if (str[0] == 'Delete') {
+            id = str[1];
+
+            var flag = confirm('Are you sure to delete this record ?');
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: 'deleteuser?id=' + id,
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data) {
+                            location.reload();
+                            return;
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+        }
+    }
+</script>

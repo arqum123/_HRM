@@ -1,0 +1,238 @@
+﻿@model HRM.Core.Model.VMAttendanceModel
+@{
+    ViewBag.Title = "HRMS - Absent Report";
+    WebGrid grid = new WebGrid(Model.AttendanceList, canSort: true, canPage: false, rowsPerPage: 10);
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Absent Report</h3>
+    @using (Html.BeginForm("Absent", "Attendance", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "AbsentListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+        <div class="form-group">
+            <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Department: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.DepartmentID, ViewBag.Department as SelectList, "All Department", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="StartDate" class="col-sm-4 control-label lblforinput">From: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.StartDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control startdate" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="EndDate" class="col-sm-4 control-label lblforinput">To: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.EndDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control enddate" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Search</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+        <input type="button" value="View Report" class="btn btn-block btn-success" onclick="PopupCenter('@ViewBag.AbsenteeReportUrl    ','AbsenteeReport', 595 ,842 )" style="width:120px;float:right"/>
+        <p>&nbsp;</p>
+    
+    @if (Model.AttendanceList != null && Model.AttendanceList.Count > 0)
+    {
+        <input type="button" value="View Report" class="btn btn-block btn-success" onclick="PopupCenter('@ViewBag.AbsenteeReportUrl    ','AbsenteeReport', 595 ,842 )" style="width:120px;float:right"/>
+        <p>&nbsp;</p>
+       
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table datatable attendancereport",
+        headerStyle: "header",
+            //alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column(header: "{CheckBoxHeading}", format: @<text><input type="checkbox" class="chkbox" /><input type="hidden" class="hdnAttendanceId" value="@item.id" /></text>),
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                //grid.Column("User.FirstName", "Name"),
+                grid.Column("Date", header: "Date", format: (item) => item.Date != null ? string.Format("{0:dd-MMM-yyyy}", item.Date) : Html.Raw("N/A")),
+                //grid.Column("User.Shift.Name", "Shift"),
+                grid.Column(null, header: "Action", format: @<text><a id="Leave_@item.Id" href="javascript:;" onclick="javascript:return InsertAttendanceStatus(this);">Mark Leave</a>&nbsp;&nbsp;<a id="Holiday_@item.Id" href="javascript:;" onclick="javascript:return InsertAttendanceStatus(this);">Mark Holiday</a>
+    </text>)
+                )
+        )
+
+        <br />
+
+        
+        <div class="form-horizontal form-group">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-2">
+                <a id="MultipleLeave" class="btn btn-block btn-success" href="javascript:;" onclick="javascript: return InsertMultipleAttendanceStatus(1);">Mark Leave</a>
+            </div>
+            <div class="col-sm-2">
+                <a id="MultipleHoliday" class="btn btn-block btn-success" href="javascript:;" onclick="javascript: return InsertMultipleAttendanceStatus(2);">Mark Holiday</a>
+            </div>
+        </div>
+    }
+</div>
+<script type="text/javascript">
+
+    function PopupCenter(url, title, w, h) {
+        // Fixes dual-screen position                         Most browsers      Firefox
+        var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+        var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+
+        var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+        var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+        var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+        var top = ((height / 2) - (h / 2)) + dualScreenTop;
+        var newWindow = window.open(url, title, 'scrollbars=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+
+        // Puts focus on the newWindow
+        if (window.focus) {
+            newWindow.focus();
+        }
+    }
+
+    var links = $('a[href*=page], a[href*=sort]'), form = $('form');
+    links.click(function () {
+        form.attr("action", this.href);
+        $(this).attr("href", "javascript:");
+        form.submit();
+    });
+
+    $(function () {
+        $('#gridtbl thead tr th:first').html(
+            $('<input/>', {
+                type: 'checkbox',
+                click: function () {
+                    var checkboxes = $(this).closest('table').find('tbody tr td input[type="checkbox"]');
+                    checkboxes.prop('checked', $(this).is(':checked'));
+                }
+            })
+        );
+    });
+
+    $(document).ready(function () {
+        var startdate = new Date($('.startdate').val())
+        $('.startdate').val((startdate.getMonth() + 1) + '/01/' + startdate.getFullYear());
+
+        var enddate = new Date($('.enddate').val())
+        $('.enddate').val((enddate.getMonth() + 1) + '/' + enddate.getDate() + '/' + enddate.getFullYear());
+
+        $("option[value='-1']").remove();
+
+        $(".chkbox").each(function () {
+            $(this).prop('checked', false);
+        });
+    });
+
+    function InsertAttendanceStatus(objAnch) {
+        var str = $(objAnch).attr("id").split("_");
+        if (str[0] == 'Leave') {
+            id = str[1];
+
+            var flag = confirm('Are you sure to mark Leave against this record ?');
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: 'MarkLeave?id=' + id,
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data) {
+                            location.reload();
+                            return;
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+        }
+        if (str[0] == 'Holiday') {
+            id = str[1];
+
+            var flag = confirm('Are you sure to mark Holiday against this record ?');
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: 'MarkHoliday?id=' + id,
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data) {
+                            location.reload();
+                            return;
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    function InsertMultipleAttendanceStatus(id) {
+        checked = [];
+        $(".chkbox:checked").each(function () {
+            checked.push($(this).closest('tr').find('.hdnAttendanceId').val())
+        });
+        var Users = checked.join(",");
+
+        if (Users == "") {
+            alert('Please select any record');
+            return false;
+        }
+
+        if (id == 1) {
+            var flag = confirm('Are you sure to mark Leave against selected records ?');
+            if (Users.trim().length > 0 && flag) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: 'MarkLeave?id=' + Users,
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data) {
+                            location.reload();
+                            return;
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+        }
+        if (id == 2) {
+            var flag = confirm('Are you sure to mark Holiday against selected records ?');
+            if (Users.trim().length > 0 && flag) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: 'MarkHoliday?id=' + Users,
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data) {
+                            location.reload();
+                            return;
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+        }
+    }
+    
+</script>

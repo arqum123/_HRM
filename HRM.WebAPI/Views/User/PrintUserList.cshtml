@@ -1,0 +1,35 @@
+﻿@model HRM.Core.Model.VMUserModel
+@{
+    ViewBag.Title = "HRMS - Print Users List";
+    WebGrid grid = new WebGrid(Model.UserList, canSort: false, canPage: false);
+    Layout = "../Shared/_LayoutWOSidebarWOJS.cshtml";
+}
+<div class="page-box content-box mrg25B" style="width:842px">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>@ViewBag.BranchName Users List</h3>
+    @if (Model.UserList != null && Model.UserList.Count > 0)
+    {
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("ID", "Emp ID"),
+                grid.Column("FirstName", "Name", format: @<text><img width="36" src="@(item.ImagePath == "" ? "/assets/images/anonymoususer.jpg": item.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt=""><br />@item.FirstName</text>),
+                grid.Column("Department.Name", header: "Department", format: (item) => item.Department != null ? item.Department.Name : Html.Raw("N/A")),
+                grid.Column("UserContactEmail.Detail", header: "Email Address", format: (item) => (item.UserContactEmail!=null && item.UserContactEmail.Detail != null && item.UserContactEmail.Detail != "") ? item.UserContactEmail.Detail : Html.Raw("N/A")),
+                grid.Column("UserContactMobile.Detail", header: "Mobile Number", format: (item) => (item.UserContactMobile!=null && item.UserContactMobile.Detail != null && item.UserContactMobile.Detail != "") ? item.UserContactMobile.Detail : Html.Raw("N/A")),
+                grid.Column("Designation", header: "Designation", format: (item) => (item.Designation != null && item.Designation != "") ? item.Designation : Html.Raw("N/A")),
+                grid.Column("Salary", header: "Salary", format: (item) => item.Salary != null ? item.Salary : Html.Raw("N/A"))
+                )
+        )
+    }
+</div>
+<script>
+    $(function() {
+        window.print();
+    });
+</script>
+

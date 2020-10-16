@@ -1,0 +1,76 @@
+﻿@model HRM.Core.Entities.Holiday
+@{
+    ViewBag.Title = "HRMS - Holiday";
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-plus"></i>Add New Holiday</h3>
+    @using (Html.BeginForm("Index", "Holiday", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "AddHolidayForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        if (Request.QueryString["Id"] != null)
+        {
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.IsActive)
+            @Html.HiddenFor(m => m.CreationDate)
+        }
+
+        <div class="form-group">
+            <label for="Name" class="col-sm-4 control-label lblforinput">Name</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.Name, new { maxlength = "200", @class = "form-control", placeholder = "Name of Holiday", @required = "required" })
+                @Html.ValidationMessageFor(m => m.Name, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+        <div class="form-group">
+            <label for="Date" class="col-sm-4 control-label lblforinput">Date</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.Date, new { maxlength = "20", @class = "bootstrap-datepicker form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Detail" class="col-sm-4 control-label lblforinput">Description</label>
+            <div class="col-sm-6">
+                @Html.TextAreaFor(m => m.Detail, new { maxlength = "2000", @class = "form-control", placeholder = "Description of Holiday" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success saveholiday">Save</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        if ($('.bootstrap-datepicker').val() == '') {
+            var date = new Date()
+            $('.bootstrap-datepicker').val((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
+        }
+        else {
+            var date = new Date($('.bootstrap-datepicker').val())
+            $('.bootstrap-datepicker').val((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
+        }
+
+        if (window.location.href.indexOf('?') > 0) {
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1);
+            if (hashes.indexOf('id') >= 0)
+                $('.screenheading').html('<i class="glyph-icon icon-pencil"></i>Edit Holiday');
+            else
+                $('.screenheading').html('<i class="glyph-icon icon-plus"></i>Add New Holiday');
+        }
+    });
+
+    $(".saveholiday").click(function () {
+        var date = new Date();
+        date = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+
+        if (Date.parse($('#Date').val()) <= Date.parse(date)) {
+            alert('Holiday must be marked in future');
+            return false;
+        }
+    });
+</script>

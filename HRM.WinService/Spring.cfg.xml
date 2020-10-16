@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<objects xmlns="http://www.springframework.net">
+  <description>Focus Unit Testing Configuration</description>
+  <object name="AttendanceRepository" type="HRM.Repository.AttendanceRepository , HRM.Repository"></object>
+  <object name="AttendanceService" type="HRM.Core.Service.AttendanceService , HRM.Core">
+    <constructor-arg name="iAttendanceRepository" ref="AttendanceRepository"/>
+  </object>
+  <object name="AttendanceDetailRepository" type="HRM.Repository.AttendanceDetailRepository , HRM.Repository"></object>
+  <object name="AttendanceDetailService" type="HRM.Core.Service.AttendanceDetailService , HRM.Core">
+    <constructor-arg name="iAttendanceDetailRepository" ref="AttendanceDetailRepository"/>
+  </object>
+  <object name="AttendancePolicyRepository" type="HRM.Repository.AttendancePolicyRepository , HRM.Repository"></object>
+  <object name="AttendancePolicyService" type="HRM.Core.Service.AttendancePolicyService , HRM.Core">
+    <constructor-arg name="iAttendancePolicyRepository" ref="AttendancePolicyRepository"/>
+  </object>
+  <object name="AttendanceStatusRepository" type="HRM.Repository.AttendanceStatusRepository , HRM.Repository"></object>
+  <object name="AttendanceStatusService" type="HRM.Core.Service.AttendanceStatusService , HRM.Core">
+    <constructor-arg name="iAttendanceStatusRepository" ref="AttendanceStatusRepository"/>
+  </object>
+  <object name="AttendanceTypeRepository" type="HRM.Repository.AttendanceTypeRepository , HRM.Repository"></object>
+  <object name="AttendanceTypeService" type="HRM.Core.Service.AttendanceTypeService , HRM.Core">
+    <constructor-arg name="iAttendanceTypeRepository" ref="AttendanceTypeRepository"/>
+  </object>
+  <object name="AttendanceVariableRepository" type="HRM.Repository.AttendanceVariableRepository , HRM.Repository"></object>
+  <object name="AttendanceVariableService" type="HRM.Core.Service.AttendanceVariableService , HRM.Core">
+    <constructor-arg name="iAttendanceVariableRepository" ref="AttendanceVariableRepository"/>
+  </object>
+  <object name="BranchRepository" type="HRM.Repository.BranchRepository , HRM.Repository"></object>
+  <object name="BranchService" type="HRM.Core.Service.BranchService , HRM.Core">
+    <constructor-arg name="iBranchRepository" ref="BranchRepository"/>
+  </object>
+  <object name="BranchDepartmentRepository" type="HRM.Repository.BranchDepartmentRepository , HRM.Repository"></object>
+  <object name="BranchDepartmentService" type="HRM.Core.Service.BranchDepartmentService , HRM.Core">
+    <constructor-arg name="iBranchDepartmentRepository" ref="BranchDepartmentRepository"/>
+  </object>
+  <object name="BranchShiftRepository" type="HRM.Repository.BranchShiftRepository , HRM.Repository"></object>
+  <object name="BranchShiftService" type="HRM.Core.Service.BranchShiftService , HRM.Core">
+    <constructor-arg name="iBranchShiftRepository" ref="BranchShiftRepository"/>
+  </object>
+  <object name="CityRepository" type="HRM.Repository.CityRepository , HRM.Repository"></object>
+  <object name="CityService" type="HRM.Core.Service.CityService , HRM.Core">
+    <constructor-arg name="iCityRepository" ref="CityRepository"/>
+  </object>
+  <object name="ConfigurationRepository" type="HRM.Repository.ConfigurationRepository , HRM.Repository"></object>
+  <object name="ConfigurationService" type="HRM.Core.Service.ConfigurationService , HRM.Core">
+    <constructor-arg name="iConfigurationRepository" ref="ConfigurationRepository"/>
+  </object>
+  <object name="ContactTypeRepository" type="HRM.Repository.ContactTypeRepository , HRM.Repository"></object>
+  <object name="ContactTypeService" type="HRM.Core.Service.ContactTypeService , HRM.Core">
+    <constructor-arg name="iContactTypeRepository" ref="ContactTypeRepository"/>
+  </object>
+  <object name="CountryRepository" type="HRM.Repository.CountryRepository , HRM.Repository"></object>
+  <object name="CountryService" type="HRM.Core.Service.CountryService , HRM.Core">
+    <constructor-arg name="iCountryRepository" ref="CountryRepository"/>
+  </object>
+  <object name="DepartmentRepository" type="HRM.Repository.DepartmentRepository , HRM.Repository"></object>
+  <object name="DepartmentService" type="HRM.Core.Service.DepartmentService , HRM.Core">
+    <constructor-arg name="iDepartmentRepository" ref="DepartmentRepository"/>
+  </object>
+  <object name="DeviceRepository" type="HRM.Repository.DeviceRepository , HRM.Repository"></object>
+  <object name="DeviceService" type="HRM.Core.Service.DeviceService , HRM.Core">
+    <constructor-arg name="iDeviceRepository" ref="DeviceRepository"/>
+  </object>
+  <object name="DeviceModalRepository" type="HRM.Repository.DeviceModalRepository , HRM.Repository"></object>
+  <object name="DeviceModalService" type="HRM.Core.Service.DeviceModalService , HRM.Core">
+    <constructor-arg name="iDeviceModalRepository" ref="DeviceModalRepository"/>
+  </object>
+  <object name="GenderRepository" type="HRM.Repository.GenderRepository , HRM.Repository"></object>
+  <object name="GenderService" type="HRM.Core.Service.GenderService , HRM.Core">
+    <constructor-arg name="iGenderRepository" ref="GenderRepository"/>
+  </object>
+  <object name="HolidayRepository" type="HRM.Repository.HolidayRepository , HRM.Repository"></object>
+  <object name="HolidayService" type="HRM.Core.Service.HolidayService , HRM.Core">
+    <constructor-arg name="iHolidayRepository" ref="HolidayRepository"/>
+  </object>
+  <object name="LeaveTypeRepository" type="HRM.Repository.LeaveTypeRepository , HRM.Repository"></object>
+  <object name="LeaveTypeService" type="HRM.Core.Service.LeaveTypeService , HRM.Core">
+    <constructor-arg name="iLeaveTypeRepository" ref="LeaveTypeRepository"/>
+  </object>
+  <object name="PayrollCycleRepository" type="HRM.Repository.PayrollCycleRepository , HRM.Repository"></object>
+  <object name="PayrollCycleService" type="HRM.Core.Service.PayrollCycleService , HRM.Core">
+    <constructor-arg name="iPayrollCycleRepository" ref="PayrollCycleRepository"/>
+  </object>
+  <object name="PayrollPolicyRepository" type="HRM.Repository.PayrollPolicyRepository , HRM.Repository"></object>
+  <object name="PayrollPolicyService" type="HRM.Core.Service.PayrollPolicyService , HRM.Core">
+    <constructor-arg name="iPayrollPolicyRepository" ref="PayrollPolicyRepository"/>
+  </object>
+  <object name="PayrollVariableRepository" type="HRM.Repository.PayrollVariableRepository , HRM.Repository"></object>
+  <object name="PayrollVariableService" type="HRM.Core.Service.PayrollVariableService , HRM.Core">
+    <constructor-arg name="iPayrollVariableRepository" ref="PayrollVariableRepository"/>
+  </object>
+  <object name="PayrollRepository" type="HRM.Repository.PayrollRepository , HRM.Repository"></object>
+  <object name="PayrollService" type="HRM.Core.Service.PayrollService , HRM.Core">
+    <constructor-arg name="iPayrollRepository" ref="PayrollRepository"/>
+  </object>
+  <object name="PayrollDetailRepository" type="HRM.Repository.PayrollDetailRepository , HRM.Repository"></object>
+  <object name="PayrollDetailService" type="HRM.Core.Service.PayrollDetailService , HRM.Core">
+    <constructor-arg name="iPayrollDetailRepository" ref="PayrollDetailRepository"/>
+  </object>
+  <object name="ReligionRepository" type="HRM.Repository.ReligionRepository , HRM.Repository"></object>
+  <object name="ReligionService" type="HRM.Core.Service.ReligionService , HRM.Core">
+    <constructor-arg name="iReligionRepository" ref="ReligionRepository"/>
+  </object>
+  <object name="SalaryTypeRepository" type="HRM.Repository.SalaryTypeRepository , HRM.Repository"></object>
+  <object name="SalaryTypeService" type="HRM.Core.Service.SalaryTypeService , HRM.Core">
+    <constructor-arg name="iSalaryTypeRepository" ref="SalaryTypeRepository"/>
+  </object>
+  <object name="ShiftRepository" type="HRM.Repository.ShiftRepository , HRM.Repository"></object>
+  <object name="ShiftService" type="HRM.Core.Service.ShiftService , HRM.Core">
+    <constructor-arg name="iShiftRepository" ref="ShiftRepository"/>
+  </object>
+  <object name="ShiftOffDayRepository" type="HRM.Repository.ShiftOffDayRepository , HRM.Repository"></object>
+  <object name="ShiftOffDayService" type="HRM.Core.Service.ShiftOffDayService , HRM.Core">
+    <constructor-arg name="iShiftOffDayRepository" ref="ShiftOffDayRepository"/>
+  </object>
+  <object name="StateRepository" type="HRM.Repository.StateRepository , HRM.Repository"></object>
+  <object name="StateService" type="HRM.Core.Service.StateService , HRM.Core">
+    <constructor-arg name="iStateRepository" ref="StateRepository"/>
+  </object>
+  <object name="UserRepository" type="HRM.Repository.UserRepository , HRM.Repository"></object>
+  <object name="UserService" type="HRM.Core.Service.UserService , HRM.Core">
+    <constructor-arg name="iUserRepository" ref="UserRepository"/>
+  </object>
+  <object name="UserContactRepository" type="HRM.Repository.UserContactRepository , HRM.Repository"></object>
+  <object name="UserContactService" type="HRM.Core.Service.UserContactService , HRM.Core">
+    <constructor-arg name="iUserContactRepository" ref="UserContactRepository"/>
+  </object>
+  <object name="UserDepartmentRepository" type="HRM.Repository.UserDepartmentRepository , HRM.Repository"></object>
+  <object name="UserDepartmentService" type="HRM.Core.Service.UserDepartmentService , HRM.Core">
+    <constructor-arg name="iUserDepartmentRepository" ref="UserDepartmentRepository"/>
+  </object>
+  <object name="UserShiftRepository" type="HRM.Repository.UserShiftRepository , HRM.Repository"></object>
+  <object name="UserShiftService" type="HRM.Core.Service.UserShiftService , HRM.Core">
+    <constructor-arg name="iUserShiftRepository" ref="UserShiftRepository"/>
+  </object>
+  <object name="UserTypeRepository" type="HRM.Repository.UserTypeRepository , HRM.Repository"></object>
+  <object name="UserTypeService" type="HRM.Core.Service.UserTypeService , HRM.Core">
+    <constructor-arg name="iUserTypeRepository" ref="UserTypeRepository"/>
+  </object>
+</objects>

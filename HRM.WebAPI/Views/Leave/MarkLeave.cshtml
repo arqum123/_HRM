@@ -1,0 +1,154 @@
+﻿@model HRM.Core.Model.VMLeave
+@{
+    ViewBag.Title = "HRMS - Mark Leave";
+    WebGrid grid = null;
+    WebGrid grid2 = null;
+
+    if (Model.LeaveHistory != null && Model.LeaveHistory.Where(x => x.Date.Value.ToString("MMyyyy") == DateTime.Now.ToString("MMyyyy")).Any())
+    {
+        grid = new WebGrid(source: Model.LeaveHistory.Where(x => x.Date.Value.ToString("MMyyyy") == DateTime.Now.ToString("MMyyyy")).ToList(), rowsPerPage: 10, canPage: true, canSort: true);
+    }
+
+    if (Model.LeaveHistory != null && Model.LeaveHistory.Where(x => x.Date.Value < new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)).Any())
+    {
+        grid2 = new WebGrid(source: Model.LeaveHistory.Where(x => x.Date.Value < new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)).ToList(), rowsPerPage: 10, canPage: true, canSort: true);
+    }
+}
+<style>
+    th
+    {
+        text-align:left;
+    }
+</style>
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-plus"></i>Mark User Leave</h3>
+    <div>
+        <h4>Departement: @ViewBag.dept</h4>
+    </div>
+    <div>
+        <h4>User: @ViewBag.user</h4>
+    </div>
+
+    @using (Html.BeginForm("MarkLeave", "Leave", FormMethod.Post, new { @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.NewLeave.UserId)
+        @Html.HiddenFor(m => m.NewLeave.Id)
+       
+        
+        <div class="form-group">
+            <label for="Name" class="col-sm-4 control-label lblforinput">Leave Type</label>
+            <div class="col-sm-6">
+                @if (ViewBag.LeaveTypeList != null)
+                {
+                    @Html.DropDownListFor(m => m.NewLeave.LeaveTypeId, ViewBag.LeaveTypeList as SelectList, "Select Leave Type", new { @class = "form-control" })
+                }
+                else
+                {
+                    <span>Please configure leave type first.</span>
+                }
+            </div>
+        </div>
+        
+        
+        <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+        <div class="form-group">
+            <label for="Date" class="col-sm-4 control-label lblforinput">Date From</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.NewLeave.DateFrom, new { maxlength = "20", @class = "bootstrap-datepicker form-control", @required = "Date From is required" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Date" class="col-sm-4 control-label lblforinput">Date To</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.NewLeave.DateTo, new { maxlength = "20", @class = "bootstrap-datepicker form-control", @required = "Date To is required" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="Name" class="col-sm-4 control-label lblforinput">Reason</label>
+            <div class="col-sm-6">
+                @Html.TextAreaFor(m => m.NewLeave.Reason, new { maxlength = "200", @class = "form-control", placeholder = "Reason Of Leave", @required = "Reason is required" })
+                @Html.ValidationMessageFor(m => m.NewLeave.Reason, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+
+            @if (ViewBag.ErrorMessage != null && ViewBag.ErrorMessage.ToString() != "")
+            {
+                <span class="field-validation-error">@ViewBag.ErrorMessage</span>
+
+            }
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+
+                @if (ViewBag.LeaveTypeList != null)
+                {
+                    <button type="submit" class="btn btn-block btn-success saveholiday">Save</button>
+                }
+
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+        
+    }
+    <div class="form-group">
+        <div class="col-sm-12">&nbsp;</div>
+    </div>
+    <div class="form-group row control-label">
+        <div class="col-sm-8">
+
+            <h3>Leave History Of Current Month (@DateTime.Now.ToString("MMMM yyyy"))</h3>
+
+        </div>
+    </div>
+    <div class="row row-lg">
+        <div class="col-sm-12">
+
+            @if (Model != null && Model.LeaveHistory != null)
+            {
+                int rowVal = 0;
+                @grid.GetHtml(
+        tableStyle: "table table-hover dataTable table-striped width-full",
+        columns: grid.Columns(
+            grid.Column("Sr.No.", format: item => (10 * (String.IsNullOrEmpty(Request["page"]) ? 0 : Convert.ToInt32(Request["page"]) - 1)) + (rowVal++) + 1),
+            grid.Column("Date", "Date"),
+                    //grid.Column("DateFrom", "Date From"),
+            grid.Column("Reason", "Reason"),
+            grid.Column("LeaveTypeId", "Leave Type", format: item => new MvcHtmlString(((SelectList)ViewBag.LeaveTypeList).Where(x => x.Value == item.LeaveTypeId.ToString()).FirstOrDefault().Text))
+             ))
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">&nbsp;</div>
+    </div>
+    <div class="form-group row control-label">
+        <div class="col-sm-4">
+            <h3>Leave History Of Previous Months</h3>
+            @*@DateTime.Now.AddDays(-30).ToString("MMMM yyyy")*@
+        </div>
+    </div>
+
+    <div class="row row-lg">
+        <div class="col-sm-12">
+
+            @if (Model.LeaveHistory != null && Model.LeaveHistory.Where(x => x.Date.Value < new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)).Any())
+            {
+                int rowVal = 0;
+                @grid2.GetHtml(
+        tableStyle: "table table-hover dataTable table-striped width-full",
+        columns: grid2.Columns(
+            grid2.Column("Sr.No.", format: item => (10 * (String.IsNullOrEmpty(Request["page"]) ? 0 : Convert.ToInt32(Request["page"]) - 1)) + (rowVal++) + 1),
+            grid2.Column("Date", "Date"),
+            grid2.Column("Reason", "Reason"),
+            grid2.Column("LeaveTypeId", "Leave Type", format: item => new MvcHtmlString(((SelectList)ViewBag.LeaveTypeList).Where(x => x.Value == item.LeaveTypeId.ToString()).FirstOrDefault().Text))
+             ))
+            }
+
+        </div>
+    </div>
+
+</div>

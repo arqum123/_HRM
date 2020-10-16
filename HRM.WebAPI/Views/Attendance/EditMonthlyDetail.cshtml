@@ -1,0 +1,108 @@
+﻿@model List<HRM.Core.Entities.Attendance>
+@{
+    Layout = "/Views/Shared/_LayoutWOSidebar.cshtml";
+    ViewBag.Title = "HRMS - Edit Monthly Attendance Detail Report";
+}
+<link href="~/assets/widgets/datetimepicker/jquery-ui.css" rel="stylesheet" />
+<link href="~/assets/widgets/datetimepicker/jquery-ui-timepicker-addon.css" rel="stylesheet" />
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Monthly Attendance Detail Report </h3>
+    @using (Html.BeginForm("EditMonthlyDetail", "Attendance", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "MonthlyDetailAttendanceListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div class="form-group">
+            <div class="col-md-1 legendbox offday">&nbsp;</div>
+            <div class="col-md-2">Off Day</div>
+            <div class="col-md-1 legendbox quarterday">&nbsp;</div>
+            <div class="col-md-2">Quarter Day</div>
+            <div class="col-md-1 legendbox halfday">&nbsp;</div>
+            <div class="col-md-2">Half Day</div>
+            <div class="col-md-1 legendbox fullday">&nbsp;</div>
+            <div class="col-md-2">Full Day</div>
+        </div>
+        <input type="hidden" name="UserID" value="@ViewBag.UserID" />
+        <input type="hidden" name="StartDate" value="@ViewBag.StartDate" />
+        <input type="hidden" name="EndDate" value="@ViewBag.EndDate" />
+        if (Model != null)
+        {
+        <table class="table datatable attendancereport"  style="width:70%">
+            <thead>
+                <tr class="header">
+                    <th scope="col">SNo</th>
+                    <th scope="col">Date</th>
+                    <th scope="col" style="text-align:center">Timings</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr class="row-style">
+                        <td style="text-align:left" >@(i + 1)</td>
+                        <td style="text-align:left" >@Model[i].Date.Value.ToString("dd/MM/yyyy")</td>
+                        <td style="width:60%">
+                            <table class="table datatable attendancereport" id="gridtbl">
+                                <thead>
+                                    <tr class="header">
+                                        <td scope="col">Time In</td>
+                                        <td scope="col">Time Out</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int j = 0; j < Model[i].AttendanceDetailList.Count; j++)
+                                    {
+                                        <tr class="row-style">
+                                            <td >@Html.HiddenFor(model => model[i].Id)
+                                                @Html.HiddenFor(model => model[i].Date)
+                                                @Html.HiddenFor(model => model[i].UserId)
+                                                @Html.HiddenFor(model => model[i].AttendanceDetailList[j].Id)
+                                                @Html.HiddenFor(model => model[i].AttendanceDetailList[j].AttendanceId)
+                                                @Html.HiddenFor(model => model[i].AttendanceDetailList[j].AttendanceTypeId)
+                                                @Html.TextBoxFor(model => model[i].AttendanceDetailList[j].StartDate, new { maxlength = "40", @class = "datetimepicker form-control startdate" })</td>
+                                            <td >@Html.TextBoxFor(model => model[i].AttendanceDetailList[j].EndDate, new { maxlength = "40", @class = "datetimepicker form-control startdate" })</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr> 
+                }
+                 <tr class="row-style">
+                     <td colspan="3" >
+                     </td>
+                 </tr>
+            </tbody>
+        </table>
+        
+        }
+        <input type="submit" value="Update" class="btn btn-block btn-success" style="width:10%"/>
+    }
+</div>
+<script type="text/javascript">
+    $('#gridtbl tr').each(function (index) { //iterate over all table rows
+        if (index > 0) {     //skip header
+            //Off Day
+            if ($(this).children('td:nth-child(7)').text() == "Yes") {
+                $(this).attr('class', 'offday');
+            }
+                //Quarter Day
+            else if ($(this).children('td:nth-child(9)').text() == "Yes") {
+                $(this).attr('class', 'quarterday');
+            }
+                //Half Day
+            else if ($(this).children('td:nth-child(10)').text() == "Yes") {
+                $(this).attr('class', 'halfday');
+            }
+                //Full Day
+            else if ($(this).children('td:nth-child(11)').text() == "Yes") {
+                $(this).attr('class', 'fullday');
+            }
+        }
+    });
+</script>
+<script src="~/assets/widgets/datetimepicker/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript">
+    $('.datetimepicker').datetimepicker({
+        timeFormat: "hh:mm:ss TT"
+    });
+</script>

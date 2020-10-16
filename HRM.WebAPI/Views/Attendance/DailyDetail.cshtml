@@ -1,0 +1,108 @@
+﻿@model HRM.Core.Model.VMAttendanceModel
+@{
+    Layout = "/Views/Shared/_LayoutWOSidebar.cshtml";
+    ViewBag.Title = "HRMS - Daily Attendance Detail Report";
+    WebGrid grid = new WebGrid(Model.AttendanceList, canSort: true, canPage: false, rowsPerPage: 10);
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Daily Attendance Detail Report
+        <div class="col-sm-3" style="float: right;"><a href="javascript:;" onclick="Print(1);"><img src="/assets/images/printer.png" style="width: 20px;" />&nbsp;Print</a> | <a href="javascript:;" onclick="Print(0);"><img src="/assets/images/printer.png" style="width: 20px;" />&nbsp;Print Without Image</a></div>
+    </h3>
+    @using (Html.BeginForm("DailyDetail", "Attendance", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "DailyDetailAttendanceListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        
+        <div class="form-group">
+            <div class="col-md-1 legendbox offday">&nbsp;</div>
+            <div class="col-md-2">Off Day</div>
+            <div class="col-md-1 legendbox quarterday">&nbsp;</div>
+            <div class="col-md-2">Quarter Day</div>
+            <div class="col-md-1 legendbox halfday">&nbsp;</div>
+            <div class="col-md-2">Half Day</div>
+            <div class="col-md-1 legendbox fullday">&nbsp;</div>
+            <div class="col-md-2">Full Day</div>
+        </div>
+        if (Model.AttendanceList != null && Model.AttendanceList.Count > 0)
+        {
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table datatable attendancereport",
+        headerStyle: "header",
+        //alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("#", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("User.ID", "Emp ID"),
+                grid.Column("User.FirstName", "Name", format: @<text><img width="36" src="@(item.User.ImagePath == "" ? "/assets/images/anonymoususer.jpg": item.User.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;@item.User.FirstName</text>, style: "detailRptUserClmn"),
+                grid.Column("Date", header: "Date", format: (item) => item.Date != null ? string.Format("{0:dd-MMM-yyyy}", item.Date) : Html.Raw("N/A")),
+                grid.Column("User.Department.Name", "Department"),
+                grid.Column("User.Shift.Name", "Shift"),
+                grid.Column("AttendanceStatus.IsShiftOffDay", header: "Off Day", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.IsShiftOffDay != null) ? (item.AttendanceStatus.IsShiftOffDay == true ? Html.Raw("Yes") : Html.Raw("No")) : Html.Raw("N/A")),
+                grid.Column("AttendanceStatus.LateMinutes", header: "Late Hours", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.LateMinutes != null) ? Html.Raw(string.Format("{0}:{1}", (int) TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.LateMinutes)).TotalHours,TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.LateMinutes)).Minutes)) : Html.Raw("N/A")),
+                grid.Column("AttendanceDetailTimeIn.StartDate", header: "Time In", format: (item) => (item.AttendanceDetailTimeIn != null && item.AttendanceDetailTimeIn.StartDate != null) ? string.Format("{0:hh:mm tt}", item.AttendanceDetailTimeIn.StartDate) : Html.Raw("N/A")),
+                grid.Column("AttendanceDetailTimeOut.EndDate", header: "Time Out", format: (item) => (item.AttendanceDetailTimeOut != null && item.AttendanceDetailTimeOut.EndDate != null) ? string.Format("{0:hh:mm tt}", item.AttendanceDetailTimeOut.EndDate) : Html.Raw("N/A")),
+                grid.Column("AttendanceStatus.EarlyMinutes", header: "Early Hours", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.EarlyMinutes != null) ? Html.Raw(string.Format("{0}:{1}", (int) TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.EarlyMinutes)).TotalHours,TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.EarlyMinutes)).Minutes)) : Html.Raw("N/A")),
+                grid.Column("AttendanceStatus.OverTimeMinutes", header: "OverTime Hours", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.OverTimeMinutes != null) ? Html.Raw(string.Format("{0}:{1}", (int) TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.OverTimeMinutes)).TotalHours,TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.OverTimeMinutes)).Minutes)) : Html.Raw("N/A")),
+                grid.Column("WorkingHours", header: "Working Hours", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.WorkingMinutes != null) ? Html.Raw(string.Format("{0}:{1}", (int) TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.WorkingMinutes)).TotalHours,TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.WorkingMinutes)).Minutes)) : Html.Raw("N/A")),
+                grid.Column("AttendanceStatus.IsQuarterDay", header: "Quarter Day", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.IsQuarterDay != null) ? (item.AttendanceStatus.IsQuarterDay == true ? Html.Raw("Yes") : Html.Raw("No")) : Html.Raw("N/A")),
+                grid.Column("AttendanceStatus.IsHalfDay", header: "Half Day", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.IsHalfDay != null) ? (item.AttendanceStatus.IsHalfDay == true ? Html.Raw("Yes") : Html.Raw("No")) : Html.Raw("N/A")),
+                grid.Column("AttendanceStatus.IsFullDay", header: "Full Day", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.IsFullDay != null) ? (item.AttendanceStatus.IsFullDay == true ? Html.Raw("Yes") : Html.Raw("No")) : Html.Raw("N/A"))
+                                
+                )
+        )
+        }
+    }
+</div>
+<iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
+<script type="text/javascript">
+    $('#gridtbl tr').each(function (index) { //iterate over all table rows
+        if (index > 0) {     //skip header
+            //Off Day
+            if ($(this).children('td:nth-child(7)').text() == "Yes") {
+                $(this).attr('class', 'offday');
+            }
+            //Quarter Day
+            else if ($(this).children('td:nth-child(14)').text() == "Yes") {
+                $(this).attr('class', 'quarterday');
+            }
+            //Half Day
+            else if ($(this).children('td:nth-child(15)').text() == "Yes") {
+                $(this).attr('class', 'halfday');
+            }
+            //Full Day
+            else if ($(this).children('td:nth-child(16)').text() == "Yes") {
+                $(this).attr('class', 'fullday');
+            }
+        }
+    });
+
+
+    function Print(img) {
+        var printElement = $(".page-box").clone();
+        printElement.find("h3>div").hide();
+        printElement.find(".form-group").hide();
+        printElement.find("a").each(function (e) { $(this).attr("href", "#"); });
+        if (img == 0)
+            printElement.find("img").hide();
+        printDivCSS = new String ('<link rel="stylesheet" type="text/css" href="/assets/helpers/helpers-all.css">');
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/elements/elements-all.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/fontawesome/fontawesome.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/linecons/linecons.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/snippets/snippets-all.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/applications/mailbox.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/layout.css">';
+        printDivCSS += '<link id="layout-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/layout-color.css">';
+        printDivCSS += '<link id="framework-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/framework-color.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/border-radius.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/helpers/colors.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/custom.css">';
+
+        window.frames["print_frame"].document.body.innerHTML = printDivCSS + ' ' + printElement.html();
+        window.frames["print_frame"].window.focus();
+        setTimeout(function () {
+            window.frames["print_frame"].window.print();
+        }, 1000);
+    }
+</script>

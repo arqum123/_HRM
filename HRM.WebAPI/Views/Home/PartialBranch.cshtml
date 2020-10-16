@@ -1,0 +1,29 @@
+﻿@model HRM.Core.Entities.Branch
+
+@using (Html.BeginForm("PartialBranch", "Home", FormMethod.Post))
+{
+    @Html.DropDownListFor(m => m.Id, ViewBag.Branch as SelectList, new { id = "ddlBranchID", @class = "form-control" })
+    @Html.HiddenFor(m => m.currentURL)
+}
+
+<script>
+    $(function () {
+        $('#ddlBranchID').change(function (event) {
+            debugger;
+            var form = $(event.target).parents('form');
+            form.submit();
+        });
+
+        var url = window.location.href;
+        $("#currentURL").val(url);
+
+        var $dd = $('#ddlBranchID');
+        if ($dd.find('option').length <= 0) {
+            $dd.prop('disabled', true);
+            $("#sidebar-menu").addClass("disabledsidebar");
+            if (url.toLowerCase().indexOf("/branch/create") < 0) {
+                window.location.href = "/branch/create";
+            }
+        }
+    });
+</script>

@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D0479C80-A944-4419-A212-04C1570B51D8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HRM.Repository</RootNamespace>
+    <AssemblyName>HRM.Repository</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Validation">
+      <HintPath>..\dll\repository\Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AttendanceRepository.cs" />
+    <Compile Include="AttendanceRepository.base.cs">
+      <DependentUpon>AttendanceRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceDetailRepository.cs" />
+    <Compile Include="AttendanceDetailRepository.base.cs">
+      <DependentUpon>AttendanceDetailRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AttendancePolicyRepository.cs" />
+    <Compile Include="AttendancePolicyRepository.base.cs">
+      <DependentUpon>AttendancePolicyRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceStatusRepository.cs" />
+    <Compile Include="AttendanceStatusRepository.base.cs">
+      <DependentUpon>AttendanceStatusRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceTypeRepository.cs" />
+    <Compile Include="AttendanceTypeRepository.base.cs">
+      <DependentUpon>AttendanceTypeRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceVariableRepository.cs" />
+    <Compile Include="AttendanceVariableRepository.base.cs">
+      <DependentUpon>AttendanceVariableRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BranchDepartmentRepository.base.cs" />
+    <Compile Include="BranchDepartmentRepository.cs" />
+    <Compile Include="BranchRepository.base.cs" />
+    <Compile Include="BranchRepository.cs" />
+    <Compile Include="BranchShiftRepository.base.cs" />
+    <Compile Include="BranchShiftRepository.cs" />
+    <Compile Include="CityRepository.cs" />
+    <Compile Include="CityRepository.base.cs">
+      <DependentUpon>CityRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigurationRepository.base.cs" />
+    <Compile Include="ConfigurationRepository.cs" />
+    <Compile Include="ContactTypeRepository.cs" />
+    <Compile Include="ContactTypeRepository.base.cs">
+      <DependentUpon>ContactTypeRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CountryRepository.cs" />
+    <Compile Include="CountryRepository.base.cs">
+      <DependentUpon>CountryRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DepartmentRepository.cs" />
+    <Compile Include="DepartmentRepository.base.cs">
+      <DependentUpon>DepartmentRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DeviceModalRepository.base.cs" />
+    <Compile Include="DeviceModalRepository.cs" />
+    <Compile Include="DeviceRepository.base.cs" />
+    <Compile Include="DeviceRepository.cs" />
+    <Compile Include="GenderRepository.cs" />
+    <Compile Include="GenderRepository.base.cs">
+      <DependentUpon>GenderRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HolidayRepository.cs" />
+    <Compile Include="HolidayRepository.base.cs">
+      <DependentUpon>HolidayRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LeaveRepository.base.cs" />
+    <Compile Include="LeaveRepository.cs" />
+    <Compile Include="LeaveTypeRepository.cs" />
+    <Compile Include="LeaveTypeRepository.base.cs">
+      <DependentUpon>LeaveTypeRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PayrollCycleRepository.base.cs" />
+    <Compile Include="PayrollCycleRepository.cs" />
+    <Compile Include="PayrollDetailRepository.base.cs" />
+    <Compile Include="PayrollDetailRepository.cs" />
+    <Compile Include="PayrollPolicyRepository.base.cs" />
+    <Compile Include="PayrollPolicyRepository.cs" />
+    <Compile Include="PayrollRepository.base.cs" />
+    <Compile Include="PayrollRepository.cs" />
+    <Compile Include="PayrollVariableRepository.base.cs" />
+    <Compile Include="PayrollVariableRepository.cs" />
+    <Compile Include="ReligionRepository.cs" />
+    <Compile Include="ReligionRepository.base.cs">
+      <DependentUpon>ReligionRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SalaryTypeRepository.base.cs" />
+    <Compile Include="SalaryTypeRepository.cs" />
+    <Compile Include="ShiftRepository.cs" />
+    <Compile Include="ShiftRepository.base.cs">
+      <DependentUpon>ShiftRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShiftOffDayRepository.cs" />
+    <Compile Include="ShiftOffDayRepository.base.cs">
+      <DependentUpon>ShiftOffDayRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StateRepository.cs" />
+    <Compile Include="StateRepository.base.cs">
+      <DependentUpon>StateRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserRepository.cs" />
+    <Compile Include="UserRepository.base.cs">
+      <DependentUpon>UserRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserContactRepository.cs" />
+    <Compile Include="UserContactRepository.base.cs">
+      <DependentUpon>UserContactRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserDepartmentRepository.cs" />
+    <Compile Include="UserDepartmentRepository.base.cs">
+      <DependentUpon>UserDepartmentRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserShiftRepository.cs" />
+    <Compile Include="UserShiftRepository.base.cs">
+      <DependentUpon>UserShiftRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserTypeRepository.cs" />
+    <Compile Include="UserTypeRepository.base.cs">
+      <DependentUpon>UserTypeRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Repository.cs" />
+    <Compile Include="SqlHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HRM.Core\HRM.Core.csproj">
+      <Project>{561DD54E-542C-4B07-86F0-6B41364975EB}</Project>
+      <Name>HRM.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

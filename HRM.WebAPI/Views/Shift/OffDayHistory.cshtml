@@ -1,0 +1,31 @@
+﻿@model HRM.Core.Model.VMShiftModel
+@{
+    ViewBag.Title = "HRMS - View User Shifts History";
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Shift Off Days History</h3>
+    @using (Html.BeginForm("OffDayHistory", "Shift", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "ShiftOffDayHistoryForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        if (Model.Shift != null && Model.Shift.ShiftOffDayList != null && Model.Shift.ShiftOffDayList.Count > 0)
+        {
+            WebGrid grid = new WebGrid(Model.Shift.ShiftOffDayList, canSort: true, canPage: false, rowsPerPage: 10);
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("Name","Shift", format: (item) => Model.Shift != null ? Html.Raw(Model.Shift.Name) : Html.Raw("N/A")),
+                grid.Column("OffDayOfWeek", "Day", format: (item) => item != null ? @Enum.GetName(typeof(System.DayOfWeek), item.OffDayOfWeek - 1) : Html.Raw("N/A")),
+                grid.Column("EffectiveDate", header: "Effective Date", format: (item) => item.EffectiveDate != null ? string.Format("{0:dd-MMM-yyyy}", item.EffectiveDate) : Html.Raw("N/A")),
+                grid.Column("RetiredDate", header: "Retired Date", format: (item) => item.RetiredDate != null ? string.Format("{0:dd-MMM-yyyy}", item.RetiredDate) : Html.Raw("N/A"))
+                //grid.Column("OffDays", header: "Off Days", format: (item) => (item.Shift.OffDays != null && item.Shift.OffDays != "") ? item.Shift.OffDays : Html.Raw("N/A"))
+                )
+        )
+        }
+    }
+</div>

@@ -1,0 +1,152 @@
+﻿@model HRM.Core.Model.VMAttendanceModel
+@{
+    ViewBag.Title = "HRMS - Run Payroll";
+    WebGrid grid = new WebGrid(Model.DepartmentList, canSort: true, canPage: false, rowsPerPage: 10);//whenever rowsperpage will be changed, change it in script as well
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Run Payroll</h3>
+    @using (Html.BeginForm("Generate", "Payroll", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "GeneratePayrollForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            <label for="PayrollCycle" class="col-sm-4 control-label lblforinput">Payroll Cycle: </label>
+            <div class="col-sm-6">
+                <span class="form-control">@Model.PayrollCycle.Name</span>
+                @Html.HiddenFor(m => m.PayrollCycle.Id)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button class="btn btn-block btn-success" onclick="javascript:return RunPayroll(0);">Test Run</button>
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-block btn-success" onclick="javascript:return RunPayroll(1);">Final Run</button>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+    }
+    @if (Model.DepartmentList != null && Model.DepartmentList.Count > 0)
+    {
+        <div class="col-sm-11"></div><div class="col-sm-1" style="float: right;"><a class="printlink" href="javascript:;" onclick="Print();"><img src="/assets/images/printer.png" style="width: 20px;" />&nbsp;Print</a></div>
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover attendancereport datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("Name", header: "Department", format: @<text><a title="Click here to View Detail" target="_blank" href="/Payroll/Payslip?DepartmentID=@item.Id&PayrollCycleID=@Model.PayrollCycle.Id&IsActive=0">@item.Name</a></text>),
+                grid.Column("TotalUser", header: "Total User", format: (item) => (item.TotalUser != null) ? item.TotalUser : Html.Raw("N/A"),style:"user"),
+                grid.Column("TotalSalary", header: "Total Salary", format: (item) => (item.TotalSalary != null) ? item.TotalSalary : Html.Raw("N/A"),style:"nmbr sal"),
+                grid.Column("TotalAddition", header: "Total Addition", format: (item) => (item.TotalAddition != null) ? item.TotalAddition : Html.Raw("N/A"),style:"nmbr add"),
+                grid.Column("TotalDeduction", header: "Total Deduction", format: (item) => (item.TotalDeduction != null) ? item.TotalDeduction : Html.Raw("N/A"),style:"nmbr ded"),
+                grid.Column("NetSalary", header: "Net Salary", format: (item) => (item.NetSalary != null) ? item.NetSalary : Html.Raw("N/A"),style:"nmbr netsal")
+                )
+        )
+    }
+</div>
+<iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
+<script>
+    function addCommas(nStr) {
+        nStr += '';
+        x = nStr.split('.');
+        x1 = x[0];
+        x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        }
+        return x1 + x2;
+    }
+
+    $(document).ready(function () {
+        var totaluser = 0, totalsalary = 0.00, totaladdition = 0.00, totaldeduction = 0.00, totalnetsalary = 0.00;
+        $('.user').each(function () {
+            totaluser += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+        });
+        $('.sal').each(function () {
+            //alert(parseFloat($(this).text()));
+            totalsalary += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+        });
+        $('.add').each(function () {
+            totaladdition += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+        });
+        $('.ded').each(function () {
+            totaldeduction += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+        });
+        $('.netsal').each(function () {
+            totalnetsalary += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+        });
+
+        var tfoot = '<tfoot><tr><td colspan="2">Total</td>';
+        tfoot += '<td>' + totaluser + '</td>';
+        tfoot += '<td class="nmbr">' + totalsalary + '</td>';
+        tfoot += '<td class="nmbr">' + totaladdition + '</td>';
+        tfoot += '<td class="nmbr">' + totaldeduction + '</td>';
+        tfoot += '<td class="nmbr">' + totalnetsalary + '</td>';
+        $('#gridtbl').append(tfoot);
+
+        $('.nmbr').each(function () {
+            $(this).html(addCommas(parseFloat($(this).html()).toFixed(2)));
+        });
+    });
+
+    function RunPayroll(isFinal) {
+        var PayrollCycleID = $('#PayrollCycle_Id').val();
+        var flag = false;
+        if (isFinal == 1)
+            flag = confirm('Are you sure to run Final Payroll?');
+        else
+            flag = confirm('Are you sure to run Test Payroll?');
+        
+        if (flag) {
+            $.ajax({
+                url: '@Url.Action("RunPayroll", "Payroll")',
+                type: 'POST',
+                dataType: 'json',
+                data: { PayrollCycleID: PayrollCycleID, IsFinal: isFinal },
+                success: function (data) {
+                    if (data) {
+                        location.reload();
+                        return;
+                    }
+                    else {
+                        alert('There is some error');
+                    }
+                }
+            });
+        }
+        return false;
+    }
+
+    function Print() {
+        var printElement = $(".page-box").clone();
+        //printElement.find("h3").hide();
+        printElement.find(".form-group").hide();
+        printElement.find(".printlink").hide();
+        printElement.find("a").each(function (e) { $(this).attr("href", "#"); });
+
+        printDivCSS = new String('<link rel="stylesheet" type="text/css" href="/assets/helpers/helpers-all.css">');
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/elements/elements-all.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/fontawesome/fontawesome.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/linecons/linecons.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/snippets/snippets-all.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/applications/mailbox.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/layout.css">';
+        printDivCSS += '<link id="layout-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/layout-color.css">';
+        printDivCSS += '<link id="framework-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/framework-color.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/border-radius.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/helpers/colors.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/custom.css">';
+
+        window.frames["print_frame"].document.body.innerHTML = printDivCSS + ' ' + printElement.html();
+        window.frames["print_frame"].window.focus();
+        setTimeout(function () {
+            window.frames["print_frame"].window.print();
+        }, 1000);
+    }
+</script>

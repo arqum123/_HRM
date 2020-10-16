@@ -1,0 +1,90 @@
+﻿@model HRM.Core.Entities.Branch
+@{
+    ViewBag.Title = "HRMS - Add New Branch";
+}
+
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-plus"></i>Add New Branch</h3>
+    @using (Html.BeginForm("Create", "Branch", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "AddBranchForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.ValidationSummary(true)
+        if (Request.QueryString["bid"] != null)
+        {
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.IsActive)
+        @Html.HiddenFor(model => model.CreatedDate)
+        }
+        <div class="form-group">
+            <label for="Name" class="col-sm-4 control-label lblforinput">Branch Name</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(model => model.Name, new { maxlength = "200", @class = "form-control", placeholder = "Branch Name" })
+                @Html.ValidationMessageFor(model => model.Name, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        
+@*<div class="editor-label">
+            @Html.LabelFor(model => model.AddressLine)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.AddressLine)
+            @Html.ValidationMessageFor(model => model.AddressLine)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CityId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CityId)
+            @Html.ValidationMessageFor(model => model.CityId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StateId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.StateId)
+            @Html.ValidationMessageFor(model => model.StateId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CountryId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CountryId)
+            @Html.ValidationMessageFor(model => model.CountryId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ZipCode)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ZipCode)
+            @Html.ValidationMessageFor(model => model.ZipCode)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PhoneNumber)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PhoneNumber)
+            @Html.ValidationMessageFor(model => model.PhoneNumber)
+        </div>*@
+         <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Save</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+</div>
+
+<script>
+    $(document).ready(function(){
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1);
+        if (hashes.indexOf('id') >= 0)
+            $('.screenheading').html('<i class="glyph-icon icon-pencil"></i>Edit Branch');
+        else
+            $('.screenheading').html('<i class="glyph-icon icon-plus"></i>Add New Branch');
+    });
+</script>

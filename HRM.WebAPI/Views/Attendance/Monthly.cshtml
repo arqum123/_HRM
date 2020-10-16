@@ -1,0 +1,92 @@
+﻿@model HRM.Core.Model.VMAttendanceModel
+@{
+    ViewBag.Title = "HRMS - Monthly Attendance Report";
+    WebGrid grid = new WebGrid(Model.UserList, canSort: true, canPage: false, rowsPerPage: 10);
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Monthly Attendance Report</h3>
+    @using (Html.BeginForm("Monthly", "Attendance", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "MonthlyAttendanceListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+        <div class="form-group">
+            <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Department: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.DepartmentID, ViewBag.Department as SelectList, "All Department", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="StartDate" class="col-sm-4 control-label lblforinput">From: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.StartDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control startdate" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="EndDate" class="col-sm-4 control-label lblforinput">To: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.EndDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control enddate" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Search</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+
+    @if (Model.UserList != null && Model.UserList.Count > 0)
+    {
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("S No", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("ID", "Emp ID"),
+                grid.Column("FirstName", header: "User", format: @<text><img width="36" src="@(item.ImagePath == "" ? "/assets/images/anonymoususer.jpg": item.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a target="_blank" title="Click here to View Detail" href="/Attendance/MonthlyDetail?userId=@item.Id&startdate=@Model.StartDate&enddate=@Model.EndDate">@item.FirstName</a></text>, style: "summaryRptUserClmn"),
+                grid.Column("DepartmentName", header: "Department", format: (item) => (item.Department != null) ? item.Department.Name : Html.Raw("N/A")),
+                grid.Column("Total Days", format: @<span class="totaldays"></span>),
+                grid.Column("PresentCount", header: "Present Days", format: (item) => (item.PresentCount != null) ? item.PresentCount : Html.Raw("N/A")),
+                grid.Column("AbsentCount", header: "Absent Days", format: (item) => (item.AbsentCount != null) ? item.AbsentCount : Html.Raw("N/A")),
+                grid.Column("OffDayCount", header: "Off Days", format: (item) => (item.OffDayCount != null) ? item.OffDayCount : Html.Raw("N/A")),
+                grid.Column("LateCount", header: "Late-In Days", format: (item) => (item.LateCount != null) ? item.LateCount : Html.Raw("N/A")),
+                grid.Column("EarlyCount", header: "Early-Out Days", format: (item) => (item.EarlyCount != null) ? item.EarlyCount : Html.Raw("N/A")),
+                grid.Column("FullDayCount", header: "Full Days", format: (item) => (item.FullDayCount != null) ? item.FullDayCount : Html.Raw("N/A")),
+                grid.Column("OverTimeCount", header: "O-T Days", format: (item) => (item.OverTimeCount != null) ? item.OverTimeCount : Html.Raw("N/A")),
+                grid.Column("OverTimeMinutes", header: "O-T Hours", format: (item) => (item.OverTimeMinutes != null) ? Html.Raw(string.Format("{0}:{1}", (int) TimeSpan.FromMinutes(Convert.ToDouble(item.OverTimeMinutes)).TotalHours,TimeSpan.FromMinutes(Convert.ToDouble(item.OverTimeMinutes)).Minutes)) : Html.Raw("N/A")),
+                grid.Column(null, header: "Edit", format: @<text><a target="_blank" title="Click here to Edit" href="/Attendance/EditMonthlyDetail?userId=@item.Id&startdate=@Model.StartDate&enddate=@Model.EndDate">Edit</a></text>)
+                )
+        )
+    }
+</div>
+<script>
+    var links = $('a[href*=page], a[href*=sort]'), form = $('form');
+    links.click(function () {
+        form.attr("action", this.href);
+        $(this).attr("href", "javascript:");
+        form.submit();
+    });
+    $(document).ready(function () {
+        var startdate = new Date($('.startdate').val())
+        $('.startdate').val((startdate.getMonth() + 1) + '/01/' + startdate.getFullYear());
+
+        var enddate = new Date($('.enddate').val())
+        $('.enddate').val((enddate.getMonth() + 1) + '/' + enddate.getDate() + '/' + enddate.getFullYear());
+
+        $("option[value='-1']").remove();
+
+        var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+
+        var diffDays = Math.round(Math.abs((enddate.getTime() - startdate.getTime()) / (oneDay))) + 1;
+        $('.totaldays').html(diffDays);
+
+    });
+
+</script>

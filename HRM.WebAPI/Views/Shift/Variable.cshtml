@@ -1,0 +1,63 @@
+﻿@model HRM.Core.Model.VMShiftModel
+@{
+    ViewBag.Title = "HRMS - Shift Variable";
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-plus"></i>Add New Shift Variable</h3>
+    @using (Html.BeginForm("Variable", "Shift", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "AssignShiftForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.ShiftId, new {@id = "hdnShiftID" })
+        
+        <div class="form-group">
+            <label for="UserShiftId" class="col-sm-2 control-label lblforinput">Shift: </label>
+            <div class="col-sm-8">
+                @Html.DropDownListFor(m => m.ShiftId, ViewBag.Shift as SelectList, "All Shift", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="OffDayOfWeek" class="col-sm-2 control-label lblforinput">Variables: </label>
+            <div class="col-sm-8">
+                @for (var i = 0; i < Model.AttendanceVariableList.Count(); i++)
+                {
+                <div class="checkbox checkbox-info">
+                    <div class="col-sm-4">
+                        @Html.HiddenFor(m => m.AttendanceVariableList[i].Id)
+                        <label>
+                            @Html.CheckBoxFor(m => m.AttendanceVariableList[i].IsSelected, new { @class = "custom-checkbox" })
+                            @*@Html.DisplayFor(m => m.DaysOfWeekList[i].Id)*@
+                            @Html.DisplayFor(m => m.AttendanceVariableList[i].Name)
+                        </label>
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.TextBoxFor(m => m.AttendanceVariableList[i].Hours, new { maxlength = "4", @class = "form-control", placeholder = "No of Hours", @onkeypress = "return isNumberKey(event)" })
+                    </div>
+                   
+                    <div class="col-sm-6">
+                        @Html.TextBoxFor(m => m.AttendanceVariableList[i].Reason, new { maxlength = "2000", @class = "form-control", placeholder = "Details About Variable" })
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Save</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1);
+        if (hashes.indexOf('id') >= 0) {
+            $('.screenheading').html('<i class="glyph-icon icon-pencil"></i>Edit Shift Variable');
+            $('#ShiftId').attr('disabled', 'disabled');
+        }
+        else
+            $('.screenheading').html('<i class="glyph-icon icon-plus"></i>Add New Shift Variable');
+    });
+</script>

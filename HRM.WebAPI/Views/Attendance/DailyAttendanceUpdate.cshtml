@@ -1,0 +1,187 @@
+﻿
+@model HRM.Core.Model.VMDailyAttendanceUpdate
+@{
+    ViewBag.Title = "HRMS - Daily Attendance Update Report";
+
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B">
+        <i class="glyph-icon icon-table"></i>Daily Attendance Update Report
+        <div class="col-sm-3" style="float: right;">
+            <a href="javascript:;" onclick="Print(1);" style="float: right">
+                <img src="/assets/images/printer.png" style="width: 20px" />&nbsp;Print
+            </a>
+        </div>
+    </h3>
+    @using (Html.BeginForm("DailyAttendanceUpdate", "Attendance", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "DailyAttendanceListFormUpdate", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+
+        <div class="form-group">
+            <label for="UserID" class="col-sm-4 control-label lblforinput">Employee: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.UserId, ViewBag.User as SelectList, "All Employee", new { @class = "form-control" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label for="StartDate" class="col-sm-4 control-label lblforinput">From: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.StartDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control startdate" })
+                <a href="javascript:void();" class="floatright settoday">Set Today</a>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="EndDate" class="col-sm-4 control-label lblforinput">To: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.EndDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control startdate" })
+                <a href="javascript:void();" class="floatright settoday">End Today</a>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Search</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+
+
+    @if (Model.VMDailyAttendanceUpdateStatusList != null && Model.VMDailyAttendanceUpdateStatusList.Count > 0)
+    {
+        <h2>Attendance</h2>
+
+        //start post forn for updation
+        using (Html.BeginForm("DailyAttendanceUpdation", "Attendance", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "DailyAttendanceListFormUpdate", @class = "form-horizontal customclass" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+
+            <div class="form-group flaot-right">
+                <div class="col-sm-5"></div>
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-block btn-success">Update</button>
+                </div>
+                <div class="col-sm-5"></div>
+            </div>
+
+            <table class="table table-striped table-hover datatable">
+                <thead>
+                    <tr>
+                        <th>SNO</th>
+                        <th>Date</th>
+                        <th>Employee</th>
+                        <th>Late</th>
+                        <th>Early</th>
+                        <th>Late (Min)</th>
+                        <th>Early (Min)</th>
+                        <th>Detail</th>
+                    </tr>
+                </thead>
+
+                @{
+                    int sno = 0;
+                }
+
+           
+                    @for(int j=0;j<Model.VMDailyAttendanceUpdateStatusList.Count;j++)
+                  
+                {
+                    <tbody>
+                        <tr>
+                            <td>
+
+                                @{ sno++; }
+                                @sno
+                            </td>
+                            <td>@Model.VMDailyAttendanceUpdateStatusList[j].AttendanceDate.ToString("MMM dd, yyyy")</td>
+                            <td>@Model.VMDailyAttendanceUpdateStatusList[j].EmployeeName</td>
+                            @if (@Model.VMDailyAttendanceUpdateStatusList[j].Late == false)
+                            {
+                                <td>No</td>
+                            }
+                            else
+                            {
+                                <td>Yes</td>
+                            }
+
+                            @if (@Model.VMDailyAttendanceUpdateStatusList[j].Early == false)
+                            {
+                                <td>No</td>
+                            }
+                            else
+                            {
+                                <td>Yes</td>
+                            }
+                            <td>@Model.VMDailyAttendanceUpdateStatusList[j].LateMinutes</td>
+                            <td>@Model.VMDailyAttendanceUpdateStatusList[j].EarlyMinutes</td>
+                            <td>
+                                <table class="table table-striped table-hover datatable SecondTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Time In</th>
+                                            <th>Time Out</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.VMDailyAttendanceUpdateStatusList[j].VMDailyAttendanceUpdateTimeList.Count; ++i)
+                                        {
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="checkbox" name="checkbox" value="checkbox">
+                                                @Html.HiddenFor(m => Model.VMDailyAttendanceUpdateStatusList[j].VMDailyAttendanceUpdateTimeList[i].AttendanceDetailId)
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(m => Model.VMDailyAttendanceUpdateStatusList[j].VMDailyAttendanceUpdateTimeList[i].DateTimeIn, "{0:MMM dd, yyyy hh:mm tt}", new { @class = "TimeInOut", type = "text", @readonly = "true" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(m => Model.VMDailyAttendanceUpdateStatusList[j].VMDailyAttendanceUpdateTimeList[i].DateTimeOut, "{0:MMM dd, yyyy hh:mm tt}", new { @class = "TimeInOut", type = "text", @readonly = "true" })
+                                            </td>
+                                            <td>
+                                                @Html.HiddenFor(m => Model.VMDailyAttendanceUpdateStatusList[j].VMDailyAttendanceUpdateTimeList[i].IsUpdate, new { Value = false, id = "IsUpdate" })
+                                            </td>
+                                        </tr>
+                                      
+                                        }
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>       
+                    </tbody>
+                }
+            </table>
+        }
+
+    }
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    //Checkbox Edit
+    $(function () {
+        if ($('.checkbox:checked').length) {
+            $('.TimeInOut').attr('readonly', true);
+        }
+        $('.checkbox').change(function () {
+            if ($('.checkbox:checked').length) {
+                $(this).closest('tr').find('.TimeInOut').attr('readonly', false);
+                $(this).closest('tr').find('#IsUpdate').val(true);
+            }
+            else {
+
+                $(this).closest('tr').find('.TimeInOut').attr('readonly', true);
+                $(this).closest('tr').find('#IsUpdate').val(false);
+            }
+        });
+    });
+
+</script>

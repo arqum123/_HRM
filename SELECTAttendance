@@ -1,0 +1,45 @@
+USE [RigelonicHR]
+GO
+/****** Object:  StoredProcedure [dbo].[SELECT_Attendance]    Script Date: 4/21/2020 2:33:32 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+/*    
+EXEC SELECT_Attendance @StartDate='12/07/2016', @EndDate='12/07/2016',@UserId=null,@BranchId=1    
+*/    
+ALTER PROC [dbo].[SELECT_Attendance]    
+@StartDate DATETIME,    
+@EndDate DATETIME,    
+@UserId INT=NULL,    
+@BranchID INT=NULL    
+AS    
+BEGIN    
+    
+SELECT a.Id AS AttendanceId, ISNULL(a.[Date],@StartDate) AS [Date], u.ID AS UserId, u.FirstName, u.MiddleName,u.LastName,u.UserTypeID,u.Designation,u.ImagePath, u.AccountNumber, u.SalaryTypeID,st.Name AS SalaryTypeName,    
+d.ID AS DepartmentId,ud.EffectiveDate AS DEffectiveDate, ud.RetiredDate AS DRetiredDate,d.Name AS DepartmentName,bd.BranchID, b.Name AS BranchName,    
+s.ID AS ShiftId, us.ShiftId,us.EffectiveDate AS SEffectiveDate, us.RetiredDate AS SRetiredDate, s.Name AS ShiftName,    
+ats.Id AS AttendanceStatusId, ats.IsShiftOffDay, ats.IsHoliday, ats.IsLeaveDay, ats.IsQuarterDay, ats.IsHalfDay, ats.IsFullDay, ats.IsLate,  ats.IsEarly,  ats.EarlyMinutes,  ats.LateMinutes,  
+ats.IsEarly,ats.LateMinutes,ats.EarlyMinutes, ats.WorkingMinutes, ats.TotalMinutes, ats.OverTimeMinutes, ats.Reason,ats.IsApproved,ats.Remarks, ats.BreakType,   
+XADTI.Id AS XADTIAttendanceDetailId,XADTI.AttendanceId AS XADTIAttendanceId, XADTI.StartDate AS XADTIStartDate, XADTI.EndDate AS XADTIEndDate,    
+XADTO.Id AS XADTOAttendanceDetailId,XADTO.AttendanceId AS XADTOAttendanceId, XADTO.StartDate AS XADTOStartDate, XADTO.EndDate AS XADTOEndDate    
+FROM Department d    
+INNER JOIN UserDepartment ud ON ud.DepartmentId=d.Id    
+INNER JOIN [User] u ON ud.UserId=u.Id    
+LEFT JOIN SalaryType st ON u.SalaryTypeID=st.ID    
+INNER JOIN BranchDepartment bd ON d.ID=bd.DepartmentID    
+INNER JOIN Branch b ON bd.BranchID=b.ID    
+INNER JOIN UserShift us ON us.UserId=u.ID    
+INNER JOIN Shift s ON us.ShiftId=s.Id    
+LEFT JOIN Attendance a ON a.UserID=u.ID AND a.[Date] BETWEEN @StartDate AND @EndDate AND a.IsActive=1    
+LEFT JOIN AttendanceStatus ats ON a.Id=ats.AttendanceId AND ats.IsActive=1    
+OUTER APPLY ( SELECT TOP 1 adTI.* FROM AttendanceDetail adTI WHERE a.Id=adTI.AttendanceId AND adTI.AttendanceTypeId=1 AND adTI.IsActive=1 ORDER BY adTI.StartDate) AS XADTI    
+OUTER APPLY ( SELECT TOP 1 adTO.* FROM AttendanceDetail adTO WHERE a.Id=adTO.AttendanceId AND adTO.AttendanceTypeId=1 AND adTO.IsActive=1 ORDER BY adTO.EndDate DESC) AS XADTO    
+WHERE us.RetiredDate IS NULL AND ud.RetiredDate IS NULL    
+AND d.IsActive=1 AND b.IsActive=1    
+AND (@UserId is null or u.id=@Userid)    
+AND (@BranchID is null or b.id=@BranchID)    
+    
+ORDER BY a.[Date]    
+END
+

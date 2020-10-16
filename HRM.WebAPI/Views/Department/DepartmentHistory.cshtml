@@ -1,0 +1,29 @@
+﻿@model HRM.Core.Model.VMDepartmentModel
+@{
+    ViewBag.Title = "HRMS - View User Departments History";
+    WebGrid grid = new WebGrid(Model.UserDepartmentList, canSort: true, canPage: true, rowsPerPage: 10);
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>User Departments History</h3>
+    @using (Html.BeginForm("DepartmentHistory", "Department", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "UserDepartmentForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        if (Model.UserDepartmentList != null && Model.UserDepartmentList.Count > 0)
+        {
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("Name", "Name", format: (item) => (item.Department != null && item.Department.Name != "") ? item.Department.Name : Html.Raw("N/A")),
+                grid.Column("EffectiveDate", header: "Effective Date", format: (item) => item.EffectiveDate != null ? string.Format("{0:dd-MMM-yyyy}", item.EffectiveDate) : Html.Raw("N/A")),
+                grid.Column("RetiredDate", header: "Retired Date", format: (item) => item.RetiredDate != null ? string.Format("{0:dd-MMM-yyyy}", item.RetiredDate) : Html.Raw("Till Present"))
+                )
+        )
+        }
+    }
+</div>

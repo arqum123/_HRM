@@ -1,0 +1,44 @@
+﻿@model List<HRM.Core.Entities.Device>
+@{
+    ViewBag.Title = "Device";
+    WebGrid grid = new WebGrid(Model, canSort: true, canPage: false);
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-gear"></i>Device Configuration</h3>
+    @if (Model != null && Model.Count > 0)
+    {
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("DeviceID", "Device ID"),
+                grid.Column("DeviceModalName", "Modal"),
+                grid.Column("ConnectionTypeID", header: "Conn Type", format: (item) => item.ConnectionTypeID != 0 ? Html.Raw((HRM.Core.Enum.DeviceConnectionType)item.ConnectionTypeID) : Html.Raw("-")),
+                grid.Column("IPAddress", "IP"),
+                grid.Column("PortNumber", "Port"),
+                grid.Column("Password", "Pwd"),
+                grid.Column("ComPort", "Com Port"),
+                grid.Column("Baudrate", "Baud Rate"),
+                grid.Column("BranchName", "Branch"),
+                grid.Column("Status", "Status"),
+                grid.Column("StatusDescription", "Description"),
+                grid.Column(null,"Action", format: @<text><a title="Click here to Edit Device Configuration" href="/Configuration/DeviceConfig?id=@item.Id">Edit</a></text>)
+                )
+        )
+    }
+    @if (!String.IsNullOrWhiteSpace(ViewBag.Message))
+    {
+        <br />
+        <div class="form-group">
+            <label class="col-sm-4 control-label lblforinput">&nbsp;</label>
+            <div class="col-sm-6">
+                @ViewBag.Message
+            </div>
+        </div>
+    }
+</div>
+

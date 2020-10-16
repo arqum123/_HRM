@@ -1,0 +1,61 @@
+﻿@model HRM.Core.Model.VMAddAttendance
+@{
+    ViewBag.Title = "HRMS - Add Attendance";
+}
+
+<h2>AddAttendance</h2>
+
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-plus"></i>Add New Shift</h3>
+    @using (Html.BeginForm("AddAttendance", "Attendance", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "AddAddAttendanceForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        if (Request.QueryString["Id"] != null)
+        {
+            @Html.HiddenFor(m => m.UserId)
+            @Html.HiddenFor(m => m.AttendanceDate)
+            @Html.HiddenFor(m => m.TimeIn)
+            @Html.HiddenFor(m => m.TimeOut)
+        }
+
+        <div class="form-group">
+            <label for="Name" class="col-sm-4 control-label lblforinput">User Name</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.UserId, new { maxlength = "200", @class = "form-control", placeholder = "User Name", @required = "required" })
+                @Html.ValidationMessageFor(m => m.UserId, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="AttendanceDate" class="col-sm-4 control-label lblforinput">Attendance Date</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.AttendanceDate, new { maxlength = "200", @class = "form-control", placeholder = "Attendance Date", @required = "required" })
+                @Html.ValidationMessageFor(m => m.AttendanceDate, null, new { @class = "label-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="TimeIn" class="col-sm-4 control-label lblforinput">Time In</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.TimeIn, new { maxlength = "200", @class = "form-control", placeholder = "Time In", @required = "required" })
+                @Html.ValidationMessageFor(m => m.TimeIn, null, new { @class = "label-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="TimeOut" class="col-sm-4 control-label lblforinput">Time Out</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.TimeOut, new { maxlength = "200", @class = "form-control", placeholder = "Time Out", @required = "required" })
+                @Html.ValidationMessageFor(m => m.TimeOut, null, new { @class = "label-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Save</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+</div>

@@ -1,0 +1,60 @@
+﻿@model HRM.Core.Model.VMPayrollModel
+@{
+    ViewBag.Title = "HRMS - View Payroll Variables List";
+    WebGrid grid = new WebGrid(Model.PayrollPolicyList, canSort: true, canPage: false, rowsPerPage: 10);
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Payroll Variables List</h3>
+    @using (Html.BeginForm("VariableList", "Payroll", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "VariableListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        if (Model.PayrollPolicyList != null && Model.PayrollPolicyList.Count > 0)
+        {
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("Name", "Name", format: @<text><a title="Click here to Add/Edit Payroll Variables" href="/Payroll/Variable?id=@item.Id">@item.PayrollVariableName</a></text>),
+                grid.Column("Factor", format: item => item.PayrollVariableFactor),
+                grid.Column("Value", "Value", format: @<text>@item.PayrollPolicyValue</text>),
+                grid.Column("Formula On", header: "Formula On", format: (item) => item.IsUnit == true ? "Salary Unit" : "Salary Percentage"),
+                grid.Column("Description", header: "Description", format: (item) => (item.Description != null && item.Description != "") ? item.Description : Html.Raw("N/A")),
+                grid.Column("", header: "Action", format: @<text><a id="Delete_@item.Id" href="javascript:;" onclick="javascript:return DeleteVariable(this);">Delete</a></text>)
+                )
+        )
+        }
+    }
+</div>
+<script>
+    function DeleteVariable(objAnch) {
+        var str = $(objAnch).attr("id").split("_");
+        if (str[0] == 'Delete') {
+            id = str[1];
+
+            var flag = confirm('Are you sure to delete this variable ?');
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: 'deletevariable?id=' + id,
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data) {
+                            location.reload();
+                            return;
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+        }
+    }
+</script>

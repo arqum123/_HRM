@@ -1,0 +1,233 @@
+﻿@model HRM.Core.Model.VMUserModel
+@{
+    ViewBag.Title = "HRMS - User";
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-plus"></i>Add New User</h3>
+    @using (Html.BeginForm("Index", "User", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "AddUserForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        if (Request.QueryString["Id"] != null)
+        {
+        @Html.HiddenFor(m => m.User.Id)
+        @Html.HiddenFor(m => m.User.ImagePath)
+        @Html.HiddenFor(m => m.User.IsActive)
+        @Html.HiddenFor(m => m.User.CreationDate)
+        @Html.HiddenFor(m => m.UserDepartment.Id)
+        @Html.HiddenFor(m => m.UserContactEmail.Id)
+        @Html.HiddenFor(m => m.UserContactMobile.Id)
+        @Html.HiddenFor(m => m.UserContactAlternateMobile.Id)
+        }
+
+        <h3 class="page-title transparent notopmargin aligncenter">Basic Information</h3>
+        <div class="form-group">
+            <label for="FirstName" class="col-sm-4 control-label lblforinput">User Name</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.User.FirstName, new { maxlength = "200", @class = "form-control", placeholder = "Full Name", @required = "required" })
+                @Html.ValidationMessageFor(m => m.User.FirstName, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="FatherName" class="col-sm-4 control-label lblforinput">Father Name</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.User.FatherName, new { maxlength = "200", @class = "form-control", placeholder = "Father Name" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="GenderID" class="col-sm-4 control-label lblforinput">Gender</label>
+            <div class="col-sm-6">
+                <div class="radio-inline radio-info">
+                    <label>
+                        @Html.RadioButtonFor(m => m.User.GenderId, 1, new { @class = "custom-radio", @checked = "true" })
+                        Male
+                    </label>
+                </div>
+                <div class="radio-inline radio-info">
+                    <label>
+                        @Html.RadioButtonFor(m => m.User.GenderId, 2, new { @class = "custom-radio" })
+                        Female
+                    </label>
+                </div>
+            </div>
+        </div>
+        <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+        <div class="form-group">
+            <label for="DateOfBirth" class="col-sm-4 control-label lblforinput">Date of Birth</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.User.DateOfBirth, new { maxlength = "20", @class = "bootstrap-datepicker form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="CountryId" class="col-sm-4 control-label lblforinput">Nationality</label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.User.CountryId, ViewBag.Country as SelectList, "Select Country", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="ReligionId" class="col-sm-4 control-label lblforinput">Religion</label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.User.ReligionId, ViewBag.Religion as SelectList, "Select Religion", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="UserTypeIxd" class="col-sm-4 control-label lblforinput">User Image</label>
+            <div class="col-sm-6">
+                @if (Model.User != null && Model.User.ImagePath != null && Model.User.ImagePath != "")
+                {
+                    <a href="@Model.User.ImagePath" target="_blank">View Image</a><br />
+                }
+                <input type="file" name="file" id="fileuserimage">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="NicNo" class="col-sm-4 control-label lblforinput">NIC Number</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.User.NicNo, new { maxlength = "50", @class = "form-control", placeholder = "xxxxx-xxxxxxx-x" })
+            </div>
+        </div>
+        <h3 class="page-title transparent notopmargin aligncenter">Contact Information</h3>
+        <div class="form-group">
+            <label for="EmailAddress" class="col-sm-4 control-label lblforinput">Email Address</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.UserContactEmail.Detail, new { maxlength = "200", @class = "form-control", placeholder = "useremailaddress@domain.com" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="MobileNumber" class="col-sm-4 control-label lblforinput">Primary Mobile Number</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.UserContactMobile.Detail, new { maxlength = "20", @class = "form-control", placeholder = "Mobile Number" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="AlternateMobileNumber" class="col-sm-4 control-label lblforinput">Secondary Mobile Number</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.UserContactAlternateMobile.Detail, new { maxlength = "20", @class = "form-control", placeholder = "Alternate Mobile Number" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Address1" class="col-sm-4 control-label lblforinput">Address</label>
+            <div class="col-sm-6">
+                @Html.TextAreaFor(m => m.User.Address1, new { maxlength = "2000", @class = "form-control", placeholder = "Complete Home Address" })
+            </div>
+        </div>
+        <h3 class="page-title transparent notopmargin aligncenter">Work Specific Information</h3>
+        <div class="form-group">
+            <label for="DepartmentId" class="col-sm-4 control-label lblforinput">Department</label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.UserDepartment.DepartmentId, ViewBag.Department as SelectList, "Select Department", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.UserDepartment.DepartmentId, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="AcadmicQualification" class="col-sm-4 control-label lblforinput">Academic Qualification</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.User.AcadmicQualification, new { maxlength = "1000", @class = "form-control", placeholder = "Recent Academic Qualification" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Designation" class="col-sm-4 control-label lblforinput">Designation</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.User.Designation, new { maxlength = "200", @class = "form-control", placeholder = "Designation" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="CountryId" class="col-sm-4 control-label lblforinput">Salary Category</label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.User.SalaryTypeId, ViewBag.SalaryType as SelectList, "Select Salary Category", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Salary" class="col-sm-4 control-label lblforinput">Salary</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.User.Salary, new { maxlength = "7", @class = "form-control", placeholder = "Gross Salary", @onkeypress = "return isNumberKey(event)" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="AccountNumber" class="col-sm-4 control-label lblforinput">Account Number</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.User.AccountNumber, new { maxlength = "50", @class = "form-control", placeholder = "Account Number" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="UserTypeId" class="col-sm-4 control-label lblforinput">User Role</label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.User.UserTypeId, ViewBag.UserType as SelectList, "Select User Role", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="LoginId" class="col-sm-4 control-label lblforinput">Login ID</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.User.LoginId, new { maxlength = "50", @class = "form-control", placeholder = "Unique Login ID" })
+                @Html.ValidationMessageFor(m => m.User.LoginId, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Password" class="col-sm-4 control-label lblforinput">Password</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.User.Password, new { maxlength = "50", @class = "form-control", placeholder = "Password" })
+                @Html.ValidationMessageFor(m => m.User.Password, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success saveuser">Save</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        if ($('.bootstrap-datepicker').val() == '')
+            $('.bootstrap-datepicker').val('01/01/1980');
+        else {
+            var date = new Date($('.bootstrap-datepicker').val())
+            $('.bootstrap-datepicker').val((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
+        }
+
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1);
+        if (hashes.indexOf('id') >= 0)
+            $('.screenheading').html('<i class="glyph-icon icon-pencil"></i>Edit User');
+        else
+            $('.screenheading').html('<i class="glyph-icon icon-plus"></i>Add New User');
+
+        if ($('#User_Salary').val().indexOf('.') >= 0) {
+            $('#User_Salary').val($('#User_Salary').val().substring(0, $('#User_Salary').val().indexOf('.')));
+        }
+
+        $("option[value='-1']").remove();
+    });
+
+    $(".saveuser").click(function () {
+        if ($('#User_LoginId').val() != '') {
+            if ($('#User_Password').val() == '') {
+                alert("Please set any password for this Login ID");
+                return false;
+            }
+            if ($('#User_UserTypeId').val() == '') {
+                alert("Please select any User Role for this Login ID");
+                return false;
+            }
+        }
+        if ($('#User_UserTypeId').val() != '') {
+            if ($('#User_LoginId').val() == '') {
+                alert("Please provide Login ID for this User Role");
+                return false;
+            }
+        }
+        if ($('#User_Salary').val() != '') {
+            if ($('#User_SalaryTypeId').val() == '') {
+                alert("Please select any Salary Category for this User");
+                return false;
+            }
+        }
+        if ($('#User_SalaryTypeId').val() != '') {
+            if ($('#User_Salary').val() == '') {
+                alert("Please provide Salary for this User");
+                return false;
+            }
+        }
+    });
+</script>

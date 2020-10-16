@@ -1,0 +1,112 @@
+﻿@model HRM.Core.Model.VMShiftModel
+@{
+    ViewBag.Title = "HRMS - Shift";
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-plus"></i>Add New Shift</h3>
+    @using (Html.BeginForm("Index", "Shift", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "AddShiftForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        if (Request.QueryString["Id"] != null)
+        {
+            @Html.HiddenFor(m => m.Shift.Id)
+            @Html.HiddenFor(m => m.Shift.StartHour)
+            @Html.HiddenFor(m => m.Shift.EndHour)
+            @Html.HiddenFor(m => m.Shift.StartHourOnly)
+            @Html.HiddenFor(m => m.Shift.StartMinuteOnly)
+            @Html.HiddenFor(m => m.Shift.BreakHourOnly)
+            @Html.HiddenFor(m => m.Shift.BreakMinuteOnly)
+            @Html.HiddenFor(m => m.Shift.EndHourOnly)
+            @Html.HiddenFor(m => m.Shift.EndMinuteOnly)
+            @Html.HiddenFor(m => m.Shift.IsActive)
+            @Html.HiddenFor(m => m.Shift.CreationDate)
+        }
+
+        <div class="form-group">
+            <label for="Name" class="col-sm-4 control-label lblforinput">Shift Name</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.Shift.Name, new { maxlength = "200", @class = "form-control", placeholder = "Shift Name", @required = "required" })
+                @Html.ValidationMessageFor(m => m.Shift.Name, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Description" class="col-sm-4 control-label lblforinput">Description</label>
+            <div class="col-sm-6">
+                @Html.TextAreaFor(m => m.Shift.Description, new { maxlength = "500", @class = "form-control", placeholder = "Details About Shift" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="StartHour" class="col-sm-4 control-label lblforinput">Starts From</label>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(m => m.Shift.StartHourOnly, ViewBag.HourList as SelectList, "Start Hour", new { @class = "form-control starthour" })
+                @Html.ValidationMessageFor(m => m.Shift.StartHourOnly, null, new { @class = "label-danger" })
+            </div>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(m => m.Shift.StartMinuteOnly, ViewBag.MinuteList as SelectList, "Start Minute", new { @class = "form-control startminute" })
+                @Html.ValidationMessageFor(m => m.Shift.StartMinuteOnly, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="EndHour" class="col-sm-4 control-label lblforinput">Ends At</label>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(m => m.Shift.EndHourOnly, ViewBag.HourList as SelectList, "End Hour", new { @class = "form-control endhour" })
+                @Html.ValidationMessageFor(m => m.Shift.EndHourOnly, null, new { @class = "label-danger" })
+            </div>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(m => m.Shift.EndMinuteOnly, ViewBag.MinuteList as SelectList, "End Minute", new { @class = "form-control endminute" })
+                @Html.ValidationMessageFor(m => m.Shift.EndMinuteOnly, null, new { @class = "label-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="BreakHour" class="col-sm-4 control-label lblforinput">Break Hour</label>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(m => m.Shift.BreakHourOnly, ViewBag.BreakHourList as SelectList, "Break Hour", new { @class = "form-control breakhour" })
+                @Html.ValidationMessageFor(m => m.Shift.BreakHourOnly, null, new { @class = "label-danger" })
+            </div>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(m => m.Shift.BreakMinuteOnly, ViewBag.BreakMinuteList as SelectList, "Break Minute", new { @class = "form-control breakminute" })
+                @Html.ValidationMessageFor(m => m.Shift.BreakMinuteOnly, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="OffDayOfWeek" class="col-sm-4 control-label lblforinput">Off Day(s)</label>
+            <div class="col-sm-6">
+                @for (var i = 0; i < Model.DaysOfWeekList.Count(); i++)
+                {
+                    <div class="checkbox checkbox-info">
+                        @Html.HiddenFor(m => m.DaysOfWeekList[i].Id)
+                        @Html.HiddenFor(m => m.DaysOfWeekList[i].Name)
+                        <label>
+                            @Html.CheckBoxFor(m => m.DaysOfWeekList[i].IsSelected, new { @class = "custom-checkbox" })
+                            @*@Html.DisplayFor(m => m.DaysOfWeekList[i].Id)*@
+                            @Html.DisplayFor(m => m.DaysOfWeekList[i].Name)
+                        </label>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Save</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1);
+        if (hashes.indexOf('id') >= 0) {
+            $('.screenheading').html('<i class="glyph-icon icon-pencil"></i>Edit Shift');
+            $('.starthour').attr('disabled', 'disabled');
+            $('.startminute').attr('disabled', 'disabled');
+            $('.endhour').attr('disabled', 'disabled');
+            $('.endminute').attr('disabled', 'disabled');
+        }
+        else
+            $('.screenheading').html('<i class="glyph-icon icon-plus"></i>Add New Shift');
+    });
+</script>

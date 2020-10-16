@@ -1,0 +1,80 @@
+﻿@model HRM.Core.Model.VMAttendanceModel
+@{
+    ViewBag.Title = "HRMS - Daily Attendance Report";
+    WebGrid grid = new WebGrid(Model.DepartmentList, canSort: true, canPage: false, rowsPerPage: 10);
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Daily Attendance Report</h3>
+    @using (Html.BeginForm("Daily", "Attendance", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "DailyAttendanceListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+        <div class="form-group">
+            <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Department: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.DepartmentID, ViewBag.Department as SelectList, "All Department", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="StartDate" class="col-sm-4 control-label lblforinput">From: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.StartDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control startdate" })
+                <a href="javascript:void();" class="floatright settoday">Set Today</a>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Search</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+
+    @if (Model.DepartmentList != null && Model.DepartmentList.Count > 0)
+    {
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("Name", header: "Department", format: @<text><a target="_blank" title="Click here to Edit Department" href="/Attendance/DailyDetail?departmentId=@item.Id&date=@Model.StartDate">@item.Name</a></text>),
+                grid.Column("TotalUser", header: "Total", format: (item) => (item.TotalUser != null) ? item.TotalUser : Html.Raw("N/A")),
+                grid.Column("OffDayUser", header: "Off Day", format: (item) => (item.OffDayUser != null) ? item.OffDayUser : Html.Raw("N/A")),
+                grid.Column("PresentUser", header: "Present", format: (item) => (item.PresentUser != null) ? item.PresentUser : Html.Raw("N/A")),
+                grid.Column("LateUser", header: "Late", format: (item) => (item.LateUser != null) ? item.LateUser : Html.Raw("N/A")),
+                grid.Column("EarlyUser", header: "Early", format: (item) => (item.EarlyUser != null) ? item.EarlyUser : Html.Raw("N/A")),
+                grid.Column("OverTimeUser", header: "Over Time", format: (item) => (item.OverTimeUser != null) ? item.OverTimeUser : Html.Raw("N/A")),
+                grid.Column("QuarterDayUser", header: "Quarter Day", format: (item) => (item.QuarterDayUser != null) ? item.QuarterDayUser : Html.Raw("N/A")),
+                grid.Column("HalfDayUser", header: "Half Day", format: (item) => (item.HalfDayUser != null) ? item.HalfDayUser : Html.Raw("N/A")),
+                grid.Column("FullDayUser", header: "Full Day", format: (item) => (item.FullDayUser != null) ? item.FullDayUser : Html.Raw("N/A"))
+                )
+        )
+    }
+</div>
+<script>
+    var links = $('a[href*=page], a[href*=sort]'), form = $('form');
+    links.click(function () {
+        form.attr("action", this.href);
+        $(this).attr("href", "javascript:");
+        form.submit();
+    });
+    $(document).ready(function () {
+        var startdate = new Date($('.startdate').val())
+        $('.startdate').val((startdate.getMonth() + 1) + '/' + startdate.getDate() + '/' + startdate.getFullYear());
+
+        $("option[value='-1']").remove();
+    });
+
+    $('.settoday').click(function () {
+        var startdate = new Date()
+        $('.startdate').val((startdate.getMonth() + 1) + '/' + startdate.getDate() + '/' + startdate.getFullYear());
+    });
+
+</script>

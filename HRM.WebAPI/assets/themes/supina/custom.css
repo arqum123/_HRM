@@ -1,0 +1,231 @@
+﻿.login-box .user-img {
+    height: 100px !important;
+}
+
+.customclass .validation-summary-errors {
+    color: #fff;
+    border-color: #f33;
+    background: #ff5757;
+}
+
+.customclass .validation-summary-errors ul {
+    margin: 10px 0;
+    padding: 0;
+    text-align: center;
+}
+
+.customclass .validation-summary-errors li {
+    display: inline;
+    list-style: none;
+    margin: 0;
+}
+
+
+.customclass .form-group {
+     margin-right: 0px; 
+     margin-left: 0px; 
+}
+
+.lblforinput {
+    text-transform: uppercase;
+    color: #8C8C8C;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+#AddUserForm .radio-inline .radio{
+    padding-top: 0px;
+}
+
+.transparent {
+    background-color: transparent !important;
+}
+
+.notopmargin {
+    margin-top: 0px !important;
+}
+
+.marginbottom {
+    margin-bottom: 50px !important;
+}
+
+.aligncenter {
+    text-align: center !important;
+}
+
+.datatable th {
+    text-align: left;
+}
+
+.datatable tfoot {
+    text-align: right;
+}
+
+.datatable tfoot tr td {
+    padding-top: 15px;
+    color: #359ABF;
+    font-size: 20px;
+}
+
+.datatable tfoot tr td a {
+    line-height: 30px;
+    min-width: 30px;
+    height: 30px;
+    color: #fff;
+    border-color: #3dc4f5;
+    background: #5bccf6;
+    font-size: 14px;
+    padding: 0 12px;
+    vertical-align: top;
+}
+
+.formseparator {
+    border: 1px solid #ddd;
+    margin: 25px 15px;
+    border-bottom: 0;
+    overflow: hidden;
+    height: 1px;
+    padding: 0;
+}
+
+.floatright {
+    float: right;
+}
+
+.legendbox {
+    border: 1px solid black;
+}
+
+.offday {
+    background-color: #B5F1E0;
+}
+
+.quarterday {
+    background-color: #D29E9E;
+}
+.quarterday td {
+    color: white;
+}
+.halfday {
+    background-color: #F18585;
+}
+.halfday td {
+    color: white;
+}
+.fullday {
+    background-color: #C10000;
+}
+.fullday td {
+    color: white;
+}
+.attendancereport td {
+    /*text-align:center;*/
+}
+
+.datatable td a {
+    /*color: #0000EE;*/
+    text-decoration: underline;
+}
+
+.pull-right a:hover {
+    color: #fff;
+}
+
+.nopaddingtop {
+    padding-top: 0px !important;
+}
+
+.nomarginleft {
+    margin-left: 0px !important;
+}
+
+#PayrollVariableForm .radio-inline .radio {
+    padding-top: 0px;
+}
+
+.tblpayslip {
+    width: 80%;
+    margin: auto;
+    border: 1px solid #7e7e7e;
+}
+
+.tblpayslip tr td {
+    text-align: left;
+}
+
+.tblpayslip tr td:first-child {
+    font-weight: bold;
+    border-right: 1px solid #7e7e7e !important;
+}
+
+.tblpayslipadd {
+    width: 75%;
+    margin: auto;
+    border: 1px solid #7e7e7e;
+}
+
+.tblpayslipadd tr td:first-child, .tblpayslipadd tr th:first-child {
+    font-weight: bold;
+    border-right: 1px solid #7e7e7e !important;
+}
+
+.tblpayslipadd tfoot td:last-child {
+    text-align: left;
+}
+
+.summaryRptUserClmn {
+    width: 20%;
+}
+.detailRptUserClmn {
+    width: 15%;
+}
+
+.absentday {
+    background-color: #F9FF00;
+}
+
+.tblAttendance {
+    width: 90%;
+    margin: auto;
+    border: 1px solid #7e7e7e;
+}
+
+.tblAttendance tr td {
+    text-align: left;
+}
+
+.tblAttendance tr td:first-child {
+    font-weight: bold;
+    border-right: 1px solid #7e7e7e !important;
+}
+
+.tblLegends {
+    width: 60%;
+    margin: auto;
+    border: 1px solid #7e7e7e;
+}
+
+.tblLegends tr td {
+    text-align: left;
+    border-right: 1px solid #7e7e7e !important;
+}
+
+.tblLegends tr td:last-child {
+    border-right: none !important;
+}
+
+.attendancereport tfoot {
+    text-align: left;
+}
+
+.attendancereport tfoot tr td:first-child {
+    text-align: right;
+}
+
+.attendancereport tfoot tr td {
+    padding-top: 15px;
+    color: #359ABF;
+    font-size: 15px;
+    font-weight:bold;
+}

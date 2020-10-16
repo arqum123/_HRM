@@ -1,0 +1,603 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{561DD54E-542C-4B07-86F0-6B41364975EB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HRM.Core</RootNamespace>
+    <AssemblyName>HRM.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Spring.Core, Version=1.2.0.20313, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dll\core\Spring.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\dll\webapi\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Validation">
+      <HintPath>..\dll\core\Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataInterfaces\IBranchDepartmentRepository.base.cs" />
+    <Compile Include="DataInterfaces\IBranchDepartmentRepository.cs" />
+    <Compile Include="DataInterfaces\IBranchRepository.base.cs" />
+    <Compile Include="DataInterfaces\IBranchRepository.cs" />
+    <Compile Include="DataInterfaces\IBranchShiftRepository.base.cs" />
+    <Compile Include="DataInterfaces\IBranchShiftRepository.cs" />
+    <Compile Include="DataInterfaces\IConfigurationRepository.base.cs" />
+    <Compile Include="DataInterfaces\IConfigurationRepository.cs" />
+    <Compile Include="DataInterfaces\IDeviceModalRepository.base.cs" />
+    <Compile Include="DataInterfaces\IDeviceModalRepository.cs" />
+    <Compile Include="DataInterfaces\IDeviceRepository.base.cs" />
+    <Compile Include="DataInterfaces\IDeviceRepository.cs" />
+    <Compile Include="DataInterfaces\ILeaveRepository.base.cs" />
+    <Compile Include="DataInterfaces\ILeaveRepository.cs" />
+    <Compile Include="DataInterfaces\IPayrollCycleRepository.base.cs" />
+    <Compile Include="DataInterfaces\IPayrollCycleRepository.cs" />
+    <Compile Include="DataInterfaces\IPayrollDetailRepository.base.cs" />
+    <Compile Include="DataInterfaces\IPayrollDetailRepository.cs" />
+    <Compile Include="DataInterfaces\IPayrollPolicyRepository.base.cs" />
+    <Compile Include="DataInterfaces\IPayrollPolicyRepository.cs" />
+    <Compile Include="DataInterfaces\IPayrollRepository.base.cs" />
+    <Compile Include="DataInterfaces\IPayrollRepository.cs" />
+    <Compile Include="DataInterfaces\IPayrollVariableRepository.base.cs" />
+    <Compile Include="DataInterfaces\IPayrollVariableRepository.cs" />
+    <Compile Include="DataInterfaces\ISalaryTypeRepository.base.cs" />
+    <Compile Include="DataInterfaces\ISalaryTypeRepository.cs" />
+    <Compile Include="DataTransfer\BranchDepartment\GET\Output.cs" />
+    <Compile Include="DataTransfer\BranchDepartment\POST\Input.cs" />
+    <Compile Include="DataTransfer\BranchDepartment\POST\Output.cs" />
+    <Compile Include="DataTransfer\BranchDepartment\PUT\Input.cs" />
+    <Compile Include="DataTransfer\BranchDepartment\PUT\Output.cs" />
+    <Compile Include="DataTransfer\BranchShift\GET\Output.cs" />
+    <Compile Include="DataTransfer\BranchShift\POST\Input.cs" />
+    <Compile Include="DataTransfer\BranchShift\POST\Output.cs" />
+    <Compile Include="DataTransfer\BranchShift\PUT\Input.cs" />
+    <Compile Include="DataTransfer\BranchShift\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Branch\GET\Output.cs" />
+    <Compile Include="DataTransfer\Branch\POST\Input.cs" />
+    <Compile Include="DataTransfer\Branch\POST\Output.cs" />
+    <Compile Include="DataTransfer\Branch\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Branch\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Configuration\GET\Output.cs" />
+    <Compile Include="DataTransfer\Configuration\POST\Input.cs" />
+    <Compile Include="DataTransfer\Configuration\POST\Output.cs" />
+    <Compile Include="DataTransfer\Configuration\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Configuration\PUT\Output.cs" />
+    <Compile Include="DataTransfer\DeviceModal\GET\Output.cs" />
+    <Compile Include="DataTransfer\DeviceModal\POST\Input.cs" />
+    <Compile Include="DataTransfer\DeviceModal\POST\Output.cs" />
+    <Compile Include="DataTransfer\DeviceModal\PUT\Input.cs" />
+    <Compile Include="DataTransfer\DeviceModal\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Device\GET\Output.cs" />
+    <Compile Include="DataTransfer\Device\POST\Input.cs" />
+    <Compile Include="DataTransfer\Device\POST\Output.cs" />
+    <Compile Include="DataTransfer\Device\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Device\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Leave\GET\Output.cs" />
+    <Compile Include="DataTransfer\Leave\POST\Input.cs" />
+    <Compile Include="DataTransfer\Leave\POST\Output.cs" />
+    <Compile Include="DataTransfer\Leave\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Leave\PUT\Output.cs" />
+    <Compile Include="DataTransfer\PayrollCycle\GET\Output.cs" />
+    <Compile Include="DataTransfer\PayrollCycle\POST\Input.cs" />
+    <Compile Include="DataTransfer\PayrollCycle\POST\Output.cs" />
+    <Compile Include="DataTransfer\PayrollCycle\PUT\Input.cs" />
+    <Compile Include="DataTransfer\PayrollCycle\PUT\Output.cs" />
+    <Compile Include="DataTransfer\PayrollDetail\GET\Output.cs" />
+    <Compile Include="DataTransfer\PayrollDetail\POST\Input.cs" />
+    <Compile Include="DataTransfer\PayrollDetail\POST\Output.cs" />
+    <Compile Include="DataTransfer\PayrollDetail\PUT\Input.cs" />
+    <Compile Include="DataTransfer\PayrollDetail\PUT\Output.cs" />
+    <Compile Include="DataTransfer\PayrollPolicy\GET\Output.cs" />
+    <Compile Include="DataTransfer\PayrollPolicy\POST\Input.cs" />
+    <Compile Include="DataTransfer\PayrollPolicy\POST\Output.cs" />
+    <Compile Include="DataTransfer\PayrollPolicy\PUT\Input.cs" />
+    <Compile Include="DataTransfer\PayrollPolicy\PUT\Output.cs" />
+    <Compile Include="DataTransfer\PayrollVariable\GET\Output.cs" />
+    <Compile Include="DataTransfer\PayrollVariable\POST\Input.cs" />
+    <Compile Include="DataTransfer\PayrollVariable\POST\Output.cs" />
+    <Compile Include="DataTransfer\PayrollVariable\PUT\Input.cs" />
+    <Compile Include="DataTransfer\PayrollVariable\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Payroll\GET\Output.cs" />
+    <Compile Include="DataTransfer\Payroll\POST\Input.cs" />
+    <Compile Include="DataTransfer\Payroll\POST\Output.cs" />
+    <Compile Include="DataTransfer\Payroll\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Payroll\PUT\Output.cs" />
+    <Compile Include="DataTransfer\SalaryType\GET\Output.cs" />
+    <Compile Include="DataTransfer\SalaryType\POST\Input.cs" />
+    <Compile Include="DataTransfer\SalaryType\POST\Output.cs" />
+    <Compile Include="DataTransfer\SalaryType\PUT\Input.cs" />
+    <Compile Include="DataTransfer\SalaryType\PUT\Output.cs" />
+    <Compile Include="Entities\Attendance.cs" />
+    <Compile Include="Entities\Attendance.base.cs">
+      <DependentUpon>Attendance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AttendanceDetail.cs" />
+    <Compile Include="Entities\AttendanceDetail.base.cs">
+      <DependentUpon>AttendanceDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AttendancePolicy.cs" />
+    <Compile Include="Entities\AttendancePolicy.base.cs">
+      <DependentUpon>AttendancePolicy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AttendanceStatus.cs" />
+    <Compile Include="Entities\AttendanceStatus.base.cs">
+      <DependentUpon>AttendanceStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AttendanceType.cs" />
+    <Compile Include="Entities\AttendanceType.base.cs">
+      <DependentUpon>AttendanceType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AttendanceVariable.cs" />
+    <Compile Include="Entities\AttendanceVariable.base.cs">
+      <DependentUpon>AttendanceVariable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Branch.base.cs" />
+    <Compile Include="Entities\Branch.cs" />
+    <Compile Include="Entities\BranchDepartment.base.cs" />
+    <Compile Include="Entities\BranchDepartment.cs" />
+    <Compile Include="Entities\BranchShift.base.cs" />
+    <Compile Include="Entities\BranchShift.cs" />
+    <Compile Include="Entities\City.cs" />
+    <Compile Include="Entities\City.base.cs">
+      <DependentUpon>City.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Configuration.base.cs" />
+    <Compile Include="Entities\Configuration.cs" />
+    <Compile Include="Entities\ContactType.cs" />
+    <Compile Include="Entities\ContactType.base.cs">
+      <DependentUpon>ContactType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Country.cs" />
+    <Compile Include="Entities\Country.base.cs">
+      <DependentUpon>Country.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Department.cs" />
+    <Compile Include="Entities\Department.base.cs">
+      <DependentUpon>Department.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Device.base.cs" />
+    <Compile Include="Entities\Device.cs" />
+    <Compile Include="Entities\DeviceModal.base.cs" />
+    <Compile Include="Entities\DeviceModal.cs" />
+    <Compile Include="Entities\Gender.cs" />
+    <Compile Include="Entities\Gender.base.cs">
+      <DependentUpon>Gender.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Holiday.cs" />
+    <Compile Include="Entities\Holiday.base.cs">
+      <DependentUpon>Holiday.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Leave.base.cs" />
+    <Compile Include="Entities\Leave.cs" />
+    <Compile Include="Entities\LeaveType.cs" />
+    <Compile Include="Entities\LeaveType.base.cs">
+      <DependentUpon>LeaveType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Payroll.base.cs" />
+    <Compile Include="Entities\Payroll.cs" />
+    <Compile Include="Entities\PayrollCycle.base.cs" />
+    <Compile Include="Entities\PayrollCycle.cs" />
+    <Compile Include="Entities\PayrollDetail.base.cs" />
+    <Compile Include="Entities\PayrollDetail.cs" />
+    <Compile Include="Entities\PayrollPolicy.base.cs" />
+    <Compile Include="Entities\PayrollPolicy.cs" />
+    <Compile Include="Entities\PayrollVariable.base.cs" />
+    <Compile Include="Entities\PayrollVariable.cs" />
+    <Compile Include="Entities\Religion.cs" />
+    <Compile Include="Entities\Religion.base.cs">
+      <DependentUpon>Religion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SalaryType.base.cs" />
+    <Compile Include="Entities\SalaryType.cs" />
+    <Compile Include="Entities\Shift.cs" />
+    <Compile Include="Entities\Shift.base.cs">
+      <DependentUpon>Shift.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\ShiftOffDay.cs" />
+    <Compile Include="Entities\ShiftOffDay.base.cs">
+      <DependentUpon>ShiftOffDay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\State.cs" />
+    <Compile Include="Entities\State.base.cs">
+      <DependentUpon>State.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\User.base.cs">
+      <DependentUpon>User.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\UserContact.cs" />
+    <Compile Include="Entities\UserContact.base.cs">
+      <DependentUpon>UserContact.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\UserDepartment.cs" />
+    <Compile Include="Entities\UserDepartment.base.cs">
+      <DependentUpon>UserDepartment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\UserShift.cs" />
+    <Compile Include="Entities\UserShift.base.cs">
+      <DependentUpon>UserShift.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\UserType.cs" />
+    <Compile Include="Entities\UserType.base.cs">
+      <DependentUpon>UserType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IAttendanceRepository.cs" />
+    <Compile Include="DataInterfaces\IAttendanceRepository.base.cs">
+      <DependentUpon>IAttendanceRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IAttendanceDetailRepository.cs" />
+    <Compile Include="DataInterfaces\IAttendanceDetailRepository.base.cs">
+      <DependentUpon>IAttendanceDetailRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IAttendancePolicyRepository.cs" />
+    <Compile Include="DataInterfaces\IAttendancePolicyRepository.base.cs">
+      <DependentUpon>IAttendancePolicyRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IAttendanceStatusRepository.cs" />
+    <Compile Include="DataInterfaces\IAttendanceStatusRepository.base.cs">
+      <DependentUpon>IAttendanceStatusRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IAttendanceTypeRepository.cs" />
+    <Compile Include="DataInterfaces\IAttendanceTypeRepository.base.cs">
+      <DependentUpon>IAttendanceTypeRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IAttendanceVariableRepository.cs" />
+    <Compile Include="DataInterfaces\IAttendanceVariableRepository.base.cs">
+      <DependentUpon>IAttendanceVariableRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\ICityRepository.cs" />
+    <Compile Include="DataInterfaces\ICityRepository.base.cs">
+      <DependentUpon>ICityRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IContactTypeRepository.cs" />
+    <Compile Include="DataInterfaces\IContactTypeRepository.base.cs">
+      <DependentUpon>IContactTypeRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\ICountryRepository.cs" />
+    <Compile Include="DataInterfaces\ICountryRepository.base.cs">
+      <DependentUpon>ICountryRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IDepartmentRepository.cs" />
+    <Compile Include="DataInterfaces\IDepartmentRepository.base.cs">
+      <DependentUpon>IDepartmentRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IGenderRepository.cs" />
+    <Compile Include="DataInterfaces\IGenderRepository.base.cs">
+      <DependentUpon>IGenderRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IHolidayRepository.cs" />
+    <Compile Include="DataInterfaces\IHolidayRepository.base.cs">
+      <DependentUpon>IHolidayRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\ILeaveTypeRepository.cs" />
+    <Compile Include="DataInterfaces\ILeaveTypeRepository.base.cs">
+      <DependentUpon>ILeaveTypeRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IReligionRepository.cs" />
+    <Compile Include="DataInterfaces\IReligionRepository.base.cs">
+      <DependentUpon>IReligionRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IShiftRepository.cs" />
+    <Compile Include="DataInterfaces\IShiftRepository.base.cs">
+      <DependentUpon>IShiftRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IShiftOffDayRepository.cs" />
+    <Compile Include="DataInterfaces\IShiftOffDayRepository.base.cs">
+      <DependentUpon>IShiftOffDayRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IStateRepository.cs" />
+    <Compile Include="DataInterfaces\IStateRepository.base.cs">
+      <DependentUpon>IStateRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IUserRepository.cs" />
+    <Compile Include="DataInterfaces\IUserRepository.base.cs">
+      <DependentUpon>IUserRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IUserContactRepository.cs" />
+    <Compile Include="DataInterfaces\IUserContactRepository.base.cs">
+      <DependentUpon>IUserContactRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IUserDepartmentRepository.cs" />
+    <Compile Include="DataInterfaces\IUserDepartmentRepository.base.cs">
+      <DependentUpon>IUserDepartmentRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IUserShiftRepository.cs" />
+    <Compile Include="DataInterfaces\IUserShiftRepository.base.cs">
+      <DependentUpon>IUserShiftRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataInterfaces\IUserTypeRepository.cs" />
+    <Compile Include="DataInterfaces\IUserTypeRepository.base.cs">
+      <DependentUpon>IUserTypeRepository.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\VMADDPayrollModel.cs" />
+    <Compile Include="Enum\Constant.cs" />
+    <Compile Include="Helper\AttendanceFromDevice.cs" />
+    <Compile Include="Helper\AuthBase.cs" />
+    <Compile Include="Helper\Authenticate.cs" />
+    <Compile Include="Helper\CookieStore.cs" />
+    <Compile Include="Helper\SystemConfiguration.cs" />
+    <Compile Include="Helper\EncryptedQueryString.cs" />
+    <Compile Include="Helper\HashData.cs" />
+    <Compile Include="Helper\QSDecryption.cs" />
+    <Compile Include="IoC.cs" />
+    <Compile Include="IService\IBranchDepartmentService.cs" />
+    <Compile Include="IService\IBranchService.cs" />
+    <Compile Include="IService\IBranchShiftService.cs" />
+    <Compile Include="IService\IConfigurationService.cs" />
+    <Compile Include="IService\IDeviceModalService.cs" />
+    <Compile Include="IService\IDeviceService.cs" />
+    <Compile Include="IService\ILeaveService.cs" />
+    <Compile Include="IService\IPayrollCycleService.cs" />
+    <Compile Include="IService\IPayrollDetailService.cs" />
+    <Compile Include="IService\IPayrollPolicyService.cs" />
+    <Compile Include="IService\IPayrollService.cs" />
+    <Compile Include="IService\IPayrollVariableService.cs" />
+    <Compile Include="IService\ISalaryTypeService.cs" />
+    <Compile Include="Model\PracticeVMDetailReport.cs" />
+    <Compile Include="Model\PracticeVMMonthlyReport.cs" />
+    <Compile Include="Model\PracticeVMReport.cs" />
+    <Compile Include="Model\VMAbsenteeReport.cs" />
+    <Compile Include="Model\VMAbsent.cs" />
+    <Compile Include="Model\VMAbsentReport.cs" />
+    <Compile Include="Model\VMAddAttendance.cs" />
+    <Compile Include="Model\VMAttendanceReport.cs" />
+    <Compile Include="Model\VMAttendanceReportDetailTime.cs" />
+    <Compile Include="Model\VMAttendanceStatusSummary.cs" />
+    <Compile Include="Model\VMAttendanceSummary.cs" />
+    <Compile Include="Model\VMDailyAttendanceUpdate.cs" />
+    <Compile Include="Model\VMDailyAttendanceUpdateStatus.cs" />
+    <Compile Include="Model\VMDailyAttendanceUpdateTime.cs" />
+    <Compile Include="Model\VMGeneratePayrollEdit.cs" />
+    <Compile Include="Model\VMHolidayModel.cs" />
+    <Compile Include="Model\VMLeave.cs" />
+    <Compile Include="Model\VMModifyPayroll.cs" />
+    <Compile Include="Model\VMModifyPayrollEdit.cs" />
+    <Compile Include="Model\VMMonthlyAttendance.cs" />
+    <Compile Include="Model\VMMonthlyAttendanceReport.cs" />
+    <Compile Include="Model\VMMonthlyUserAttDetail.cs" />
+    <Compile Include="Model\VMPayrollModel.cs" />
+    <Compile Include="Model\VMBrowseAttendance.cs" />
+    <Compile Include="Model\VMConfiguration.cs" />
+    <Compile Include="Model\VMAttendanceData.cs" />
+    <Compile Include="Model\VMDashboardStats.cs" />
+    <Compile Include="Model\LoginModel.cs" />
+    <Compile Include="Model\VMAttendanceModel.cs" />
+    <Compile Include="Model\VMDepartmentModel.cs" />
+    <Compile Include="Model\VMPayrollModelNew.cs" />
+    <Compile Include="Model\VMShiftModel.cs" />
+    <Compile Include="Model\VMUserModel.cs" />
+    <Compile Include="MOLogAttribute.cs" />
+    <Compile Include="Extensions\DateTimeExtension.cs" />
+    <Compile Include="Extensions\OperandExtension.cs" />
+    <Compile Include="Entities\EntityHelper.cs" />
+    <Compile Include="DataTransfer\DataTransfer.cs" />
+    <Compile Include="Entities\SearchColumn.cs" />
+    <Compile Include="Entities\EntityBase.cs" />
+    <Compile Include="IService\IAttendanceService.cs" />
+    <Compile Include="IService\IAttendanceDetailService.cs" />
+    <Compile Include="IService\IAttendancePolicyService.cs" />
+    <Compile Include="IService\IAttendanceStatusService.cs" />
+    <Compile Include="IService\IAttendanceTypeService.cs" />
+    <Compile Include="IService\IAttendanceVariableService.cs" />
+    <Compile Include="IService\ICityService.cs" />
+    <Compile Include="IService\IContactTypeService.cs" />
+    <Compile Include="IService\ICountryService.cs" />
+    <Compile Include="IService\IDepartmentService.cs" />
+    <Compile Include="IService\IGenderService.cs" />
+    <Compile Include="IService\IHolidayService.cs" />
+    <Compile Include="IService\ILeaveTypeService.cs" />
+    <Compile Include="IService\IReligionService.cs" />
+    <Compile Include="IService\IShiftService.cs" />
+    <Compile Include="IService\IShiftOffDayService.cs" />
+    <Compile Include="IService\IStateService.cs" />
+    <Compile Include="IService\IUserService.cs" />
+    <Compile Include="IService\IUserContactService.cs" />
+    <Compile Include="IService\IUserDepartmentService.cs" />
+    <Compile Include="IService\IUserShiftService.cs" />
+    <Compile Include="IService\IUserTypeService.cs" />
+    <Compile Include="Service\AttendanceService.cs" />
+    <Compile Include="Service\AttendanceDetailService.cs" />
+    <Compile Include="Service\AttendancePolicyService.cs" />
+    <Compile Include="Service\AttendanceStatusService.cs" />
+    <Compile Include="Service\AttendanceTypeService.cs" />
+    <Compile Include="Service\AttendanceVariableService.cs" />
+    <Compile Include="Service\BranchDepartmentService.cs" />
+    <Compile Include="Service\BranchService.cs" />
+    <Compile Include="Service\BranchShiftService.cs" />
+    <Compile Include="Service\CityService.cs" />
+    <Compile Include="Service\ConfigurationService.cs" />
+    <Compile Include="Service\ContactTypeService.cs" />
+    <Compile Include="Service\CountryService.cs" />
+    <Compile Include="Service\DepartmentService.cs" />
+    <Compile Include="Service\DeviceModalService.cs" />
+    <Compile Include="Service\DeviceService.cs" />
+    <Compile Include="Service\GenderService.cs" />
+    <Compile Include="Service\HolidayService.cs" />
+    <Compile Include="Service\LeaveService.cs" />
+    <Compile Include="Service\LeaveTypeService.cs" />
+    <Compile Include="Service\PayrollCycleService.cs" />
+    <Compile Include="Service\PayrollDetailService.cs" />
+    <Compile Include="Service\PayrollPolicyService.cs" />
+    <Compile Include="Service\PayrollService.cs" />
+    <Compile Include="Service\PayrollVariableService.cs" />
+    <Compile Include="Service\ReligionService.cs" />
+    <Compile Include="Service\SalaryTypeService.cs" />
+    <Compile Include="Service\ShiftService.cs" />
+    <Compile Include="Service\ShiftOffDayService.cs" />
+    <Compile Include="Service\StateService.cs" />
+    <Compile Include="Service\UserService.cs" />
+    <Compile Include="Service\UserContactService.cs" />
+    <Compile Include="Service\UserDepartmentService.cs" />
+    <Compile Include="Service\UserShiftService.cs" />
+    <Compile Include="Service\UserTypeService.cs" />
+    <Compile Include="DataCopier.cs" />
+    <Compile Include="DataTransfer\Attendance\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Attendance\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Attendance\POST\Output.cs" />
+    <Compile Include="DataTransfer\Attendance\POST\Input.cs" />
+    <Compile Include="DataTransfer\Attendance\GET\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceDetail\PUT\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceDetail\PUT\Input.cs" />
+    <Compile Include="DataTransfer\AttendanceDetail\POST\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceDetail\POST\Input.cs" />
+    <Compile Include="DataTransfer\AttendanceDetail\GET\Output.cs" />
+    <Compile Include="DataTransfer\AttendancePolicy\PUT\Output.cs" />
+    <Compile Include="DataTransfer\AttendancePolicy\PUT\Input.cs" />
+    <Compile Include="DataTransfer\AttendancePolicy\POST\Output.cs" />
+    <Compile Include="DataTransfer\AttendancePolicy\POST\Input.cs" />
+    <Compile Include="DataTransfer\AttendancePolicy\GET\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceStatus\PUT\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceStatus\PUT\Input.cs" />
+    <Compile Include="DataTransfer\AttendanceStatus\POST\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceStatus\POST\Input.cs" />
+    <Compile Include="DataTransfer\AttendanceStatus\GET\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceType\PUT\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceType\PUT\Input.cs" />
+    <Compile Include="DataTransfer\AttendanceType\POST\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceType\POST\Input.cs" />
+    <Compile Include="DataTransfer\AttendanceType\GET\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceVariable\PUT\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceVariable\PUT\Input.cs" />
+    <Compile Include="DataTransfer\AttendanceVariable\POST\Output.cs" />
+    <Compile Include="DataTransfer\AttendanceVariable\POST\Input.cs" />
+    <Compile Include="DataTransfer\AttendanceVariable\GET\Output.cs" />
+    <Compile Include="DataTransfer\City\PUT\Output.cs" />
+    <Compile Include="DataTransfer\City\PUT\Input.cs" />
+    <Compile Include="DataTransfer\City\POST\Output.cs" />
+    <Compile Include="DataTransfer\City\POST\Input.cs" />
+    <Compile Include="DataTransfer\City\GET\Output.cs" />
+    <Compile Include="DataTransfer\ContactType\PUT\Output.cs" />
+    <Compile Include="DataTransfer\ContactType\PUT\Input.cs" />
+    <Compile Include="DataTransfer\ContactType\POST\Output.cs" />
+    <Compile Include="DataTransfer\ContactType\POST\Input.cs" />
+    <Compile Include="DataTransfer\ContactType\GET\Output.cs" />
+    <Compile Include="DataTransfer\Country\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Country\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Country\POST\Output.cs" />
+    <Compile Include="DataTransfer\Country\POST\Input.cs" />
+    <Compile Include="DataTransfer\Country\GET\Output.cs" />
+    <Compile Include="DataTransfer\Department\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Department\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Department\POST\Output.cs" />
+    <Compile Include="DataTransfer\Department\POST\Input.cs" />
+    <Compile Include="DataTransfer\Department\GET\Output.cs" />
+    <Compile Include="DataTransfer\Gender\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Gender\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Gender\POST\Output.cs" />
+    <Compile Include="DataTransfer\Gender\POST\Input.cs" />
+    <Compile Include="DataTransfer\Gender\GET\Output.cs" />
+    <Compile Include="DataTransfer\Holiday\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Holiday\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Holiday\POST\Output.cs" />
+    <Compile Include="DataTransfer\Holiday\POST\Input.cs" />
+    <Compile Include="DataTransfer\Holiday\GET\Output.cs" />
+    <Compile Include="DataTransfer\LeaveType\PUT\Output.cs" />
+    <Compile Include="DataTransfer\LeaveType\PUT\Input.cs" />
+    <Compile Include="DataTransfer\LeaveType\POST\Output.cs" />
+    <Compile Include="DataTransfer\LeaveType\POST\Input.cs" />
+    <Compile Include="DataTransfer\LeaveType\GET\Output.cs" />
+    <Compile Include="DataTransfer\Religion\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Religion\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Religion\POST\Output.cs" />
+    <Compile Include="DataTransfer\Religion\POST\Input.cs" />
+    <Compile Include="DataTransfer\Religion\GET\Output.cs" />
+    <Compile Include="DataTransfer\Shift\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Shift\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Shift\POST\Output.cs" />
+    <Compile Include="DataTransfer\Shift\POST\Input.cs" />
+    <Compile Include="DataTransfer\Shift\GET\Output.cs" />
+    <Compile Include="DataTransfer\ShiftOffDay\PUT\Output.cs" />
+    <Compile Include="DataTransfer\ShiftOffDay\PUT\Input.cs" />
+    <Compile Include="DataTransfer\ShiftOffDay\POST\Output.cs" />
+    <Compile Include="DataTransfer\ShiftOffDay\POST\Input.cs" />
+    <Compile Include="DataTransfer\ShiftOffDay\GET\Output.cs" />
+    <Compile Include="DataTransfer\State\PUT\Output.cs" />
+    <Compile Include="DataTransfer\State\PUT\Input.cs" />
+    <Compile Include="DataTransfer\State\POST\Output.cs" />
+    <Compile Include="DataTransfer\State\POST\Input.cs" />
+    <Compile Include="DataTransfer\State\GET\Output.cs" />
+    <Compile Include="DataTransfer\User\PUT\Output.cs" />
+    <Compile Include="DataTransfer\User\PUT\Input.cs" />
+    <Compile Include="DataTransfer\User\POST\Output.cs" />
+    <Compile Include="DataTransfer\User\POST\Input.cs" />
+    <Compile Include="DataTransfer\User\GET\Output.cs" />
+    <Compile Include="DataTransfer\UserContact\PUT\Output.cs" />
+    <Compile Include="DataTransfer\UserContact\PUT\Input.cs" />
+    <Compile Include="DataTransfer\UserContact\POST\Output.cs" />
+    <Compile Include="DataTransfer\UserContact\POST\Input.cs" />
+    <Compile Include="DataTransfer\UserContact\GET\Output.cs" />
+    <Compile Include="DataTransfer\UserDepartment\PUT\Output.cs" />
+    <Compile Include="DataTransfer\UserDepartment\PUT\Input.cs" />
+    <Compile Include="DataTransfer\UserDepartment\POST\Output.cs" />
+    <Compile Include="DataTransfer\UserDepartment\POST\Input.cs" />
+    <Compile Include="DataTransfer\UserDepartment\GET\Output.cs" />
+    <Compile Include="DataTransfer\UserShift\PUT\Output.cs" />
+    <Compile Include="DataTransfer\UserShift\PUT\Input.cs" />
+    <Compile Include="DataTransfer\UserShift\POST\Output.cs" />
+    <Compile Include="DataTransfer\UserShift\POST\Input.cs" />
+    <Compile Include="DataTransfer\UserShift\GET\Output.cs" />
+    <Compile Include="DataTransfer\UserType\PUT\Output.cs" />
+    <Compile Include="DataTransfer\UserType\PUT\Input.cs" />
+    <Compile Include="DataTransfer\UserType\POST\Output.cs" />
+    <Compile Include="DataTransfer\UserType\POST\Input.cs" />
+    <Compile Include="DataTransfer\UserType\GET\Output.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

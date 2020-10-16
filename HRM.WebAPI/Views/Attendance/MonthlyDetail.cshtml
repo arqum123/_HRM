@@ -1,0 +1,234 @@
+﻿@model HRM.Core.Model.VMAttendanceModel
+@{
+    Layout = "/Views/Shared/_LayoutWOSidebar.cshtml";
+    ViewBag.Title = "HRMS - Monthly Attendance Detail Report";
+    WebGrid grid = new WebGrid(Model.AttendanceList, canSort: true, canPage: false, rowsPerPage: 10);
+}
+<style>
+    tfoot
+    {
+        text-align:left !important;
+    }
+</style>
+<div class=" content-box mrg25B" style="text-align:center">
+    <img src="/assets/images/reporthead.png" alt="" />
+</div>
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Monthly Attendance Detail Report
+        <div class="col-sm-3" style="float: right;"><a href="javascript:;" onclick="Print(1);" style="float:right">
+            <img src="/assets/images/printer.png" style="width: 20px" />&nbsp;Print</a></div>
+    </h3>
+    @using (Html.BeginForm("MonthlyDetail", "Attendance", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "MonthlyDetailAttendanceListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        
+        if (Model.AttendanceList != null && Model.AttendanceList.Count > 0)
+        {
+        <div class="form-group">
+            <div class="col-md-6">
+                <table class="table tblAttendance attendancereport" id="gridtblsummary">
+                    <tbody>
+                        <tr>
+                            <td style="width: 40%">Employee ID</td>
+                            <td>@Model.AttendanceList[0].User.Id</td>
+                        </tr>
+                        <tr>
+                            <td>Name</td>
+                            <td>@Model.AttendanceList[0].User.FirstName</td>
+                        </tr>
+                        <tr>
+                            <td>Department</td>
+                            <td>@Model.AttendanceList[0].User.Department.Name</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table class="table tblAttendance tblLegends" id="gridtbllegends">
+                    <tbody>
+                        <tr>
+                            <td style="width: 50%"><div class="col-md-4 legendbox offday">&nbsp;</div>&nbsp;&nbsp;Off Day</td>
+                            <td style="width: 50%"><div class="col-md-4 legendbox absentday">&nbsp;</div>&nbsp;&nbsp;Absent</td>
+                        </tr>
+                        <tr>
+                            <td><div class="col-md-4 legendbox quarterday">&nbsp;</div>&nbsp;&nbsp;Quarter Day</td>
+                            <td><div class="col-md-4 legendbox halfday">&nbsp;</div>&nbsp;&nbsp;Half Day</td>
+                            </tr>
+                        <tr>
+                            <td><div class="col-md-4 legendbox fullday">&nbsp;</div>&nbsp;&nbsp;Full Day</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table datatable attendancereport",
+        headerStyle: "header",
+            //alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("#", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("Date", header: "Date", format: (item) => item.Date != null ? string.Format("{0:dd-MMM-yyyy}", item.Date) : Html.Raw("N/A")),
+                grid.Column("User.Shift.Name", "Shift"),
+                grid.Column("AttendanceDetailTimeIn.StartDate", header: "Time In", format: (item) => (item.AttendanceDetailTimeIn != null && item.AttendanceDetailTimeIn.StartDate != null) ? string.Format("{0:hh:mm tt}", item.AttendanceDetailTimeIn.StartDate) : Html.Raw("N/A"), style: "timein"),
+                grid.Column("AttendanceDetailTimeOut.EndDate", header: "Time Out", format: (item) => (item.AttendanceDetailTimeOut != null && item.AttendanceDetailTimeOut.EndDate != null) ? string.Format("{0:hh:mm tt}", item.AttendanceDetailTimeOut.EndDate) : Html.Raw("N/A"), style: "timeout"),
+                grid.Column("WorkingHours", header: "Working Hours", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.WorkingMinutes != null) ? Html.Raw(string.Format("{0}:{1}", (int)TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.WorkingMinutes)).TotalHours, TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.WorkingMinutes)).Minutes)) : Html.Raw("0:0"), style: "workinghours"),
+                grid.Column("Present", format: (item) => (item.AttendanceStatus != null) ? Html.Raw("1") : Html.Raw("0"), style: "present"),
+                grid.Column("Absent", format: (item) => (item.AttendanceStatus == null) ? Html.Raw("1") : Html.Raw("0"), style: "absent"),
+                grid.Column("AttendanceStatus.IsShiftOffDay", header: "Off Day", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.IsShiftOffDay != null) ? (item.AttendanceStatus.IsShiftOffDay == true ? Html.Raw("1") : Html.Raw("0")) : Html.Raw("0"), style: "off"),
+                grid.Column("AttendanceStatus.LateMinutes", header: "Late In", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.LateMinutes != null) ? Html.Raw(item.AttendanceStatus.LateMinutes > 0 ? "1" + string.Format(" ({0}:{1})", (int)TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.LateMinutes)).TotalHours, TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.LateMinutes)).Minutes) : "0 (0:0)") : Html.Raw("0 (0:0)"), style: "latehours"),
+                grid.Column("AttendanceStatus.EarlyMinutes", header: "Early Out", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.EarlyMinutes != null) ? Html.Raw(item.AttendanceStatus.EarlyMinutes > 0 ? "1" +  string.Format(" ({0}:{1})", (int)TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.EarlyMinutes)).TotalHours, TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.EarlyMinutes)).Minutes) : "0 (0:0)") : Html.Raw("0 (0:0)"), style: "earlyhours"),
+                grid.Column("AttendanceStatus.OverTimeMinutes", header: "Over Time", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.OverTimeMinutes != null) ? Html.Raw(item.AttendanceStatus.OverTimeMinutes > 0 ?"1" + string.Format(" ({0}:{1})", (int)TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.OverTimeMinutes)).TotalHours, TimeSpan.FromMinutes(Convert.ToDouble(item.AttendanceStatus.OverTimeMinutes)).Minutes) : "0 (0:0)") : Html.Raw("0 (0:0)"), style: "overtimehours"),
+                grid.Column("AttendanceStatus.IsQuarterDay", header: "Quarter Day", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.IsQuarterDay != null) ? (item.AttendanceStatus.IsQuarterDay == true ? Html.Raw("1") : Html.Raw("0")) : Html.Raw("0"), style: "quarter"),
+                grid.Column("AttendanceStatus.IsHalfDay", header: "Half Day", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.IsHalfDay != null) ? (item.AttendanceStatus.IsHalfDay == true ? Html.Raw("1") : Html.Raw("0")) : Html.Raw("0"), style: "half"),
+                grid.Column("AttendanceStatus.IsFullDay", header: "Full Day", format: (item) => (item.AttendanceStatus != null && item.AttendanceStatus.IsFullDay != null) ? (item.AttendanceStatus.IsFullDay == true ? Html.Raw("1") : Html.Raw("0")) : Html.Raw("0"), style: "full")
+                )
+        )
+        }
+    }
+</div>
+<iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
+<script type="text/javascript">
+    $('#gridtbl .timein').css('width', '7%');
+    $('#gridtbl .timeout').css('width', '7%');
+
+
+    $('#gridtbl tr').each(function (index) { //iterate over all table rows
+        if (index > 0) {     //skip header
+            //Absent
+            if ($(this).find('.absent').text() == "1") {
+                $(this).attr('class', 'absentday');
+            }
+            //Off Day
+            if ($(this).find('.off').text() == "1") {
+                $(this).attr('class', 'offday');
+            }
+                //Quarter Day
+            else if ($(this).find('.quarter').text() == "1") {
+                $(this).attr('class', 'quarterday');
+            }
+                //Half Day
+            else if ($(this).find('.half').text() == "1") {
+                $(this).attr('class', 'halfday');
+            }
+                //Full Day
+            else if ($(this).find('.full').text() == "1") {
+                $(this).attr('class', 'fullday');
+            }
+        }
+    });
+
+    // time = 'hh:mm:ss'
+    function toSeconds(time) {
+        var parts = time.split(':');
+        //console.log((+parts[0]) * 60 * 60 + (+parts[1]) * 60);
+        return (+parts[0]) * 60 * 60 + (+parts[1]) * 60;// + (+parts[2]);
+    }
+
+    function toHHMMSS(sec) {
+        var sec_num = parseInt(sec, 10); // don't forget the second parm
+        var hours = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+        var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+        if (hours < 10) { hours = "0" + hours; }
+        if (minutes < 10) { minutes = "0" + minutes; }
+        if (seconds < 10) { seconds = "0" + seconds; }
+        var time = hours + ':' + minutes;// + ':' + seconds;
+        return time;
+    }
+
+    $(document).ready(function () {
+        var WorkingHours = 0, Present = 0, Absent = 0, Off = 0, LateCount = 0, LateMinutes = 0, EarlyCount = 0, EarlyMinutes = 0, OverTimeCount = 0, OverTimeMinutes = 0, QuarterDay = 0, HalfDay = 0, FullDay = 0;
+        $('.workinghours').each(function () {
+            WorkingHours += toSeconds($(this).html());
+        });
+        $('.latehours').each(function () {
+            var data = $(this).html().split(' (');
+            var day = data[0];
+            var hours = data[1].replace(')', '');
+            LateCount += parseInt(day);
+            LateMinutes += toSeconds(hours);
+        });
+        $('.earlyhours').each(function () {
+            var data = $(this).html().split(' (');
+            var day = data[0];
+            var hours = data[1].replace(')', '');
+            EarlyCount += parseInt(day);
+            EarlyMinutes += toSeconds(hours);
+        });
+        $('.overtimehours').each(function () {
+            var data = $(this).html().split(' (');
+            var day = data[0];
+            var hours = data[1].replace(')', '');
+            OverTimeCount += parseInt(day);
+            OverTimeMinutes += toSeconds(hours);
+        });
+        $('.present').each(function () {
+            Present += parseInt($(this).html());
+        });
+        $('.absent').each(function () {
+            Absent += parseInt($(this).html());
+        });
+        $('.off').each(function () {
+            Off += parseInt($(this).html());
+        });
+        $('.quarter').each(function () {
+            QuarterDay += parseInt($(this).html());
+        });
+        $('.half').each(function () {
+            HalfDay += parseInt($(this).html());
+        });
+        $('.full').each(function () {
+            FullDay += parseInt($(this).html());
+        });
+
+        var tfoot = '<tfoot><tr><td colspan="5">Total</td>';
+        tfoot += '<td>' + toHHMMSS(WorkingHours) + '</td>';
+        tfoot += '<td>' + Present + '</td>';
+        tfoot += '<td>' + Absent + '</td>';
+        tfoot += '<td>' + Off + '</td>';
+        tfoot += '<td>' + LateCount + '(' + toHHMMSS(LateMinutes) + ')' + '</td>';
+        tfoot += '<td>' + EarlyCount + '(' + toHHMMSS(EarlyMinutes) + ')' + '</td>';
+        tfoot += '<td>' + OverTimeCount + '(' + toHHMMSS(OverTimeMinutes) + ')' + '</td>';
+        tfoot += '<td>' + QuarterDay + '</td>';
+        tfoot += '<td>' + HalfDay + '</td>';
+        tfoot += '<td>' + FullDay + '</td>';
+        tfoot += '</tr></tfoot>';
+        $('#gridtbl').append(tfoot);
+        
+    })
+
+    
+    function Print(img) {
+        //var printElement = $(".page-box").clone();
+        var printElement = $("body").clone();
+        printElement.find("h3>div").hide();
+        printElement.find(".form-group .tblLegends").hide();
+        printElement.find("a").each(function (e) { $(this).attr("href", "#"); });
+        if (img == 0)
+            printElement.find("img").hide();
+        printDivCSS = new String('<link rel="stylesheet" type="text/css" href="/assets/helpers/helpers-all.css">');
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/elements/elements-all.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/fontawesome/fontawesome.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/linecons/linecons.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/snippets/snippets-all.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/applications/mailbox.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/layout.css">';
+        printDivCSS += '<link id="layout-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/layout-color.css">';
+        printDivCSS += '<link id="framework-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/framework-color.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/border-radius.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/helpers/colors.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/custom.css">';
+
+        window.frames["print_frame"].document.body.innerHTML = printDivCSS + ' ' + printElement.html();
+        window.frames["print_frame"].window.focus();
+        setTimeout(function () {
+            window.frames["print_frame"].window.print();
+        }, 1000);
+    }
+</script>

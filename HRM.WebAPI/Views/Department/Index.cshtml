@@ -1,0 +1,48 @@
+﻿@model HRM.Core.Entities.Department
+@{
+    ViewBag.Title = "HRMS - Department";
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-plus"></i>Add New Department</h3>
+    @using (Html.BeginForm("Index", "Department", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "AddDepartmentForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        if (Request.QueryString["Id"] != null)
+        {
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.IsActive)
+        @Html.HiddenFor(m => m.CreationDate)
+        }
+
+        <div class="form-group">
+            <label for="Name" class="col-sm-4 control-label lblforinput">Department Name</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.Name, new { maxlength = "200", @class = "form-control", placeholder = "Department Name", @required = "required" })
+                @Html.ValidationMessageFor(m => m.Name, null, new { @class = "label-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Description" class="col-sm-4 control-label lblforinput">Description</label>
+            <div class="col-sm-6">
+                @Html.TextAreaFor(m => m.Description, new { maxlength = "500", @class = "form-control", placeholder = "Details About Department" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Save</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+</div>
+<script>
+    $(document).ready(function(){
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1);
+        if (hashes.indexOf('id') >= 0)
+            $('.screenheading').html('<i class="glyph-icon icon-pencil"></i>Edit Department');
+        else
+            $('.screenheading').html('<i class="glyph-icon icon-plus"></i>Add New Department');
+    });
+</script>

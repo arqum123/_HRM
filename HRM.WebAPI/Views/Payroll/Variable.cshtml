@@ -1,0 +1,77 @@
+﻿@model HRM.Core.Entities.PayrollPolicy
+@{
+    ViewBag.Title = "HRMS - Payroll Variable";
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-plus"></i>Add New Payroll Variable</h3>
+    @using (Html.BeginForm("Variable", "Payroll", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "PayrollVariableForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.Id)
+        
+        <div class="form-group">
+            <label for="UserShiftId" class="col-sm-4 control-label lblforinput">Payroll Variable: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.PayrollVariableId, ViewBag.PayrollVariable as SelectList, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="FormulaType" class="col-sm-4 control-label lblforinput">Variable Formula</label>
+            <div class="col-sm-6">
+                <div class="radio-inline radio-info">
+                    <label>
+                        @Html.RadioButtonFor(m => m.IsUnit, "true", new { @class = "custom-radio", @checked = "true" })
+                        Salary Unit
+                    </label>
+                </div>
+                <div class="radio-inline radio-info">
+                    <label>
+                        @Html.RadioButtonFor(m => m.IsUnit, "false", new { @class = "custom-radio" })
+                        Salary Percentage
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Value" class="col-sm-4 control-label lblforinput">Formula Value</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.Value, new { maxlength = "10", @class = "form-control", placeholder = "Value", @onkeypress = "return isNumberKey(event)" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Description" class="col-sm-4 control-label lblforinput">Formula Description</label>
+            <div class="col-sm-6">
+                @Html.TextAreaFor(m => m.Description, new { maxlength = "1000", @class = "form-control", placeholder = "Formula Description" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success savepayrollpolicy">Save</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1);
+        if (hashes.indexOf('id') >= 0) {
+            $('.screenheading').html('<i class="glyph-icon icon-pencil"></i>Edit Payroll Variable');
+            $('#PayrollVariableId').attr('disabled', 'disabled');
+        }
+        else
+            $('.screenheading').html('<i class="glyph-icon icon-plus"></i>Add New Payroll Variable');
+
+        //$('#IsUnit').val('true');
+        //$('#IsPercentage').val('false');
+
+        //$('.custom-radio').change(function () {
+        //    if ($(this).val() == '1')
+        //        $('#IsUnit').val('true');
+        //    else
+        //        $('#IsPercentage').val('true');
+        //});
+    });
+</script>

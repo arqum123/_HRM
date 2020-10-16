@@ -1,0 +1,69 @@
+<div class="row">
+    <div class="col-md-4">
+        <div class="tile-box tile-box-alt bg-blue">
+            <div class="tile-header">Present Staff</div>
+            <div class="tile-content-wrapper">
+                <i class="glyph-icon icon-group"></i>
+                <div class="tile-content"><i class="glyph-icon icon-arrow-up"></i>
+                    <label id="labelPresentCount"></label>
+                </div>
+                <small><i class="glyph-icon icon-caret-up"></i>&nbsp;<label id="labelPresentPercent"></label>% arrived</small>
+            </div>
+            <a href="/Attendance/Daily" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="tile-box tile-box-alt bg-green">
+            <div class="tile-header">On Time Arrived</div>
+            <div class="tile-content-wrapper">
+                <i class="glyph-icon icon-user"></i>
+                <div class="tile-content"><i class="glyph-icon icon-arrow-up"></i>
+                    <label id="labelOnTimeCount"></label>
+                </div>
+                <small><i class="glyph-icon icon-caret-up"></i>&nbsp;<label id="labelOnTimePercent"></label>% arrived on time</small>
+            </div>
+            <a href="/Attendance/Daily" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="tile-box tile-box-alt bg-red" title="">
+            <div class="tile-header">Late Arrived</div>
+            <div class="tile-content-wrapper">
+                <i class="glyph-icon icon-exclamation"></i>
+                <div class="tile-content">
+                    <label id="labelLateCount"></label>
+                </div>
+                <small><i class="glyph-icon icon-caret-down"></i>&nbsp;<label id="labelLatePercent"></label>% arrived late</small>
+            </div>
+            <a href="/Attendance/Daily" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#labelPresentCount").text("0");
+        $("#labelPresentPercent").text("0");
+        $("#labelOnTimeCount").text("0");
+        $("#labelOnTimePercent").text("0");
+        $("#labelLateCount").text("0");
+        $("#labelLatePercent").text("0");
+        GetDashboardData();
+        setInterval('GetDashboardData()', 15000);
+    });
+    function GetDashboardData() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetDashboardStats',
+            dataType: "json",
+            success: function (result) {
+                // debugger;
+                $("#labelPresentCount").text(result.PresentCount);
+                $("#labelPresentPercent").text(result.PresentPercentage);
+                $("#labelOnTimeCount").text(result.OnTimeCount);
+                $("#labelOnTimePercent").text(result.OnTimePercentage);
+                $("#labelLateCount").text(result.LateCount);
+                $("#labelLatePercent").text(result.LatePercentage);
+            }
+        });
+    }
+</script>
