@@ -10,6 +10,7 @@ using HRM.Core.IService;
 
 namespace HRM.WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ConfigurationController : Controller
     {
         //

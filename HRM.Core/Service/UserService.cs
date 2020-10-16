@@ -137,7 +137,6 @@ namespace HRM.Core.Service
         {
             return _iUserRepository.GetAllUser();
         }
-
         public List<User> GetAllUserWithDepartment()
         {
             IUserDepartmentService objUserDepartmentService = IoC.Resolve<IUserDepartmentService>("UserDepartmentService");
@@ -335,7 +334,7 @@ namespace HRM.Core.Service
         {
             return _iUserRepository.GetUser(LoginId);
         }
-
+      
         public User GetUserWithDepartment(string LoginId)
         {
             IUserDepartmentService objUserDepartmentService = IoC.Resolve<IUserDepartmentService>("UserDepartmentService");
@@ -371,7 +370,6 @@ namespace HRM.Core.Service
             List<UserShift> UserShiftList = objUserShiftService.GetAllUserShift();
             List<Shift> ShiftList = objShiftService.GetAllShift();
 
-
             List<User> UserList = _iUserRepository.GetAllUser();
             List<User> tempUserList = new List<User>();
             if (UserList != null && UserList.Count > 0)
@@ -381,7 +379,9 @@ namespace HRM.Core.Service
                 List<UserDepartment> _userDeptList = new List<UserDepartment>();
                 foreach (var user in tempUserList)
                 {
+                    //user.id has a problem
                     _userDeptList = UserDepartmentList.Where(x => x.UserId == user.Id && x.RetiredDate == null).ToList();
+                    //_userDeptList = objUserDepartmentService.GetAllUserDepartment(); //New
                     if (_branchDeptList != null && _branchDeptList.Where(x => x.DepartmentId == _userDeptList.FirstOrDefault().DepartmentId).Any())
                     {
                         if (UserDepartmentList != null && _userDeptList != null)

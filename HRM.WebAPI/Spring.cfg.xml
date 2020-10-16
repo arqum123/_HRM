@@ -142,4 +142,14 @@
 	<object name="UserTypeService" type="HRM.Core.Service.UserTypeService , HRM.Core">
 		<constructor-arg name="iUserTypeRepository" ref="UserTypeRepository"/>
 	</object>
+  <!--New-->
+  <object name="TicketRepository" type="HRM.Repository.TicketRepository , HRM.Repository"></object>
+  <object name="TicketService" type="HRM.Core.Service.TicketService , HRM.Core">
+    <constructor-arg name="iTicketRepository" ref="TicketRepository"/>
+  </object>
+  <object name="CustomPayrollDetailRepository" type="HRM.Repository.CustomPayrollDetailRepository , HRM.Repository"></object>
+  <object name="CustomPayrollDetailService" type="HRM.Core.Service.CustomPayrollDetailService , HRM.Core">
+    <constructor-arg name="iCustomPayrollDetailRepository" ref="CustomPayrollDetailRepository"/>
+  </object>
 </objects>
+

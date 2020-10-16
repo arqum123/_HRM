@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace HRM.WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ShiftController : Controller
     {
         //
@@ -260,8 +261,10 @@ namespace HRM.WebAPI.Controllers
 
         [HttpGet]
         [Authenticate]
-        public ActionResult ShiftList()
+        public ActionResult ShiftList(String SortOrder, String SortBy, int? PageNumber)
         {
+            if (PageNumber == null)
+                PageNumber = 1;
             VMShiftModel VMShiftModel = new VMShiftModel();
             try
             {
@@ -287,7 +290,13 @@ namespace HRM.WebAPI.Controllers
                             if (shift.OffDays != null)
                                 shift.OffDays = shift.OffDays.Substring(0, shift.OffDays.LastIndexOf(", "));
                         }
+
+                        double PageCount = ShiftList.Count;
+                        ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                        ShiftList = ShiftList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+                        ViewBag.PageNumber = PageNumber;
                     }
+
                 }
                 else
                     ModelState.AddModelError("", "No Records Found");
@@ -553,7 +562,6 @@ namespace HRM.WebAPI.Controllers
                 if (model.UserName != null && model.UserName != "" && VMUserModel.UserList != null && VMUserModel.UserList.Count > 0)
                     VMUserModel.UserList = VMUserModel.UserList.Where(x => x.FirstName.ToLower().Contains(model.UserName.ToLower())).ToList();
 
-
                 AssignShiftPrerequisiteData();
                 if (VMUserModel.UserList == null || VMUserModel.UserList.Count == 0)
                     ModelState.AddModelError("", "No Records Found");
@@ -562,12 +570,13 @@ namespace HRM.WebAPI.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
+            AssignShiftPrerequisiteData();
             return View(VMUserModel);
         }
 
         [HttpGet]
         [Authenticate]
-        public ActionResult AssignList()
+        public ActionResult AssignList(int? PageNumber, String SortOrder, string SortBy)
         {
             AssignShiftPrerequisiteData();
             VMUserModel model = new VMUserModel();
@@ -587,6 +596,17 @@ namespace HRM.WebAPI.Controllers
 
                 if (model.UserList.Count == 0)
                     ModelState.AddModelError("", "No Records Found");
+                else
+                {
+                    if (PageNumber == null)
+                        PageNumber = 1;
+                    //pagination
+                    double PageCount = model.UserList.Count;
+                    ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                    model.UserList = model.UserList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+                    ViewBag.SortOrder = SortOrder;
+                    ViewBag.PageNumber = PageNumber;
+                }
             }
             catch (Exception ex)
             {
@@ -596,7 +616,7 @@ namespace HRM.WebAPI.Controllers
 
         [HttpPost]
         [Authenticate]
-        public ActionResult AssignList(VMUserModel model)
+        public ActionResult AssignList(VMUserModel model,int?PageNumber,String SortOrder,string SortBy)
         {
             try
             {
@@ -616,6 +636,18 @@ namespace HRM.WebAPI.Controllers
 
                 if (model.UserList == null || model.UserList.Count == 0)
                     ModelState.AddModelError("", "No Records Found");
+                else
+                {
+
+                    if (PageNumber == null)
+                        PageNumber = 1;
+                    //pagination
+                    double PageCount = model.UserList.Count;
+                    ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                    model.UserList = model.UserList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+                    ViewBag.SortOrder = SortOrder;
+                    ViewBag.PageNumber = PageNumber;
+                }
             }
             catch (Exception ex)
             {
@@ -624,7 +656,13 @@ namespace HRM.WebAPI.Controllers
             AssignShiftPrerequisiteData();
             return View(model);
         }
+        public void ApplyAssignListPagination(int PageNumber, List<User> UserList)
+        {
 
+            double PageCount = UserList.Count;
+            ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+            UserList = UserList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+        }
         [HttpGet]
         [Authenticate]
         public ActionResult AssignHistory(string Id)

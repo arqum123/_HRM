@@ -31,6 +31,20 @@ namespace HRM.Repository
             if (ds == null || ds.Tables.Count != 1 || ds.Tables[0].Rows.Count == 0) return null;
             return CollectionFromDataSet<Attendance>(ds, AttendanceFromDataRow);
         }
+        public List<Attendance> GetAttendanceByUserIdAndDateRange(DateTime dtStart, DateTime dtEnd, Int32? UserID, string SelectClause = null)
+        {
+            string sql = string.IsNullOrEmpty(SelectClause) ? GetAttendanceSelectClause() : (string.Format("Select [{0}] ", SelectClause));
+            sql += "from Attendance with (nolock) where [Date] between @StartDate and @EndDate AND UserID = @UserID  AND IsActive=1 ";
+            SqlParameter[] parameterArray = new SqlParameter[]
+            {
+                new SqlParameter("@StartDate", dtStart)
+                , new SqlParameter("@EndDate", dtEnd)
+                , new SqlParameter("@UserID", UserID)
+            };
+            DataSet ds = SqlHelper.ExecuteDataset(this.ConnectionString, CommandType.Text, sql, parameterArray);
+            if (ds == null || ds.Tables.Count != 1 || ds.Tables[0].Rows.Count == 0) return null;
+            return CollectionFromDataSet<Attendance>(ds, AttendanceFromDataRow);
+        }
         public List<Attendance> GetAttendanceByUserIDAndDate(int userId, DateTime dtAttendance, string SelectClause = null)
         {
             string sql = string.IsNullOrEmpty(SelectClause) ? GetAttendanceSelectClause() : (string.Format("Select [{0}] ", SelectClause));
@@ -89,6 +103,18 @@ namespace HRM.Repository
             if (UserID.HasValue)
                 sqlparams.Add(new SqlParameter() { ParameterName = "@UserId", Value = UserID });
             return SqlHelper.ExecuteDataset(this.ConnectionString, CommandType.StoredProcedure, sql, sqlparams.ToArray());
+
+        }
+        public DataSet GetAttendanceAndAttendanceStatusByUserIdAndDateRange(DateTime StartDate, DateTime EndDate, Int32? UserID)
+        {
+            string sql = "SELECT_AttendanceAndAttendanceStatusByUserIdAndDateRange";
+            List<SqlParameter> sqlparams = new List<SqlParameter>();
+            sqlparams.Add(new SqlParameter() { ParameterName = "@StartDate", Value = StartDate });
+            sqlparams.Add(new SqlParameter() { ParameterName = "@EndDate", Value = EndDate });
+            if (UserID.HasValue)
+                sqlparams.Add(new SqlParameter() { ParameterName = "@UserId", Value = UserID });
+            return SqlHelper.ExecuteDataset(this.ConnectionString, CommandType.StoredProcedure, sql, sqlparams.ToArray());
+
         }
 
         public DataSet GetAttendanceByDateAndUser(DateTime dtStart, DateTime dtEnd, Int32? UserID, Int32? BranchID)

@@ -1,6 +1,4 @@
-﻿
-
-@model HRM.Core.Model.PracticeVMMonthlyReport
+﻿@model HRM.Core.Model.PracticeVMMonthlyReport
 @{
     ViewBag.Title = "DailyAttendanceReport";
 }
@@ -19,14 +17,19 @@
         @Html.ValidationSummary(true)
 
         <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
-
-
         <div class="form-group">
-            <label for="UserID" class="col-sm-4 control-label lblforinput">Employee: </label>
+            <label for="UserName" class="col-sm-4 control-label lblforinput">Employee</label>
             <div class="col-sm-6">
-                @Html.DropDownListFor(m => m.UserId, ViewBag.User as SelectList, "All Employee", new { @class = "form-control" })
+                @Html.TextBoxFor(m => m.UserName, new { maxlength = "200", @class = "form-control", placeholder = "User Name" })
             </div>
         </div>
+
+        @*<div class="form-group">
+                <label for="UserID" class="col-sm-4 control-label lblforinput">Employee: </label>
+                <div class="col-sm-6">
+                    @Html.DropDownListFor(m => m.UserId, ViewBag.User as SelectList, "All Employee", new { @class = "form-control" })
+                </div>
+            </div>*@
 
         <div class="form-group">
             <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Department: </label>
@@ -60,7 +63,7 @@
         @*<input type="button" value="View Report" class="btn btn-block btn-success" onclick="PopupCenter('@ViewBag.DailySummmaryReportUrl','DailySummaryReport', 595 ,842 )" style="width:120px;float:right" />
             <p>&nbsp;</p>*@
 
-        <table class="table table-striped table-hover datatable">
+        <table class="table table-striped table-hover datatable" id="myTable">
             <thead>
                 <tr>
                     <th>SNO</th>
@@ -92,7 +95,7 @@
                         </td>
                         <td>
 
-                            <a href="/Attendance/DailyDetailReport?Date=@Model.PracticeVMReportList[i].Date&UserId=@Model.PracticeVMReportList[i].UserId&DepartId=@Model.PracticeVMReportList[i].DepartmentId">@Model.PracticeVMReportList[i].FirstName</a>
+                            <a target="_blank" href="/Attendance/DailyDetailReport?Date=@Model.PracticeVMReportList[i].Date&UserId=@Model.PracticeVMReportList[i].UserId&DepartId=@Model.PracticeVMReportList[i].DepartmentId">@Model.PracticeVMReportList[i].FirstName</a>
 
 
                         </td>
@@ -102,25 +105,39 @@
                         </td>
                         <td>
 
-                            @Model.PracticeVMReportList[i].Date.ToString("MMM dd, yyyy")
+                            @Model.PracticeVMReportList[i].Date.ToString("dd-MMM-yyyy")
                         </td>
-                        <td>
+                        @if (@Model.PracticeVMReportList[i].ATStartDate != DateTime.MinValue)
+                        {
+                            <td>
 
-                            @Model.PracticeVMReportList[i].ATStartDate.ToString("hh:mm tt")
-                        </td>
+                                @Model.PracticeVMReportList[i].ATStartDate.ToString("hh:mm tt")
+                            </td>
+                        }
+                        else
+                        {
+                            <td>-</td>
+                        }
+                        @if (@Model.PracticeVMReportList[i].ATEndDate != DateTime.MinValue)
+                        {
 
-                        <td>
+                            <td>
 
-                            @Model.PracticeVMReportList[i].ATEndDate.ToString("hh:mm tt")
+                                @Model.PracticeVMReportList[i].ATEndDate.ToString("hh:mm tt")
 
-                        </td>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>-</td>
+                        }
 
                         <td>
 
                             @Model.PracticeVMReportList[i].WorkingMinutes
                         </td>
                         <td>
-                        
+
                             @Model.PracticeVMReportList[i].TotalMinutes
                         </td>
 
@@ -168,11 +185,53 @@
             }
 
         </table>
-       
-    }
+                                if (ViewBag.TotalPages != null)
+                                {
+                                    double TotalPages = ViewBag.TotalPages;
+                                    if (TotalPages > 1)
+                                    {
+            <ul class="pagination">
+                <li>@Html.ActionLink("First", "DailyAttendanceReport", new { Date = Model.StartDate, PageNumber = 1 })</li>
+
+                @if (ViewBag.PageNumber == 1)
+                {
+                    <li>@Html.ActionLink("Previous", "DailyAttendanceReport", new { Date = Model.StartDate, PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Previous", "DailyAttendanceReport", new { Date = Model.StartDate, PageNumber = ViewBag.PageNumber - 1 })</li>
+                }
+
+                @for (int i = 1; i <= TotalPages; i++)
+                {
 
 
-    @*<iframe src="~/Reports/web_forms/daily_summary.aspx" id="if_daily_sum" width="97%" height="760"></iframe>*@
+                    if (i == ViewBag.PageNumber)
+                    {
+                        <li class="active">@Html.ActionLink(i.ToString(), "DailyAttendanceReport", new { Date = Model.StartDate, PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink(i.ToString(), "DailyAttendanceReport", new { Date = Model.StartDate, PageNumber = i.ToString() })</li>
+                        @*<li><a href="/Attendance/MonthlyAttendanceReport?SortOrder=Asc&SortBy=Date&StartDate=@Model.StartDate&EndDate=@Model.EndDate&PageNumber?=@i">@i</a></li>*@
+                    }
+
+
+                }
+                @if (ViewBag.PageNumber == TotalPages)
+                {
+                    <li>@Html.ActionLink("Next", "DailyAttendanceReport", new { Date = Model.StartDate, PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Next", "DailyAttendanceReport", new { Date = Model.StartDate, PageNumber = ViewBag.PageNumber + 1 })</li>
+                }
+                <li>@Html.ActionLink("Last", "DailyAttendanceReport", new { Date = Model.StartDate, PageNumber = TotalPages })</li>
+            </ul>
+                                        }
+                                    }
+
+                                }
 </div>
 <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
 
@@ -253,4 +312,8 @@
     }
 </script>
 
-
+<script>
+            $(document).ready(function () {
+                $('#myTable').DataTable();
+            });
+</script>

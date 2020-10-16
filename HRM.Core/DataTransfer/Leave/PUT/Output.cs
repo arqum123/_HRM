@@ -33,8 +33,14 @@ namespace HRM.Core.DataTransfer.Leave
 
 		[DataMember (EmitDefaultValue=false)]
 		public System.Boolean? IsActive{ get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public System.Boolean? IsApproved { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public System.Boolean? IsReject { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public System.String AdminReason { get; set; }
 
-		[IgnoreDataMember]
+        [IgnoreDataMember]
 		public System.DateTime? UpdateDate{ get; set;}
 
 
@@ -61,6 +67,16 @@ namespace HRM.Core.DataTransfer.Leave
 			 get {if(CreationDate.HasValue) return CreationDate.Value.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); else return string.Empty;}
 			 set  {  DateTime date = new DateTime(); if (DateTime.TryParse(value, out date)) { CreationDate = date.ToUniversalTime();  }  } 
 		}
+        [IgnoreDataMember]
+        public System.DateTime? LeaveDateEnd { get; set; }
 
-	}	
+
+        [DataMember(EmitDefaultValue = false)]
+        public string LeaveDateEndStr
+        {
+            get { if (LeaveDateEnd.HasValue) return LeaveDateEnd.Value.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); else return string.Empty; }
+            set { DateTime date = new DateTime(); if (DateTime.TryParse(value, out date)) { LeaveDateEnd = date.ToUniversalTime(); } }
+        }
+
+    }
 }

@@ -9,6 +9,8 @@ using HRM.Core.DataTransfer;
 using HRM.Core.DataTransfer.Leave;
 using Validation;
 using System.Linq;
+using HRM.Core.Model;
+using System.Data;
 
 namespace HRM.Core.Service
 {
@@ -35,14 +37,13 @@ namespace HRM.Core.Service
             return this._iLeaveRepository.GetLeaveAdvanceSearchColumns();
            
         }
-        
 
-		public virtual List<Leave> GetLeaveByUserId(System.Int32? UserId)
+        public virtual List<Leave> GetLeaveByUserId(System.Int32? UserId)
 		{
 			return _iLeaveRepository.GetLeaveByUserId(UserId);
 		}
 
-		public virtual List<Leave> GetLeaveByLeaveTypeId(System.Int32? LeaveTypeId)
+        public virtual List<Leave> GetLeaveByLeaveTypeId(System.Int32? LeaveTypeId)
 		{
 			return _iLeaveRepository.GetLeaveByLeaveTypeId(LeaveTypeId);
 		}
@@ -66,8 +67,11 @@ namespace HRM.Core.Service
 		{
 			return _iLeaveRepository.DeleteLeave(Id);
 		}
-
-		public List<Leave> GetAllLeave()
+        public virtual System.Data.DataSet GetLeaveByUserIdAndDateRangeSP(int? UserID, DateTime StartDate, DateTime EndDate) //NewModfyPayroll
+        {
+            return _iLeaveRepository.GetLeaveByUserIdAndDateRangeSP(UserID,StartDate,EndDate);
+        }
+        public List<Leave> GetAllLeave()
 		{
 			return _iLeaveRepository.GetAllLeave();
 		}
@@ -222,7 +226,103 @@ namespace HRM.Core.Service
             }
             return tranfer;
         }
-	}
-	
-	
+        public List<VMPendingViewAllLeaves> GetAllPendingLeavesByDateRange(int? UserID, int? DepartmentID, DateTime StartDate, DateTime EndDate)
+        {
+
+            List<VMPendingViewAllLeaves> allLeaves = new List<VMPendingViewAllLeaves>();
+            DataSet dsLeave = _iLeaveRepository.GetPendingLeavesByDateRangeSP(UserID,  DepartmentID,  StartDate,  EndDate);
+            if (dsLeave != null && dsLeave.Tables.Count > 0 && dsLeave.Tables[0] != null)
+            {
+                foreach (DataRow dr in dsLeave.Tables[0].Rows)
+                {
+                    VMPendingViewAllLeaves objLeaves = new VMPendingViewAllLeaves()
+                    {
+                        UserID = IntNull(dr["UserID"]),
+                        UserDepartmentID = IntNull(dr["UserDepartmentID"]),
+                        DepartmentID = IntNull(dr["DepartmentID"]),
+                        DepartmentName = StringNull(dr["DepartmentName"]),
+                        EmpName = StringNull(dr["EmpName"]),
+                        LeaveID = IntNull(dr["LeaveID"]),
+                        LeaveTypeID = IntNull(dr["LeaveTypeID"]),
+                        Reason = StringNull(dr["Reason"]),
+                        IsApproved = BooleanNull(dr["IsApproved"]),
+                        IsReject = BooleanNull(dr["IsReject"]),
+                        LeaveTypeName = StringNull(dr["LeaveTypeName"]),
+                        AdminReason = StringNull(dr["AdminReason"]),
+                        Date = Convert.ToDateTime(dr["Date"]),
+                    };
+                    allLeaves.Add(objLeaves);
+                }
+            }
+            return allLeaves;
+        }
+        public List<VMApprovedAllLeaves> GetApprovedLeavesByDateRange(int? UserID, int? DepartmentID, DateTime StartDate, DateTime EndDate)
+        {
+            List<VMApprovedAllLeaves> allLeaves = new List<VMApprovedAllLeaves>();
+            DataSet dsLeave = _iLeaveRepository.GetApprovedLeavesByDateRangeSP(UserID, DepartmentID, StartDate, EndDate);
+            if (dsLeave != null && dsLeave.Tables.Count > 0 && dsLeave.Tables[0] != null)
+            {
+                foreach (DataRow dr in dsLeave.Tables[0].Rows)
+                {
+                    VMApprovedAllLeaves objLeaves = new VMApprovedAllLeaves()
+                    {
+                        UserID = IntNull(dr["UserID"]),
+                        UserDepartmentID = IntNull(dr["UserDepartmentID"]),
+                        DepartmentID = IntNull(dr["DepartmentID"]),
+                        DepartmentName = StringNull(dr["DepartmentName"]),
+                        EmpName = StringNull(dr["EmpName"]),
+                        LeaveID = IntNull(dr["LeaveID"]),
+                        LeaveTypeID = IntNull(dr["LeaveTypeID"]),
+                        Reason = StringNull(dr["Reason"]),
+                        IsApproved = BooleanNull(dr["IsApproved"]),
+                        IsReject = BooleanNull(dr["IsReject"]),
+                        AdminReason = StringNull(dr["AdminReason"]),
+                        LeaveTypeName = StringNull(dr["LeaveTypeName"]),
+                        Date = Convert.ToDateTime(dr["Date"]),
+                    };
+                    allLeaves.Add(objLeaves);
+                }
+            }
+            return allLeaves;
+        }
+        public List<Leave> GetLeaveByUserIdAndDateRange(int? UserID, DateTime StartDate, DateTime EndDate)
+        {
+            List<Leave> allLeaves = new List<Leave>();
+            DataSet dsLeave = _iLeaveRepository.GetLeaveByUserIdAndDateRangeSP(UserID, StartDate, EndDate);
+            if (dsLeave != null && dsLeave.Tables.Count > 0 && dsLeave.Tables[0] != null)
+            {
+                foreach (DataRow dr in dsLeave.Tables[0].Rows)
+                {
+                    Leave objLeaves = new Leave()
+                    {
+                        UserId = IntNull(dr["UserID"]),
+                        Date = Convert.ToDateTime(dr["Date"]),
+                        Reason = dr["Reason"].ToString(),
+                        LeaveTypeId = IntNull(dr["LeaveTypeId"]),
+                        IsActive = BooleanNull(dr["IsActive"]),
+                        UpdateDate = Convert.ToDateTime(dr["UpdateDate"]),
+                        UpdatedBy = IntNull(dr["UpdatedBy"]),
+                        UserIp = dr["UserIp"].ToString(),
+                        CreationDate = Convert.ToDateTime(dr["CreationDate"]),
+                        IsApproved = BooleanNull(dr["IsApproved"]),
+                        IsReject = BooleanNull(dr["IsReject"]),
+                        AdminReason = StringNull(dr["AdminReason"]),
+                    };
+                    allLeaves.Add(objLeaves);
+                }
+            }
+            return allLeaves;
+        }
+        
+        private string StringNull(object val) { if (val == null || val == DBNull.Value) return ""; else return val.ToString(); }
+        private DateTime? DateNull(object val) { if (val == null || val == DBNull.Value) return null; else return Convert.ToDateTime(val); }
+        private Double DoubleNull(object val) { if (val == null || val == DBNull.Value) return 0.0; else return Convert.ToDouble(val); }
+
+        private Decimal DecimalNull(object val) { if (val == null || val == DBNull.Value) return 0; else return Convert.ToDecimal(val); }
+        private Int32 IntNull(object val) { if (val == null || val == DBNull.Value) return 0; else return Convert.ToInt32(val); }
+        private Boolean BooleanNull(object val) { if (val == null || val == DBNull.Value) return false; else return Convert.ToBoolean(val); }
+
+    }
+
+
 }

@@ -69,36 +69,48 @@
                         <th style="width: 30%">Amount</th>
                     </tr>
                 </thead>
-                @*<tbody>
+                <tbody>
                     @if (Model.Payroll.QuarterDayCount > 0)
                     {
+                        if(Model.Payroll.QuarterDayAmount > 0)
+                        { 
                         <tr>
                             <td>Quarter Day - @Model.Payroll.QuarterDayCount Day(s)</td>
-                            <td class="ded nmbr">@Model.Payroll.QuarterDayAmount</td>
+                            <td class="add addVar nmbr">@Model.Payroll.QuarterDayAmount</td>
                         </tr>
+                        }
                     }
                     @if (Model.Payroll.HalfDayCount > 0)
                     {
+                        if(Model.Payroll.HalfDayAmount > 0)
+                        { 
                         <tr>
                             <td>Half Day - @Model.Payroll.HalfDayCount Day(s)</td>
-                            <td class="ded nmbr">@Model.Payroll.HalfDayAmount</td>
+                            <td class="add addVar nmbr">@Model.Payroll.HalfDayAmount</td>
                         </tr>
+                        }
                     }
                     @if (Model.Payroll.FullDayCount > 0)
                     {
+                        if(Model.Payroll.FullDayAmount > 0)
+                        { 
                         <tr>
                             <td>Full Day - @Model.Payroll.FullDayCount Day(s)</td>
-                            <td class="ded nmbr">@Model.Payroll.FullDayAmount</td>
+                            <td class="add addVar nmbr">@Model.Payroll.FullDayAmount</td>
                         </tr>
+                        }
                     }
                     @if (Model.Payroll.AbsentDayCount > 0)
                     {
+                        if(Model.Payroll.AbsentDayCount > 0)
+                        { 
                         <tr>
                             <td>Absent - @Model.Payroll.AbsentDayCount Day(s)</td>
-                            <td class="ded nmbr">@Model.Payroll.AbsentDayAmount</td>
+                            <td class="add addVar nmbr">@Model.Payroll.AbsentDayAmount</td>
                         </tr>
+                        }
                     }
-                </tbody>*@
+                </tbody>
                 <tfoot>
                     <tr>
                         <td>Total Addition</td>
@@ -117,31 +129,43 @@
                 <tbody>
                     @if (Model.Payroll.QuarterDayCount > 0)
                     {
+                        if(Model.Payroll.QuarterDayAmount < 0)
+                        { 
                         <tr>
                             <td>Quarter Day - @Model.Payroll.QuarterDayCount Day(s)</td>
                             <td class="ded nmbr">@Model.Payroll.QuarterDayAmount</td>
                         </tr>
+                        }
                     }
                     @if (Model.Payroll.HalfDayCount > 0)
                     {
+                        if(Model.Payroll.HalfDayAmount < 0)
+                        { 
                         <tr>
                             <td>Half Day - @Model.Payroll.HalfDayCount Day(s)</td>
                             <td class="ded nmbr">@Model.Payroll.HalfDayAmount</td>
                         </tr>
+                        }
                     }
                     @if (Model.Payroll.FullDayCount > 0)
                     {
+                        if(Model.Payroll.FullDayAmount < 0)
+                        { 
                         <tr>
                             <td>Full Day - @Model.Payroll.FullDayCount Day(s)</td>
                             <td class="ded nmbr">@Model.Payroll.FullDayAmount</td>
                         </tr>
+                        }
                     }
                     @if (Model.Payroll.AbsentDayCount > 0)
                     {
+                        if(Model.Payroll.AbsentDayCount < 0)
+                        { 
                         <tr>
                             <td>Absent - @Model.Payroll.AbsentDayCount Day(s)</td>
                             <td class="ded nmbr">@Model.Payroll.AbsentDayAmount</td>
                         </tr>
+                        }
                     }
                 </tbody>
                 <tfoot>
@@ -178,16 +202,19 @@
     }
 
     $(document).ready(function () {
-        var addition = 0, deduction = 0;
+        var addition = 0, deduction = 0,additionVar=0;
         $('.add').each(function () {
-            addition += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+            addition += parseFloat($(this).text()); // Or this.innerHTML, this.innerText
+        });
+        $('.addVar').each(function () {
+            additionVar += parseFloat($(this).text()); // Or this.innerHTML, this.innerText
         });
         $('.ded').each(function () {
             deduction += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
         });
-
         $('#GrossSalary').html(addition.toFixed(2));
         $('#TotalDeductions').html(deduction.toFixed(2));
+        $('#TotalAddition').html(additionVar.toFixed(2));
 
         var netSalary = parseInt($('#NetSalary').html()).toFixed(0);
 

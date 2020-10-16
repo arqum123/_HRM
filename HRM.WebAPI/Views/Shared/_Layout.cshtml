@@ -10,7 +10,6 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/images/icons/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/assets/images/icons/apple-touch-icon-57-precomposed.png">
     <link rel="shortcut icon" href="/assets/images/icons/favicon.png">
-
     <style>
         .disabledsidebar {
             pointer-events: none;
@@ -62,12 +61,17 @@
     <script src="/Scripts/jquery-ui-1.8.20.js"></script>
     <script src="/Scripts/jquery.validate.js"></script>
     <script src="/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>@ViewBag.Title</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
-    @*@Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")*@
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+    <!-- Latest compiled JavaScript -->
+    @*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>*@
 </head>
 <body>
     <div id="loading">
@@ -81,21 +85,33 @@
                     <div class="user-profile dropdown">
                         <a href="#" title="" class="user-ico clearfix" data-toggle="dropdown">
                             <img width="36" src="@(HRM.Core.Helper.AuthBase.UserImage == "" ? "/assets/images/anonymoususer.jpg": HRM.Core.Helper.AuthBase.UserImage)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px" alt="">
-                            <i class="glyph-icon icon-chevron-down"></i></a>
+                            <i class="glyph-icon icon-chevron-down"></i>
+                        </a>
+     
                         <div class="dropdown-menu pad0B float-right">
+
                             <div class="box-sm">
                                 <div class="login-box clearfix">
                                     <div class="user-img">
                                         <img src="@(HRM.Core.Helper.AuthBase.UserImage == "" ? "/assets/images/anonymoususer.jpg": HRM.Core.Helper.AuthBase.UserImage)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" alt="">
                                     </div>
-                                    <div class="user-info"><span>@HRM.Core.Helper.AuthBase.UserFullName<i>@HRM.Core.Helper.AuthBase.UserDepartmentName</i></span> <a href="/User?id=@HRM.Core.Helper.AuthBase.UserId" title="">Edit profile</a></div>
+                                    <div class="user-info">
+                                        <span>@HRM.Core.Helper.AuthBase.UserFullName<i>@HRM.Core.Helper.AuthBase.UserDepartmentName</i></span>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+
+                                            <a href="/User?id=@HRM.Core.Helper.AuthBase.UserId" title="">Edit profile</a>
+                                        }
+                                    </div>
+
                                 </div>
-                                <div class="pad5A button-pane button-pane-alt text-center"><a href="/Login" class="btn display-block font-normal btn-danger"><i class="glyph-icon icon-power-off"></i>Logout</a></div>
+                                <div class="pad5A button-pane button-pane-alt text-center"><a href="/Login" class="btn display-block font-normal btn-danger"><i class="glyph-icon icon-power-off"></i> Logout</a></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+           
             <div id="page-sidebar" class="rm-transition">
                 <div id="page-sidebar-wrapper">
                     <div id="sidebar-top">
@@ -106,110 +122,179 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="tab-content">
                             <div class="tab-pane clearfix fade active in">
                                 <div class="user-profile-sm clearfix">
                                     @Html.Action("PartialBranch", "Home")
+
                                 </div>
                             </div>
                         </div>
+
                     </div>
                     <div id="sidebar-menu">
                         <ul>
 
-                            @*<li class="sidebar-branch">@Html.Action("PartialBranch", "Home")</li>*@
-
                             <li class="divider"></li>
-
                             <li><a href="/Home" title="Dashboard"><i class="glyph-icon icon-home"></i><span>Dashboard</span></a></li>
                             <li class="divider"></li>
-                            <li><a href="#" title="Layouts"><i class="glyph-icon icon-user"></i><span>Human Resource</span></a>
-                                <ul>
-                                    <li class="header"><span>Manage Departments</span></li>
-                                    <li><a href="/Department"><span>Add New Department</span></a></li>
-                                    <li><a href="/Department/DepartmentList"><span>View All Departments</span></a></li>
-                                    <li class="header"><span>Manage User</span></li>
-                                    <li><a href="/User"><span>Add New User</span></a></li>
-                                    <li><a href="/User/UserList"><span>View All Users</span></a></li>
-                                    <li class="header"><span>Leave Management</span></li>
-                                    <li><a href="/Leave/ViewAllUsers"><span>View/Mark Leaves</span></a></li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li>
+                                    <a href="#" title="Layouts"><i class="glyph-icon icon-user"></i><span>Human Resource</span></a>
+                                    <ul>
+                                        <li class="header"><span>Manage Departments</span></li>
+                                        <li><a href="/Department"><span>Add New Department</span></a></li>
+                                        <li><a href="/Department/DepartmentList"><span>View All Departments</span></a></li>
+                                        <li class="header"><span>Manage User</span></li>
+                                        <li><a href="/User"><span>Add New User</span></a></li>
+                                        <li><a href="/User/UserList"><span>View All Users</span></a></li>
+                                        <li class="header"><span>Leave Management</span></li>
+                                        <li><a href="/Leave/ManageLeaves"><span>Manage Leaves</span></a></li>
+                                        <li><a href="/Leave/ApprovedLeaves"><span>Approved Leaves</span></a></li>
+                                        <li><a href="/Leave/ViewAllUsers"><span>View/Mark Leaves</span></a></li>
 
-                                    <li class="header"><span>Manage Attendance</span></li>
-                                    <li><a href="/Attendance/AddAttendance"><span>Add Attendance</span></a></li>
-                                 </ul>
-                            </li>
-                            <li><a href="#" title="Applications"><i class="glyph-icon icon-history"></i><span>Shift Management</span></a>
-                                <ul>
-                                    <li class="header"><span>Manage Shifts</span></li>
-                                    <li><a href="/Shift"><span>Add New Shift</span></a></li>
-                                    <li><a href="/Shift/ShiftList"><span>View All Shifts</span></a></li>
-                                </ul>
-                                <ul>
-                                    <li class="header"><span>Manage Shift Variables</span></li>
-                                    <li><a href="/Shift/VariableList"><span>Mark Shift Variables</span></a></li>
-                                </ul>
-                                <ul>
-                                    <li class="header"><span>Assign Shift To User</span></li>
-                                    <li><a href="/Shift/Assign"><span>Assign New Shift To User</span></a></li>
-                                    <li><a href="/Shift/AssignList"><span>View All Assigned Shifts</span></a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#" title="Applications"><i class="glyph-icon icon-flag"></i><span>Gazetted Holiday</span></a>
-                                <ul>
-                                    <li class="header"><span>Gazetted Holiday</span></li>
-                                    <li><a href="/Holiday"><span>Add New Holiday</span></a></li>
-                                    <li><a href="/Holiday/HolidayList"><span>View All Holidays</span></a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#" title="Applications"><i class="glyph-icon icon-usd"></i><span>Payroll Management</span></a>
-                                <ul>
-                                    <li class="header"><span>Manage Payroll Variables</span></li>
-                                    <li><a href="/Payroll/AddPayrollVariable"><span>Add New Payroll Variable</span></a></li>
-                                    
-                                    <li><a href="/Payroll/Variable"><span>Payroll Variable</span></a></li>
-                                    <li><a href="/Payroll/VariableList"><span>View All Payroll Variables</span></a></li>
-                                </ul>
-                                <ul>
-                                    <li class="header"><span>Payroll</span></li>
-                                    <li><a href="/Payroll/Generate"><span>Run Payroll</span></a></li>
-                                    <li><a href="/Payroll/ModifyPayroll"><span>Modify Payroll</span></a></li>
-                                    @*<li><a href="/Payroll/PayrollEdit"><span>Edit Payroll</span></a></li>*@
-                                    <li><a href="/Payroll"><span>View Final Payroll</span></a></li>
-                                </ul>
-                                <ul>
-                                    <li class="header"><span>View Payslip</span></li>
-                                    <li><a href="/Payroll/Payslip"><span>View Payslip</span></a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#" title="Layouts"><i class="glyph-icon icon-signal"></i><span>Attendance Reports</span></a>
-                                <ul>
-                                    <li class="header"><span>Daily Reports</span></li>
-                                    <li><a href="/Attendance/DailyAttendanceUpdate"><span>Daily Attendance Update</span></a></li> @*New*@
-                                    <li><a href="/Attendance/DailyAttendanceReport"><span>Daily Attendance Report</span></a></li> @*New*@
-                                    @*<li><a href="/Attendance/MonthlyAttendanceSummary"><span>Monthly Attendance Report New</span></a></li>
-                                      <li><a href="/Attendance/DailySummary"><span>Daily Attendance Report</span></a></li>*@
-                                    <li class="header"><span>Monthly Reports</span></li>
-                                    <li><a href="/Attendance/MonthlyAttendanceReport"><span>Monthly Attendance Report</span></a></li>
-                                     <li class="header"><span>Absent Reports</span></li>
-                                     <li><a href="/Attendance/AbsentReport"><span>Absent Report</span></a></li>
-                                    @*<li><a href="/Attendance/MonthlySummary"><span>Monthly Attendance Report</span></a></li>
-                                       <li><a href="/Attendance/Absent"><span>Absent Report</span></a></li>*@
-                                </ul>
-                            </li>
-                            <li><a href="#" title="Layouts"><i class="glyph-icon icon-gear"></i><span>System</span></a>
-                                <ul>
-                                    <li class="header"><span>Device</span></li>
-                                    <li><a href="/Configuration/DeviceConfig"><span>Add New Device</span></a></li>
-                                    <li><a href="/Configuration/Device"><span>View All Device</span></a></li>
-                                </ul>
-                                <ul>
-                                    <li><a href="/Attendance/NewAddAttendance"><span>Add Attendance</span></a></li>
-                                    <li><a href="/Attendance/DailyAttendanceUpdate"><span>Add Attendance</span></a></li>  
-                                    <li><a href="/Attendance/Browse"><span>Browse Data</span></a></li>
-                                    <li><a href="/Configuration/Index"><span>Configuration</span></a></li>
-                                    <li><a href="/Branch"><span>Branch</span></a></li>
-                                </ul>
-                            </li>
+
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="#" title="Applications"><i class="glyph-icon icon-history"></i><span>Shift Management</span></a>
+                                    <ul>
+                                        <li class="header"><span>Manage Shifts</span></li>
+                                        <li><a href="/Shift"><span>Add New Shift</span></a></li>
+                                        <li><a href="/Shift/ShiftList"><span>View All Shifts</span></a></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="header"><span>Manage Shift Variables</span></li>
+                                        <li><a href="/Shift/VariableList"><span>Mark Shift Variables</span></a></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="header"><span>Assign Shift To User</span></li>
+                                        <li><a href="/Shift/Assign"><span>Assign New Shift To User</span></a></li>
+                                        <li><a href="/Shift/AssignList"><span>View All Assigned Shifts</span></a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#" title="Applications"><i class="glyph-icon icon-flag"></i><span>Gazetted Holiday</span></a>
+                                    <ul>
+                                        <li class="header"><span>Gazetted Holiday</span></li>
+                                        <li><a href="/Holiday"><span>Add New Holiday</span></a></li>
+                                        <li><a href="/Holiday/HolidayList"><span>View All Holidays</span></a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#" title="Applications"><i class="glyph-icon icon-usd"></i><span>Payroll Management</span></a>
+                                    <ul>
+                                        <li class="header"><span>Manage Payroll Variables</span></li>
+                                        <li><a href="/Payroll/AddPayrollVariable"><span>Add New Payroll Variable</span></a></li>
+
+                                        <li><a href="/Payroll/Variable"><span>Payroll Variable</span></a></li>
+                                        <li><a href="/Payroll/VariableList"><span>View All Payroll Variables</span></a></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="header"><span>Payroll</span></li>
+                                        @*<li><a href="/Payroll/Generate"><span>Run Payroll</span></a></li>*@
+                                        <li><a href="/Payroll/GeneratePayroll"><span>Generate Payroll</span></a></li>
+                                        <li><a href="/Payroll/GeneratePayrollForUser"><span>Generate Individual Payroll</span></a></li>
+                                        <li><a href="/Payroll/ModifyPayroll"><span>Modify Payroll</span></a></li>
+                                        <li><a href="/Payroll"><span>View Final Payroll</span></a></li>
+                                        @*<li><a href="/Payroll/PayrollEdit"><span>Edit Payroll</span></a></li>*@
+
+                                    </ul>
+                                    <ul>
+                                        <li class="header"><span>View Payslip</span></li>
+                                        <li><a href="/Payroll/Payslip"><span>View Payslip</span></a></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="header"><span>Tickets</span></li>
+                                        <li><a href="/Payroll/Ticket"><span>Manage Ticket</span></a></li>
+                                        <li><a href="/Payroll/TicketHistory"><span>Ticket History</span></a></li>
+                                    </ul>
+                                </li>
+                            }
+                            @if (User.IsInRole("Employee"))
+                            {
+
+
+                                <li>
+                                    <a href="#" title="Layouts"><i class="glyph-icon icon-signal"></i><span>Attendance</span></a>
+                                    <ul>
+                                        <li><a href="/Employee/DailyAttendance"><span>Daily Attendance</span></a></li> @*New*@
+                                        <li><a href="/Employee/MonthlyAttendance"><span>Monthly Attendance</span></a></li> @*New*@
+                                        <li><a href="/Employee/AbsentReport"><span>Absent Report</span></a></li> @*New*@
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#" title="Layouts"><i class="glyph-icon icon-usd"></i><span>Payroll</span></a>
+                                    <ul>
+                                        <li><a href="/Employee/Payroll"><span>Check Payroll</span></a></li> @*New*@
+
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#" title="Layouts"><i class="glyph-icon icon-history"></i><span>Shifts</span></a>
+                                    <ul>
+                                        <li><a href="/Employee/CurrentShift"><span>Current Shift</span></a></li> @*New*@
+                                        <li><a href="/Employee/ShiftHistory"><span>Assigned Shifts</span></a></li> @*New*@
+
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#" title="Layouts"><i class="glyph-icon icon-user"></i><span>Human Resource</span></a>
+                                    <ul>
+                                        <li class="header"><span>Leaves</span></li>
+                                        <li><a href="/Employee/Leave"><span>Apply Leave</span></a></li> @*New*@
+                                        <li class="header"><span>Tickets</span></li>
+                                        <li><a href="/Employee/TicketHistory"><span>Ticket History</span></a></li> @*New*@
+                                        <li class="header"><span>Holidays</span></li>
+                                        <li><a href="/Employee/HolidayList"><span>Holiday List</span></a></li> @*New*@
+                                    </ul>
+                                </li>
+                            }
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li>
+
+                                    <a href="#" title="Layouts"><i class="glyph-icon icon-signal"></i><span>Attendance Reports</span></a>
+                                    <ul>
+                                        <li class="header"><span>Daily Reports</span></li>
+                                        @*<li><a href="/Attendance/DailyAttendanceUpdate"><span>Daily Attendance Update</span></a></li> @*New*@
+                                        <li><a href="/Attendance/DailyAttendanceReport"><span>Daily Attendance Report</span></a></li> @*New*@
+                                        @*<li><a href="/Attendance/MonthlyAttendanceSummary"><span>Monthly Attendance Report New</span></a></li>
+                                    <li><a href="/Attendance/DailySummary"><span>Daily Attendance Report</span></a></li>*@
+                                        <li class="header"><span>Monthly Reports</span></li>
+                                        <li><a href="/Attendance/MonthlyAttendanceReport"><span>Monthly Attendance Report</span></a></li>
+                                        <li class="header"><span>Absent Reports</span></li>
+                                        <li><a href="/Attendance/AbsentReport"><span>Absent Report</span></a></li>
+                                        @*<li><a href="/Attendance/MonthlySummary"><span>Monthly Attendance Report</span></a></li>
+                                    <li><a href="/Attendance/Absent"><span>Absent Report</span></a></li>*@
+                                    </ul>
+
+                                </li>
+                                <li>
+                                    <a href="#" title="Layouts"><i class="glyph-icon icon-gear"></i><span>System</span></a>
+                                    <ul>
+                                        <li class="header"><span>Device</span></li>
+                                        <li><a href="/Configuration/DeviceConfig"><span>Add New Device</span></a></li>
+                                        <li><a href="/Configuration/Device"><span>View All Device</span></a></li>
+                                    </ul>
+                                    <ul>
+
+
+                                        <li><a href="/Attendance/Browse"><span>Browse Data</span></a></li>
+                                        <li><a href="/Configuration/Index"><span>Configuration</span></a></li>
+                                        <li><a href="/Branch"><span>Branch</span></a></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="header"><span>Manage Attendance</span></li>
+                                        <li><a href="/Attendance/NewAddAttendance"><span>Add Attendance</span></a></li>
+                                        <li><a href="/Attendance/ExcelAttendance"><span>Excel Attendance</span></a></li>
+                                        <li><a href="/Attendance/DailyAttendanceUpdate"><span>Attendance Update</span></a></li>
+                                    </ul>
+                                </li>
+                            }
                         </ul>
                     </div>
                 </div>
@@ -221,13 +306,9 @@
             </div>
         </div>
     </div>
-
-
-
     <script type="text/javascript" src="/assets/js-core.js"></script>
     <link rel="stylesheet" type="text/css" href="/assets/demo-widgets.css">
     <script type="text/javascript" src="/assets/demo-widgets.js"></script>
-    @*@Scripts.Render("~/bundles/jquery")*@
     @RenderSection("scripts", required: false)
 
     <script type="text/javascript">$(window).load(function () {
@@ -262,7 +343,6 @@
                 return false;
             return true;
         }
-
     </script>
 
 </body>

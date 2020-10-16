@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace HRM.WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         [HttpGet]
@@ -210,17 +211,53 @@ namespace HRM.WebAPI.Controllers
 
         [HttpGet]
         [Authenticate]
-        public ActionResult UserList()
+        public ActionResult UserList(int? PageNumber,int? DepartmentId,string UserName)
         {
-            VMUserModel VMUserModel = new VMUserModel();
-            UserListPrerequisiteData();
-            return View(VMUserModel);
-        }
+            if (PageNumber != null)
+            {
+                IUserService objUserService = IoC.Resolve<IUserService>("UserService");
+                IDepartmentService objDepartmentService = IoC.Resolve<IDepartmentService>("DepartmentService");
+                VMUserModel VMUserModel = new VMUserModel();
+                VMUserModel model = new VMUserModel();
+                if (DepartmentId != null)
+                    model.DepartmentID = DepartmentId;
+                if (UserName != null)
+                    model.UserName = UserName;
+                VMUserModel.UserList = objUserService.GetAllUserWithDepartment(AuthBase.BranchId);
 
+                VMUserModel VMUserModelDepartment = new VMUserModel();
+                VMUserModelDepartment.UserList = VMUserModel.UserList;
+                if (VMUserModelDepartment.UserList != null && model.DepartmentID != null && VMUserModel.UserList.Where(x => x.UserDepartment.DepartmentId == model.DepartmentID) != null)
+                    VMUserModelDepartment.UserList = VMUserModel.UserList.Where(x => x.UserDepartment.DepartmentId == model.DepartmentID).ToList();
+                if (VMUserModelDepartment.UserList != null && model.UserName != null && model.UserName != "")
+                    VMUserModelDepartment.UserList = VMUserModelDepartment.UserList.Where(x => x.FirstName.ToLower().Contains(model.UserName.ToLower())).ToList();
+                UserListPrerequisiteData();
+                if (VMUserModelDepartment.UserList != null && VMUserModelDepartment.UserList.Count > 0)
+                {
+                    double PageCount = VMUserModelDepartment.UserList.Count;
+                    ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                    VMUserModelDepartment.UserList = VMUserModelDepartment.UserList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+                    ViewBag.PageNumber = PageNumber;
+                    ViewBag.DepartmentId = DepartmentId;
+                    ViewBag.UserName = UserName;
+                    return View(VMUserModelDepartment);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "No Records Found");
+                    return View(VMUserModelDepartment);
+                }
+            }
+            VMUserModel VMUsersModel = new VMUserModel();
+            UserListPrerequisiteData();
+            return View(VMUsersModel);
+        }
         [HttpPost]
         [Authenticate]
-        public ActionResult UserList(VMUserModel model)
+        public ActionResult UserList(VMUserModel model,int? PageNumber)
         {
+            if (PageNumber == null)
+                PageNumber = 1;
             IUserService objUserService = IoC.Resolve<IUserService>("UserService");
             IDepartmentService objDepartmentService = IoC.Resolve<IDepartmentService>("DepartmentService");
 
@@ -236,14 +273,28 @@ namespace HRM.WebAPI.Controllers
 
             UserListPrerequisiteData();
             if (VMUserModelDepartment.UserList != null && VMUserModelDepartment.UserList.Count > 0)
+            {
+                double PageCount = VMUserModelDepartment.UserList.Count;
+                ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                VMUserModelDepartment.UserList = VMUserModelDepartment.UserList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+                ViewBag.PageNumber = PageNumber;
+                ViewBag.DepartmentId = model.DepartmentID;
+                ViewBag.UserName = model.UserName;
                 return View(VMUserModelDepartment);
+            }
             else
             {
                 ModelState.AddModelError("", "No Records Found");
                 return View(VMUserModelDepartment);
             }
         }
+        public void ApplyUserListPagination(int PageNumber, List<VMTicketHistory> VMTicketHistoryList)
+        {
 
+            double PageCount = VMTicketHistoryList.Count;
+            ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+            VMTicketHistoryList = VMTicketHistoryList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+        }
         [HttpPost]
         [Authenticate]
         public JsonResult SearchUserList(string ShiftId, string DepartmentId, string UserName, int recCount)

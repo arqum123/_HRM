@@ -1,0 +1,217 @@
+﻿@model HRM.Core.Model.VMTicket
+@{
+    ViewBag.Title = "Ticket";
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-table"></i>Tickets</h3>
+    @if (Model.VMTicketList != null && Model.VMTicketList.Count > 0)
+    {
+        <table class="table table-striped table-hover attendancereport datatable">
+            <thead>
+                <tr>
+                    <th>
+                        SNo
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Emp Name
+                    </th>
+                    <th>
+                        Department
+                    </th>
+                    <th>
+                        TimeIn
+                    </th>
+                    <th>
+                        TimeOut
+                    </th>
+
+                    <th>
+                        ShiftTimeIn
+                    </th>
+
+                    <th>
+                        ShiftTimeOut
+                    </th>
+                    <th>
+                        OffDay
+                    </th>
+                    <th>
+                        Reason
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int sno = 0;}
+                    @for (int i = 0; i < Model.VMTicketList.Count; i++)
+                    {
+                        sno++;
+                        <tr>
+                            <td style="display:none" class="TicketId">@Model.VMTicketList[i].TicketID</td>
+                            <td>
+
+                                @sno
+                            </td>
+                            <td class="AttendanceDate">@Model.VMTicketList[i].AttendanceDate.ToString("dd-MMM-yyyy") </td>
+                            <td class="UserName">@Model.VMTicketList[i].EmpName</td>
+                            <td class="DepartmentName">@Model.VMTicketList[i].DepartmentName</td>
+                            <td class="TimeIn">@Model.VMTicketList[i].TimeIn.ToString("hh:mm tt")</td>
+                            <td class="TimeOut">@Model.VMTicketList[i].TimeOut.ToString("hh:mm tt")</td>
+                            <td class="ShiftTimeIn">@Model.VMTicketList[i].ShiftTimeIn.ToString("hh:mm tt") </td>
+                            <td class="ShiftTimeOut">@Model.VMTicketList[i].ShiftTimeOut.ToString("hh:mm tt")</td>
+                            @if (@Model.VMTicketList[i].OffDay == true)
+                            {
+                                <td class="OffDay" value="true">Yes</td>
+                            }
+                            else
+                            {
+                                <td class="OffDay" value="false">No</td>
+                            }
+                            <td class="Reason">@Model.VMTicketList[i].Reason</td>
+                            <td>
+                                @if (@Model.VMTicketList[i].IsApproved == false && @Model.VMTicketList[i].IsReject == false)
+                                {
+                                    <table class="table table-striped table-hover attendancereport datatable">
+                                        <thead>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="IsAccept"><input type="button" class="btn btn-success IsAccept" name="IsAccept" value="Accept"></input></td>
+                                                <td class="IsReject"><input type="button" class="btn btn-danger IsReject" name="IsReject" value="Reject"></input></td>
+                                                <td name="comments" class="comments"><textarea name="comments" class="comments"></textarea></td>
+                                                <td style="display:none" class="TicketId">@Model.VMTicketList[i].TicketID</td>
+                                                <td style="display:none" class="AttendanceDate">@Model.VMTicketList[i].AttendanceDate.ToString("dd-MMM-yyyy") </td>
+                                                <td style="display:none" class="UserName">@Model.VMTicketList[i].EmpName</td>
+                                                <td style="display:none" class="DepartmentName">@Model.VMTicketList[i].DepartmentName</td>
+                                                <td style="display:none" class="TimeIn">@Model.VMTicketList[i].TimeIn.ToString("hh:mm tt")</td>
+                                                <td style="display:none" class="TimeOut">@Model.VMTicketList[i].TimeOut.ToString("hh:mm tt")</td>
+                                                <td style="display:none" class="ShiftTimeIn">@Model.VMTicketList[i].ShiftTimeIn.ToString("hh:mm tt") </td>
+                                                <td style="display:none" class="ShiftTimeOut">@Model.VMTicketList[i].ShiftTimeOut.ToString("hh:mm tt")</td>
+                                                <td style="display:none" class="OffDay">@Model.VMTicketList[i].OffDay</td>
+                                                <td style="display:none" class="Reason">@Model.VMTicketList[i].Reason</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                }
+                            </td>
+                        </tr>
+                    }
+            </tbody>
+        </table>
+        }
+        @if ( Model.VMTicketList.Count == 0)
+        {
+            <div class="form-group">
+                <div class="col-sm-5"></div>
+                <div class="col-sm-12">
+                    <div class="text-danger" id="error">No Tickets were found</div>
+                </div>
+                <div class="col-sm-5"></div>
+            </div>
+        }
+    </div>
+<script>
+    $(document).ready(function () {
+        $(document).on("click", ".IsAccept", function (e) {
+            e.stopPropagation();
+            var comments = "";
+            $(this).closest('tr').find(".comments").each(function () {
+                comments = this.value;
+            });
+            $(this).val("Accepted");
+            $(this).closest('tr').find('.IsReject').val("Reject");
+            $(this).closest('tr').find('.IsReject').prop('disabled', false);
+            $(this).closest('tr').find('.IsAccept').prop('disabled', true);
+            var Accept = true;
+            var Reject = false;
+            var data = {
+                TicketId: $(event.target).parent().closest('tr').children('.TicketId').text(),
+                AttendanceDate: $(event.target).parent().closest('tr').children('.AttendanceDate').text(),
+                TimeIn: $(event.target).parent().closest('tr').children('.TimeIn').text(),
+                TimeOut: $(event.target).parent().closest('tr').children('.TimeOut').text(),
+                ShiftTimeIn: $(event.target).parent().closest('tr').children('.ShiftTimeIn').text(),
+                ShiftTimeOut: $(event.target).parent().closest('tr').children('.ShiftTimeOut').text(),
+                Comments: comments,
+                Reason: $(event.target).parent().closest('tr').children('.Reason').text(),
+                IsApproved: Accept,
+                IsReject: Reject,
+                OffDay: $(event.target).parent().closest('tr').children('.OffDay').text()
+            };
+            console.log(data);
+            $.ajax({
+                type: 'POST',
+                url: "/Payroll/Ticket",
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    Swal.fire(
+                        'Success!',
+                        'Ticket has been updated',
+                        'success'
+                    )
+                },
+                failure: function (err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Something went wrong!',
+                        text: 'Try again later'
+                    })
+                }
+            });
+
+        });
+        $(document).on("click", ".IsReject", function (e) {
+            e.stopPropagation();
+            var commentsR = "";
+            $(this).closest('tr').find(".comments").each(function () {
+                commentsR = this.value;
+            });
+            $(this).val("Rejected");
+            $(this).closest('tr').find('.IsAccept').val("Accept");
+            $(this).closest('tr').find('.IsAccept').prop('disabled', false);
+            $(this).closest('tr').find('.IsReject').prop('disabled', true);
+            var Accept = false;
+            var Reject = true;
+            var data = {
+                TicketId: $(event.target).parent().closest('tr').children('.TicketId').text(),
+                AttendanceDate: $(event.target).parent().closest('tr').children('.AttendanceDate').text(),
+                TimeIn: $(event.target).parent().closest('tr').children('.TimeIn').text(),
+                TimeOut: $(event.target).parent().closest('tr').children('.TimeOut').text(),
+                ShiftTimeIn: $(event.target).parent().closest('tr').children('.ShiftTimeIn').text(),
+                ShiftTimeOut: $(event.target).parent().closest('tr').children('.ShiftTimeOut').text(),
+                Comments: commentsR,
+                Reason: $(event.target).parent().closest('tr').children('.Reason').text(),
+                IsApproved: Accept,
+                IsReject: Reject,
+                OffDay: $(event.target).parent().closest('tr').children('.OffDay').text()
+            };
+            $.ajax({
+                type: 'POST',
+                url: "/Payroll/Ticket",
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    Swal.fire(
+                        'Success!',
+                        'Ticket has been updated',
+                        'success'
+                    )
+                },
+                failure: function (err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Something went wrong!',
+                        text: 'Try again later'
+                    })
+                }
+            });
+        });  
+    });
+</script>

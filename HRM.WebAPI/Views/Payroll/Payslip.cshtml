@@ -9,7 +9,7 @@
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true)
-        
+
         <div class="form-group">
             <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Department: </label>
             <div class="col-sm-6">
@@ -25,16 +25,17 @@
         <div class="form-group">
             <label for="PayrollMonth" class="col-sm-4 control-label lblforinput">Payroll Cycle</label>
             <div class="col-sm-3">
-                @Html.DropDownListFor(m => m.Month, ViewBag.MonthList as SelectList, new { @class = "form-control" })
+                @Html.DropDownListFor(m => m.Month, ViewBag.MonthList as SelectList, new { @class = "form-control month", @id = "Month" })
             </div>
             <div class="col-sm-3">
-                @Html.DropDownListFor(m => m.Year, ViewBag.Year as SelectList, new { @class = "form-control" })
+                @Html.DropDownListFor(m => m.Year, ViewBag.Year as SelectList, new { @class = "form-control year" })
             </div>
         </div>
         <div class="form-group">
             <div class="col-sm-5"></div>
             <div class="col-sm-2">
                 <button type="submit" class="btn btn-block btn-success">Search</button>
+
             </div>
             <div class="col-sm-5"></div>
         </div>
@@ -42,26 +43,131 @@
 
     @if (Model.PayrollList != null && Model.PayrollList.Count > 0)
     {
+        int j = 0;
         <div class="col-sm-11"></div><div class="col-sm-1" style="float: right;"><a class="printlink" href="javascript:;" onclick="Print();"><img src="/assets/images/printer.png" style="width: 20px;" />&nbsp;Print</a></div>
-        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
-        tableStyle: "table table-striped table-hover attendancereport datatable",
-        headerStyle: "header",
-        alternatingRowStyle: "alternating-row",
-        rowStyle: "row-style",
-        columns:
-            grid.Columns(
-                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
-                grid.Column("Emp ID", format: item => item.User.Id),
-                grid.Column("User.FirstName", "Name", format: @<text><img width="36" src="@(item.User.ImagePath == "" ? "/assets/images/anonymoususer.jpg": item.User.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a title="Click here to view Payslip Details" target="_blank" href="/Payroll/PayslipDetail?id=@item.User.Id&month=@item.PayrollCycle.Month&year=@item.PayrollCycle.Year&IsActive=@Model.IsActive">@item.User.FirstName</a><input type="hidden" class="hdnUserId" value="@item.id" /></text>),
-                grid.Column("User.Department.Name", header: "Department", format: (item) => item.User.Department != null ? item.User.Department.Name : Html.Raw("N/A")),
-                grid.Column("PayrollCycle.Name", header:"Payroll Cycle", format: (item) => item.PayrollCycle.Name != null ? (@Model.IsActive == 0 ? Html.Raw("Test - ") + item.PayrollCycle.Name : item.PayrollCycle.Name) : Html.Raw("N/A")),
-                grid.Column("Salary", header: "Salary", format: (item) => item.Salary != null ? item.Salary : Html.Raw("N/A"), style: "nmbr sal"),
-                grid.Column("Addition", header: "Addition", format: (item) => item.Addition != null ? item.Addition : Html.Raw("N/A"), style: "nmbr add"),
-                grid.Column("Deduction", header: "Deduction", format: (item) => item.Deduction != null ? item.Deduction : Html.Raw("N/A"), style: "nmbr ded"),
-                grid.Column("NetSalary", header: "Net Salary", format: (item) => item.NetSalary != null ? item.NetSalary : Html.Raw("N/A"), style: "nmbr netsal"),
-                grid.Column("User.AccountNumber", "Account No", format: (item) => (item.User.AccountNumber != null && item.User.AccountNumber != "") ? item.User.AccountNumber : Html.Raw("N/A"))
-                )
-        )
+        <table class="table table-striped table-hover attendancereport datatable">
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>Emp ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Payroll Cycle</th>
+                    <th>Salary</th>
+                    <th>Addition</th>
+                    <th>Deduction</th>
+                    <th>Net Salary</th>
+                    <th>Account No</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @for (int i = 0; i < Model.PayrollList.Count; i++)
+                {
+                    j = i + 1;
+                    <tr>
+
+                        <td>@j</td>
+                        <td>@Model.PayrollList[i].UserId</td>
+                        <td><img width="36" src="@(Model.PayrollList[i].User.ImagePath == "" ? "/assets/images/anonymoususer.jpg" : Model.PayrollList[i].User.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a title="Click here to view Payslip Details" target="_blank" href="/Payroll/PayslipDetail?id=@Model.PayrollList[i].User.Id&month=@Model.PayrollList[i].PayrollCycle.Month&year=@Model.PayrollList[i].PayrollCycle.Year&IsActive=@Model.IsActive">@Model.PayrollList[i].User.FirstName</a><input type="hidden" class="hdnUserId" value="@Model.PayrollList[i].Id" /></td>
+                        @if (@Model.PayrollList[i].User.Department.Name == null)
+                        {
+                            <td>N/A</td>
+                        }
+                        else
+                        {
+                            <td>@Model.PayrollList[i].User.Department.Name</td>
+                        }
+                        @if (@Model.PayrollList[i].PayrollCycle == null)
+                        {
+                            <td>N/A</td>
+                        }
+                        else
+                        {
+                            <td>@Model.PayrollList[i].PayrollCycle.Name</td>
+                        }
+                        <td>@Model.PayrollList[i].Salary</td>
+                        <td>@Model.PayrollList[i].Addition</td>
+                        <td>@Model.PayrollList[i].Deduction</td>
+                        <td>@Model.PayrollList[i].NetSalary</td>
+                        @if (@Model.PayrollList[i].User.AccountNumber == null || @Model.PayrollList[i].User.AccountNumber == "")
+                        {
+                            <td>N/A</td>
+                        }
+                        else
+                        {
+                            <td>@Model.PayrollList[i].User.AccountNumber</td>
+                        }
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+        if (ViewBag.TotalPages != null)
+        {
+            double TotalPages = ViewBag.TotalPages;
+            if(TotalPages>1)
+            { 
+            <ul class="pagination">
+                <li>@Html.ActionLink("First", "Payslip", new { Month = Model.Month, Year = Model.Year,  PageNumber = 1 })</li>
+
+                @if (ViewBag.PageNumber == 1)
+                {
+                    <li>@Html.ActionLink("Previous", "Payslip", new { Month = Model.Month, Year = Model.Year, PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Previous", "Payslip", new { Month = Model.Month, Year = Model.Year, PageNumber = ViewBag.PageNumber - 1 })</li>
+                }
+
+                @for (int i = 1; i <= TotalPages; i++)
+                {
+
+
+                    if (i == ViewBag.PageNumber)
+                    {
+                        <li class="active">@Html.ActionLink(i.ToString(), "Payslip", new { Month = Model.Month, Year = Model.Year, PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink(i.ToString(), "Payslip", new { Month = Model.Month, Year = Model.Year, PageNumber = i.ToString() })</li>
+
+                    }
+
+
+                }
+                @if (ViewBag.PageNumber == TotalPages)
+                {
+                    <li>@Html.ActionLink("Next", "Payslip", new { Month = Model.Month, Year = Model.Year, PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Next", "Payslip", new { Month = Model.Month, Year = Model.Year, PageNumber = ViewBag.PageNumber + 1 })</li>
+                }
+                <li>@Html.ActionLink("Last", "Payslip", new { Month = Model.Month, Year = Model.Year, PageNumber = TotalPages })</li>
+            </ul>
+            }
+        }
+        @*@grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+            tableStyle: "table table-striped table-hover attendancereport datatable",
+            headerStyle: "header",
+            alternatingRowStyle: "alternating-row",
+            rowStyle: "row-style",
+            columns:
+                grid.Columns(
+                    grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                    grid.Column("Emp ID", format: item => item.User.Id),
+                            @*grid.Column("User.FirstName", "Name", format: @<text><img width="36" src="@(item.User.ImagePath == "" ? "/assets/images/anonymoususer.jpg": item.User.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a title="Click here to view Payslip Details" target="_blank" href="/Payroll/PayslipDetail?id=@item.User.Id&month=@item.PayrollCycle.Month&year=@item.PayrollCycle.Year&IsActive=@Model.IsActive">@item.User.FirstName</a><input type="hidden" class="hdnUserId" value="@item.id" /></text>),*@
+        @*grid.Column("User.FirstName", "Name", format: @<text><img width="36" src="@(item.User.ImagePath == "" ? "/assets/images/anonymoususer.jpg": item.User.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a title="Click here to view Payslip Details" target="_blank" href="/Payroll/NewPayslipDetail?UserId=@item.User.Id&PayrollCycleId=@item.PayrollCycle.Id&DepartmentId=">@item.User.FirstName</a><input type="hidden" class="hdnUserId" value="@item.id" /></text>),
+                    grid.Column("User.Department.Name", header: "Department", format: (item) => item.User.Department != null ? item.User.Department.Name : Html.Raw("N/A")),
+                    grid.Column("PayrollCycle.Name", header: "Payroll Cycle", format: (item) => item.PayrollCycle.Name != null ? (@Model.IsActive == 0 ? Html.Raw("Test - ") + item.PayrollCycle.Name : item.PayrollCycle.Name) : Html.Raw("N/A")),
+                    grid.Column("Salary", header: "Salary", format: (item) => item.Salary != null ? item.Salary : Html.Raw("N/A"), style: "nmbr sal"),
+                    grid.Column("Addition", header: "Addition", format: (item) => item.Addition != null ? item.Addition : Html.Raw("N/A"), style: "nmbr add"),
+                    grid.Column("Deduction", header: "Deduction", format: (item) => item.Deduction != null ? item.Deduction : Html.Raw("N/A"), style: "nmbr ded"),
+                    grid.Column("NetSalary", header: "Net Salary", format: (item) => item.NetSalary != null ? item.NetSalary : Html.Raw("N/A"), style: "nmbr netsal"),
+                    grid.Column("User.AccountNumber", "Account No", format: (item) => (item.User.AccountNumber != null && item.User.AccountNumber != "") ? item.User.AccountNumber : Html.Raw("N/A"))
+                    )
+            )*@
     }
 
 </div>
@@ -87,9 +193,6 @@
     }
 
     $(document).ready(function () {
-        //$("option[value='-1']").remove();
-        //$('#Month').val(new Date().getMonth() + 1);
-        //$('#Year').val(new Date().getFullYear());
 
         var totalsalary = 0.00, totaladdition = 0.00, totaldeduction = 0.00, totalnetsalary = 0.00;
         $('.sal').each(function () {
@@ -105,7 +208,6 @@
         $('.netsal').each(function () {
             totalnetsalary += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
         });
-
         var tfoot = '<tfoot><tr><td colspan="5">Total</td>';
         tfoot += '<td class="nmbr">' + totalsalary + '</td>';
         tfoot += '<td class="nmbr">' + totaladdition + '</td>';
@@ -113,7 +215,6 @@
         tfoot += '<td class="nmbr">' + totalnetsalary + '</td>';
         tfoot += '<td>&nbsp;</td>';
         $('#gridtbl').append(tfoot);
-
         $('.nmbr').each(function () {
             $(this).html(addCommas(parseFloat($(this).html()).toFixed(2)));
         });

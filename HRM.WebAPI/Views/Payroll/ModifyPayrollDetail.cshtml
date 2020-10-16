@@ -1,276 +1,199 @@
-﻿@model HRM.Core.Model.VMModifyPayroll
+﻿@model HRM.Core.Model.VMUserPayroll
 @{
     Layout = "/Views/Shared/_LayoutWOSidebar.cshtml";
     ViewBag.Title = "HRMS - Payslip Detail New";
 }
+
 <div class="page-box content-box mrg25B">
     <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Payslip Detail</h3>
-    @using (Html.BeginForm("ModifyPayrollDetail2", "Payroll", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "PayslipDetailForm", @class = "form-horizontal customclass" }))
+    @if (Model.VMUserPayrollEditList != null)
     {
-        @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true)
-        if (Model.VMModifyPayrollEditList != null)
-        {
-            <div class="form-group"><div class="col-sm-11"></div><div class="col-sm-1" style="float: right;"><a class="printlink" href="javascript:;" onclick="Print();"><img src="/assets/images/printer.png" style="width: 20px;" />&nbsp;Print</a></div></div>
-            <table class="table tblpayslip attendancereport" id="gridtbl">
-                <tbody>
-                    @for (int i = 0; i < Model.VMModifyPayrollEditList.Count; i++)
-                    {
-                        if (i == 0)
-                        {
-                            <tr>
-                                <td style="width: 25%">Emp Id:</td>
-                                <td>@Model.VMModifyPayrollEditList[0].UserId</td>
-                            </tr>
-                            <tr>
-                                <td style="width: 25%">Emp Name:</td>
-                                <td>@Model.VMModifyPayrollEditList[0].UserFName @Model.VMModifyPayrollEditList[0].UserMName @Model.VMModifyPayrollEditList[0].UserLName</td>
-                            </tr>
-                            <tr>
-                                <td>Department:</td>
-                                <td>@Model.VMModifyPayrollEditList[0].DepartmentName</td>
-                            </tr>
-                            <tr>
-                                <td>Designation:</td>
-                                <td>@(Model.VMModifyPayrollEditList[0].Designation == "" ? "N/A" : @Model.VMModifyPayrollEditList[0].Designation)</td>
-                            </tr>
-                            <tr>
-                                <td>Payroll Cycle:</td>
-                                <td>@(Model.VMModifyPayrollEditList[0].PayrollCycleName == "" ? "N/A" : @Model.VMModifyPayrollEditList[0].PayrollCycleName)</td>
-                            </tr>
-                            <tr>
-                                <td>Salary:</td>
+        <div class="form-group"><div class="col-sm-11"></div><div class="col-sm-1" style="float: right;"><a class="printlink" href="javascript:;" onclick="Print();"><img src="/assets/images/printer.png" style="width: 20px;" />&nbsp;Print</a></div></div>
 
-                                @if (Model.VMModifyPayrollEditList[0].SalaryTypeId == 1)
-                                {
-                                    <td>@Model.VMModifyPayrollEditList[0].Salary</td>
-
-                                }
-                                @if (Model.VMModifyPayrollEditList[0].SalaryTypeId == 2)
-                                {
-                                    <td>@Model.VMModifyPayrollEditList[0].Salary*4</td>
-
-                                }
-                                @if (Model.VMModifyPayrollEditList[0].SalaryTypeId == 3)
-                                {
-                                    <td>@Model.VMModifyPayrollEditList[0].Salary*30</td>
-
-                                }
-                            </tr>
-                            <tr>
-                                <td>Net Salary:</td>
-                                <td>@Model.VMModifyPayrollEditList[0].NetSalary</td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-            <br />
-            <table class="table tblpayslipadd datatable" id="gridAddition">
-          <h3>Payroll Detail</h3>
-                <thead>
-                    <tr class="header">
-                        <th>SNo</th>
-                        <th style="width: 40%">Title</th>
-                        <th style="width: 20%">Addition</th>
-                        <th style="width: 20%">Deduction</th>
-                        <th style="width: 20%">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        int sno = 0;
-                    }
-                    @for (int j = 0; j < Model.VMModifyPayrollEditList.Count; j++)
-                    {
-                        <tr>
-                            <td>
-
-                                @{ sno++; }
-                                @sno
-                            </td>
-                            <td class="add nmbr PayrollVariableName">@Model.VMModifyPayrollEditList[j].PayrollVariableName</td>
-                            <td class="add nmbr Addition">@Model.VMModifyPayrollEditList[j].Addition</td>
-                            <td class="add nmbr Deduction">@Model.VMModifyPayrollEditList[j].Deduction</td>
-                            <td class="add nmbr"><a href=""> Edit</a> | <a href="">Delete</a></td>
-                        </tr>
-
-                    }
-                </tbody>
-                <tfoot>
-                    @*<tr>
-                        <td>Total Addition</td>
-                        <td><span id="TotalAddition" class="nmbr">0</span></td>
-                    </tr>
-                    <tr>
-                        <td>Total Deductions</td>
-                        <td><span id="TotalDeductions" class="nmbr">0</span></td>
-                        
-                    </tr>*@
-                </tfoot>
-            </table>
-
-
-            <br />
-            <div class="page-box content-box mrg25B">
-                <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-table"></i>Payroll Detail Edit</h3>
-                <div class="form-group">
-                    <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Payroll Policy: </label>
-
-                    <div class="col-sm-6">
-                        @Html.DropDownListFor(m => m.PayrollVariable, ViewBag.PayrollVariable as SelectList, "All PayrollVariable", new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-5"></div>
-                    <div class="col-sm-2">
-                        <button type="submit" class="btn btn-black">Other</button>
-                    </div>
-                    <div class="col-sm-5"></div>
-                </div>
-
-
-                <div class="form-group">
-                    <label for="UserName" class="col-sm-4 control-label lblforinput">Amount</label>
-                    <div class="col-sm-6">
-
-                        @Html.TextBoxFor(m => m.UserName, new { maxlength = "200", @class = "form-control", placeholder = "Amount" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="UserName" class="col-sm-4 control-label lblforinput">Other Variable Name</label>
-                    <div class="col-sm-6">
-
-                        @Html.TextBoxFor(m => m.UserName, new { maxlength = "200", @class = "form-control", placeholder = "Enter Name" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-sm-5"></div>
-                    <div class="col-sm-2">
-                        <button type="submit" class="btn btn-block btn-success">Save</button>
-                    </div>
-
-                    <div class="col-sm-2">
-                        <button type="submit" class="btn btn-danger">Cancel</button>
-                    </div>
-                    <div class="col-sm-5"></div>
-                </div>
-            </div>
-                @*<select id="PayrollPolicy" name="PayrollPolicyName">
-                    <option value="volvo">Volvo</option>
-                    <option value="saab">Saab</option>
-                    <option value="fiat">Fiat</option>
-                    <option value="audi">Audi</option>
-                </select>
-                <button type="button">Add New</button>
-                <input type="text" name="Name" placeholder="Variable Name" />
-                <input type="text" name="amount" />*@
-
-                //Addition Start
-                @*<table class="table tblpayslipadd datatable" id="gridDeduction">
-        <thead>
-            <tr class="header">
-                <th style="width: 70%">Addition</th>
-                <th style="width: 30%">Amount</th>
-            </tr>
-        </thead>*@
-                @*<tbody>
-            @if (Model.Payroll.QuarterDayCount > 0)
-            {
-                <tr>
-                    <td>Quarter Day - @Model.Payroll.QuarterDayCount Day(s)</td>
-                    <td class="ded nmbr">@Model.Payroll.QuarterDayAmount</td>
-                </tr>
-            }
-            @if (Model.Payroll.HalfDayCount > 0)
-            {
-                <tr>
-                    <td>Half Day - @Model.Payroll.HalfDayCount Day(s)</td>
-                    <td class="ded nmbr">@Model.Payroll.HalfDayAmount</td>
-                </tr>
-            }
-            @if (Model.Payroll.FullDayCount > 0)
-            {
-                <tr>
-                    <td>Full Day - @Model.Payroll.FullDayCount Day(s)</td>
-                    <td class="ded nmbr">@Model.Payroll.FullDayAmount</td>
-                </tr>
-            }
-            @if (Model.Payroll.AbsentDayCount > 0)
-            {
-                <tr>
-                    <td>Absent - @Model.Payroll.AbsentDayCount Day(s)</td>
-                    <td class="ded nmbr">@Model.Payroll.AbsentDayAmount</td>
-                </tr>
-            }
-        </tbody>*@
-                @*<tfoot>
-                <tr>
-                    <td>Total Addition</td>
-                    <td><span id="TotalAddition" class="nmbr">0</span></td>
-                </tr>
-            </tfoot>
-        </table>*@
-                //Addition End
-                @*<table class="table tblpayslipadd datatable" id="gridDeduction">
-            <thead>
-                <tr class="header">
-                    <th style="width: 70%">Deductions</th>
-                    <th style="width: 30%">Amount</th>
-                </tr>
-            </thead>
+        <table class="table tblpayslip attendancereport" id="gridtbl">
             <tbody>
-                @if (Model.Payroll.QuarterDayCount > 0)
+                @for (int i = 0; i < Model.VMUserPayrollEditList.Count; i++)
                 {
                     <tr>
-                        <td>Quarter Day - @Model.Payroll.QuarterDayCount Day(s)</td>
-                        <td class="ded nmbr">@Model.Payroll.QuarterDayAmount</td>
+                        <td style="width: 25%">Emp Id:</td>
+                        <td>@Model.VMUserPayrollEditList[i].UserId</td>
                     </tr>
-                }
-                @if (Model.Payroll.HalfDayCount > 0)
-                {
                     <tr>
-                        <td>Half Day - @Model.Payroll.HalfDayCount Day(s)</td>
-                        <td class="ded nmbr">@Model.Payroll.HalfDayAmount</td>
+                        <td style="width: 25%">Emp Name:</td>
+                        <td>@Model.VMUserPayrollEditList[i].UserFName @Model.VMUserPayrollEditList[i].UserMName @Model.VMUserPayrollEditList[i].UserLName</td>
                     </tr>
-                }
-                @if (Model.Payroll.FullDayCount > 0)
-                {
                     <tr>
-                        <td>Full Day - @Model.Payroll.FullDayCount Day(s)</td>
-                        <td class="ded nmbr">@Model.Payroll.FullDayAmount</td>
+                        <td>Department:</td>
+                        <td>@Model.VMUserPayrollEditList[i].DepartmentName</td>
                     </tr>
-                }
-                @if (Model.Payroll.AbsentDayCount > 0)
-                {
                     <tr>
-                        <td>Absent - @Model.Payroll.AbsentDayCount Day(s)</td>
-                        <td class="ded nmbr">@Model.Payroll.AbsentDayAmount</td>
+                        <td>Designation:</td>
+                        <td>@(Model.VMUserPayrollEditList[i].Designation == "" ? "N/A" : @Model.VMUserPayrollEditList[i].Designation)</td>
+                    </tr>
+                    <tr>
+                        <td>Payroll Cycle:</td>
+                        <td>@(Model.VMUserPayrollEditList[i].PayrollCycleName == "" ? "N/A" : @Model.VMUserPayrollEditList[i].PayrollCycleName)</td>
+                    </tr>
+                    <tr>
+                        <td>Salary:</td>
+
+                        @if (Model.VMUserPayrollEditList[i].SalaryTypeId == 1)
+                        {
+                            <td>@Model.VMUserPayrollEditList[i].Salary</td>
+
+                        }
+                        @if (Model.VMUserPayrollEditList[i].SalaryTypeId == 2)
+                        {
+                            <td>@Model.VMUserPayrollEditList[i].Salary*4</td>
+
+                        }
+                        @if (Model.VMUserPayrollEditList[i].SalaryTypeId == 3)
+                        {
+                            <td>@Model.VMUserPayrollEditList[i].Salary*30</td>
+
+                        }
+                    </tr>
+                    <tr>
+                        <td>Net Salary:</td>
+                        <td>@Model.VMUserPayrollEditList[i].NetSalary</td>
                     </tr>
                 }
             </tbody>
-            <tfoot>
-                <tr>
-                    <td>Total Deductions</td>
-                    <td><span id="TotalDeductions" class="nmbr">0</span></td>
-                </tr>
-            </tfoot>
         </table>
         <br />
-        <table class="table tblpayslipadd datatable" id="gridtblNet">
-            <tfoot>
-                <tr>
-                    <td style="width: 70%">Net Salary<br /><span id="NetSalaryInWords"></span></td>
-                    <td id="NetSalary" class="nmbr">@Model.Payroll.NetSalary</td>
-                </tr>
-            </tfoot>
-        </table>*@
-                }
-                }
+        <table class="table tblpayslipadd datatable mytable tBodyAppendUpper" id="TableEdit">
+            <h3 align="center">Payroll Detail</h3>
+            <div class="row">
+                <div class="col-sm-9"></div>
+                <div class="col-sm-2">
+                    <button type="button" name="AddNewEntry" class="btn btn-success AddNewEntry" onclick="">Add New Entry</button>
+                </div>
             </div>
-            <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
-            <script>
+            <thead>
+
+                <tr class="header">
+                    <th>SNo</th>
+                    <th style="width: 40%">Title</th>
+                    <th style="width: 20%">Addition</th>
+                    <th style="width: 20%">Deduction</th>
+                    <th style="width: 20%">Action</th>
+                </tr>
+            </thead><br />
+                    <tbody id="TableEditTbody">
+
+                        @{
+                            int sno = 0;
+                        }
+                        @for (int i = 0; i < Model.VMUserPayrollEditList.Count; i++)
+                        {
+
+                            for (int j = 0; j < Model.VMUserPayrollEditList[i].VMUserPayrollDetailEditList.Count; j++)
+                            {
+                                sno++;
+                <tr id="AboveTR@(sno)" class="@Model.VMUserPayrollEditList[i].VMUserPayrollDetailEditList[j].PayrollDetailId" value="@sno">
+                    <td class="sno"><input type="hidden" value="@sno" class="sno" />@sno</td>
+                    <td class="PayrollPolicyName">@Model.VMUserPayrollEditList[i].VMUserPayrollDetailEditList[j].PayrollPolicyName</td>
+                    @if (@Model.VMUserPayrollEditList[i].VMUserPayrollDetailEditList[j].Amount > 0)
+                    {
+                        <td class="Addition"><input type="hidden" class="Additions" value="@Model.VMUserPayrollEditList[i].VMUserPayrollDetailEditList[j].Amount" />@Model.VMUserPayrollEditList[i].VMUserPayrollDetailEditList[j].Amount</td>
+                    }
+                    else
+                    {
+                        <td class="Addition"><input type="hidden" class="Additions" value="0.00" />0.00</td>
+                    }
+                    @if (@Model.VMUserPayrollEditList[i].VMUserPayrollDetailEditList[j].Amount < 0)
+                    {
+                        decimal negAmount = Convert.ToDecimal(@Model.VMUserPayrollEditList[i].VMUserPayrollDetailEditList[j].Amount);
+                        <td class="Deduction"><input type="hidden" class="Deductions" value="@Model.VMUserPayrollEditList[i].VMUserPayrollDetailEditList[j].Amount" />@Math.Abs(negAmount)</td>
+                    }
+                    else
+                    {
+                        <td class="Deduction"><input type="hidden" class="Deductions" value="0.00" />0.00</td>
+                    }
+
+                    <td class="PayrollId">
+                        <input type="hidden" value="@Model.VMUserPayrollEditList[i].VMUserPayrollDetailEditList[j].PayrollDetailId" class="PayrollDetailIdInput" />
+                        <input type="hidden" value="0" class="IsUpdateInput" />
+                        <input type="hidden" value="0" class="IsDeleteInput" />
+                        <input type="hidden" value="@Model.VMUserPayrollEditList[i].PayrollId" class="PayrollId" id="PayrollIdTable" name="PayrollId">
+                        <a href="#" id="@Model.VMUserPayrollEditList[i].VMUserPayrollDetailEditList[j].PayrollDetailId" class="Edit">Edit</a>
+                        | <a href="#" onclick="" class="Delete">Delete</a>
+                    </td>
+                </tr>
+                            }
+                           
+                        }
+                    </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+
+       
+        <br />
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <a href="#" class="SaveAll"><button type="submit" class="btn btn-block btn-success">Save All</button></a>
+            </div>
+            <div class="col-sm-2">
+                <a href="#" class="CancelAll"> <button type="submit" class="btn btn-danger">Cancel</button></a>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+        <br />
+        @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>*@
+        <script>
+            $(document).ready(function () {
+                var TotalAdditions = 0.00;
+                var TotalDeductions = 0.00;
+                $('.Additions').each(function () {
+                    calculateSum();
+                });
+                $('.Deductions').each(function () {
+                    calculateDed();
+                });
+                //TotalAddition
+                function calculateSum() {
+                    var sum = 0;
+                    $(".Additions").each(function () {
+                        if (!isNaN(this.value) && this.value.length != 0) {
+                            sum += parseFloat(this.value);
+                            TotalAdditions = sum;
+                        }
+                        $(".adds").text(TotalAdditions);
+                    });
+                 
+                    $('#TotalAdditions').text(sum);
+                    $('.tfoot').each(function () {
+                        $(this).html(addCommas(parseFloat($(this).html()).toFixed(2)));
+                    });
+                };
+                //TotalDeduction
+                function calculateDed() {
+                    var Ded = 0;
+                    $(".Deductions").each(function () {
+                        if (!isNaN(this.value) && this.value.length != 0) {
+                            Ded = Ded - parseFloat(this.value);
+                            TotalDeductions = Ded;
+                        }
+                        $(".deds").text(Math.abs(TotalDeductions));
+                    });
+                    $('#TotalDeductions').text(Math.abs(Ded));
+                    $('.tfoot').each(function () {
+                        $(this).html(addCommas(parseFloat($(this).html()).toFixed(2)));
+                    });
+                };
+                //Start of Tfoot TotalAddition & TotalDeduction
+                var tfoot = '<tfoot><tr><td></td>';
+                tfoot += '<td >Total</td>';
+                tfoot += '<td  align="left" class="tfoot adds">' + TotalAdditions + '</td>';
+                tfoot += '<td  align="left" class="tfoot deds">' + Math.abs(TotalDeductions) + '</td>';
+                tfoot += '<td ></td>';
+                $('#TableEdit').append(tfoot);
+                $('.tfoot').each(function () {
+                    $(this).html(addCommas(parseFloat($(this).html()).toFixed(2)));
+                });
+                //End of Tfoot TotalAddition & TotalDeduction
                 function addCommas(nStr) {
                     nStr += '';
                     x = nStr.split('.');
@@ -282,69 +205,393 @@
                     }
                     return x1 + x2;
                 }
-
-                $(document).ready(function () {
-                    var addition = 0, deduction = 0;
-                    $('.add').each(function () {
-                        addition += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
-                    });
-                    $('.ded').each(function () {
-                        deduction += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
-                    });
-
-                    $('#GrossSalary').html(addition.toFixed(2));
-                    $('#TotalDeductions').html(deduction.toFixed(2));
-
-                    var netSalary = parseInt($('#NetSalary').html()).toFixed(0);
-
-                    $('#NetSalaryInWords').html(toWords(netSalary) + ' only');
-
-                    $('.nmbr').each(function () {
-                        $(this).html(addCommas($(this).html()));
-                    });
+                var sno = 0;
+                var maxsno = 0;
+                var PayrollDetailId = 0;
+                var variableName = "";
+                var otherVariable = "";
+                var amount = "";
+                var DropdownCount = 0;
+                var PayrollVariableIsActive = 1;
+                var IsDelete = 0;
+                var IsUpdate = 0;
+                var Title = [];
+                var Addition = [];
+                var Deduction = [];
+                //Amount Input Type Validation
+                var specialKeys = new Array();
+                specialKeys.push(8);
+                $(function () {
+                    // This is a middleware that takes as parameter "decimals" which is by default 2
+                    currencyNumber = function (decimals) {
+                        if (typeof decimals !== 'number') {
+                            decimals = 2;
+                        }
+                        return function (e) {
+                            var input = $(this instanceof Window ? e : e.currentTarget);
+                            var value = $.trim(input.val());
+                            var hasNegativeNumber = value.substr(0, 1) === '-' ? '-' : '';
+                            var nextValue = value
+                                .replace(/\.+/g, '.')
+                                .replace(/[^0-9\.]+/g, '');
+                            if (nextValue === '.' || (nextValue.length > 1 && nextValue === "00")) {
+                                nextValue = '';
+                            }
+                            var dotsFound = nextValue.split('.').filter(function (i) {
+                                return i.length;
+                            });
+                            var afterDot = '';
+                            var beforeDot = '';
+                            if (dotsFound.length > 1) {
+                                beforeDot = dotsFound[0];
+                                dotsFound.splice(0, 1);
+                                afterDot = dotsFound.join('');
+                                nextValue = +(beforeDot) + '.' + afterDot.substr(0, decimals);
+                            }
+                            if (nextValue.substr(nextValue.length - 1, 1) === '.') {
+                                input.one('change', function () {
+                                    if (nextValue.substr(nextValue.length - 1, 1) === '.') {
+                                        nextValue = nextValue.substr(0, nextValue.length - 1);
+                                        input.val(hasNegativeNumber + nextValue);
+                                    }
+                                    $(this).off('change');
+                                })
+                            } else {
+                                input.off('change')
+                            }
+                            input.val(hasNegativeNumber + nextValue);
+                        };
+                    }
+                    $(".Amount").on("keyup", currencyNumber(3));
+                });
+                //Select Other Option in dropdown
+                $("select.Other").change(function () {
+                    if (($("#DropdownPayrollVariable option:selected").text() == "Other")) {
+                        PayrollVariableIsActive = 0;
+                        $('.OtherVariableName').css('display', 'block');
+                        $("#DropdownPayrollVariable").prop("disabled", true);
+                        if ($("#DropdownPayrollVariable").prop("disabled", true)) {
+                            DropdownCount = 0;
+                        }
+                        $('.Amount').val('0');
+                        $("#DropdownPayrollVariable").change(function () {
+                            $('#DropdownPayrollVariable option:selected').val("");
+                        });
+                    }
+                    PayrollVariableIsActive = 1;
+                });
+                //Add NewPayrollDetail Entry
+                $(".AddNewEntry").click(function () {
+                    $(".AddNewEntryHeading").html("Add Payroll Detail");
+                    $('.PayrollVariableDetail').css('display', 'block');
+                    $("#DropdownPayrollVariable").prop("disabled", false);
+                    $('.EditAboveTableSave').css('display', 'none');
+                    $('.AddAboveTableSave').css('display', 'block');
+                    if ($("#DropdownPayrollVariable").prop("disabled", false)) {
+                        DropdownCount = 1;
+                    }
+                    $(".Amount").val("0.00");
+                    $(".DropdownPayrollVariable").val(" ");
+                    $('.OtherVariableName').css('display', 'none');
+                });
+                //Add Rows in Table
+                $(".AddAboveTableSave").click(function () {
+                    var values = $(".sno").map(function () {
+                        return +$(this).text();
+                    }).get();
+                    maxsno = Math.max.apply(Math, values);
+                    var title = "";
+                    var amountRow = $('.Amount').val();
+                    if (amountRow > 0) {
+                        addition = amountRow;
+                        deduction = "0.00";
+                    }
+                    if (amountRow < 0) {
+                        addition = "0.00";
+                        deduction = amountRow;
+                    }
+                    if (amountRow == "0" || amountRow == "" || amountRow == "0.00") {
+                        addition = "0.00";
+                        deduction = "0.00";
+                    }
+                    //var firstAdd = 0;
+                    var OtherVariableName = $('.OtherVariableNameTextBox').val();
+                    var DropdownPayrollVariableId = $('.DropdownPayrollVariable').val();
+                    var DropdownPayrollVariableName = $(".DropdownPayrollVariable option:selected").text();
+                    if (OtherVariableName !== "" && DropdownPayrollVariableName !== "")
+                        title = DropdownPayrollVariableName;
+                    else if (DropdownPayrollVariableName != "")
+                        title = DropdownPayrollVariableName;
+                    if (OtherVariableName !== "" && DropdownPayrollVariableName == "Other")
+                        title = OtherVariableName;
+                    //var PayrollId = $('.PayrollId').val();
+                    PayrollDetailId = 0;
+                    maxsno++;
+                    Title.push(title);
+                    Addition.push(addition);
+                    Deduction.push(deduction);
+                    AppendTd = "<tr id='AboveTR" + maxsno + "' class= '" + PayrollDetailId + "' value='" + maxsno + "' >";
+                    AppendTd += "<td class='sno'><input type='hidden' value='" + maxsno + "' class='sno'>" + maxsno + "</td>";
+                    AppendTd += "<td class='PayrollPolicyName'>" + title + "</td>";
+                    AppendTd += "<td class='Addition'><input type='hidden' class='Additions' value='" + addition + "'>" + addition + " </input></td >";
+                    AppendTd += "<td class='Deduction'><input type='hidden' class='Deductions' value='" + Math.abs(deduction) + "' />" + Math.abs(deduction) + " </input></td>";
+                    AppendTd += "<td class=PayrollId><a href='#' id='" + sno + "' class='Edit'>Edit</a> | <a href='#' class='Delete'>Delete</a> ";
+                    AppendTd += "<input type='hidden' value='" + IsUpdate + "' class='IsUpdateInput' /><input type='hidden' value='" + IsDelete + "' class='IsDeleteInput' />";
+                    AppendTd += "<input type='hidden' value='" + PayrollDetailId + "' class='PayrollDetailIdInput' input />"
+                    AppendTd += "<input type='hidden' value='" + $('#PayrollIdTable').val() + "' class='PayrollId' />";
+                    AppendTd += "<input type='hidden' value='" + PayrollDetailId + "' class='PayrollDetailId' />";
+                    $('.tBodyAppendUpper tbody').append(AppendTd);
+                    PayrollVariableIsActive = 1;
+                    IsUpdate = 0;
+                    IsDelete = 0;
+                    calculateSum();
+                    calculateDed();
 
                 });
+                //When Click Edit
+                $(".Edit").click(function (event) {
+                    $(".AddNewEntryHeading").html("Edit Payroll Detail");
+                    $('.PayrollVariableDetail').css('display', 'block');
+                    $("#DropdownPayrollVariable").prop("disabled", false);
+                    $('.AddAboveTableSave').css('display', 'none');
+                    $('.EditAboveTableSave').css('display', 'block');
+                    if ($("#DropdownPayrollVariable").prop("disabled", false)) {
+                        DropdownCount = 1;
+                    }
+                    $('.OtherVariableName').css('display', 'none');
+                    PayrollDetailId = event.target.id;
+                    variableName = $(event.target).parent().closest('tr').children('.PayrollPolicyName').html();
+                    addition = $(event.target).parent().closest('tr').children('.Addition').text();
+                    deduction = $(event.target).parent().closest('tr').children('.Deduction').text();
+                    sno = $(event.target).parent().closest('tr').children('.sno').text();
+                    if (addition == "0.00" || addition == "0" || deduction == "0.0") {
+                        amount = deduction;
+                    }
+                    if (deduction == "0.00" || deduction == "0" || deduction == "0.0") {
+                        amount = addition;
+                    }
 
-                function Print() {
-                    var printElement = $(".page-box").clone();
-                    //printElement.find("h3").hide();
-                    printElement.find(".form-group").hide();
-                    printElement.find(".printlink").hide();
-                    printElement.find("a").each(function (e) { $(this).attr("href", "#"); });
+                    $(".DropDownPayrollDetailId").val(PayrollDetailId);
+                    $('.Amount').val(amount);
+                    $('#DropdownPayrollVariable').append('<option value="' + variableName + '" selected="selected">' + variableName + '</option>');
+                    IsUpdate = 1;
+                    calculateSum();
+                    calculateDed();
+                });
+                //Add Rows in Table
+                $(".EditAboveTableSave").click(function () {
+                    var title = "";
+                    var amountRow = $('.Amount').val();
 
-                    printDivCSS = new String('<link rel="stylesheet" type="text/css" href="/assets/helpers/helpers-all.css">');
-                    printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/elements/elements-all.css">';
-                    printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/fontawesome/fontawesome.css">';
-                    printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/linecons/linecons.css">';
-                    printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/snippets/snippets-all.css">';
-                    printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/applications/mailbox.css">';
-                    printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/layout.css">';
-                    printDivCSS += '<link id="layout-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/layout-color.css">';
-                    printDivCSS += '<link id="framework-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/framework-color.css">';
-                    printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/border-radius.css">';
-                    printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/helpers/colors.css">';
-                    printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/custom.css">';
+                    if (amountRow > 0) {
+                        addition = amountRow;
+                        deduction = "0.00";
+                    }
+                    if (amountRow < 0) {
+                        addition = "0.00";
+                        deduction = amountRow;
+                    }
+                    if (amountRow == "0" || amountRow == "" || amountRow == "0.00") {
+                        addition = "0.00";
+                        deduction = "0.00";
+                    }
+                    var OtherVariableName = $('.OtherVariableNameTextBox').val();
+                    var DropdownPayrollVariableId = $('.DropdownPayrollVariable').val();
+                    var DropdownPayrollVariableName = $(".DropdownPayrollVariable option:selected").text();
+                    if (variableName != "" && OtherVariableName != "") {
+                        title = OtherVariableName;
+                    }
+                    if (variableName != "" && OtherVariableName == "" && DropdownCount == 0) {
+                        title = "N/A";
+                    }
+                    if (variableName != "" && OtherVariableName == "" && DropdownCount == 1) {
+                        title = DropdownPayrollVariableName;
+                    }
+                    if (variableName != "" && OtherVariableName != "" && DropdownCount == 1) {
+                        title = DropdownPayrollVariableName;
+                    }
+                    Title.push(title);
+                    Addition.push(addition);
+                    Deduction.push(deduction);
+                    for (var i = 0; i < Title.length; i++) {
+                        if (PayrollDetailId > 0) {
+                            $("#AboveTR" + sno).remove();
+                            AppendTd = "<tr id='AboveTR" + sno + "' class= '" + PayrollDetailId + "' value='" + sno + "' >";
+                            AppendTd += "<td class='sno'><input type='hidden' value='" + sno + "' class='sno'>" + sno + "</td>";
+                            AppendTd += "<td class='PayrollPolicyName'>" + title + "</td>";
+                            AppendTd += "<td class='Addition'><input type='hidden' class='Additions' value='" + addition + "'>" + addition + " </input></td >";
+                            AppendTd += "<td class='Deduction'><input type='hidden' class='Deductions' value='" + Math.abs(deduction) + "' />" + Math.abs(deduction) + " </input></td>";
+                            AppendTd += "<td class=PayrollId><a href='#' id='" + PayrollDetailId + "' class='Edit'>Edit</a> | <a href='#'  class='Delete'>Delete</a> ";
+                            AppendTd += "<input type='hidden' value='" + IsUpdate + "' class='IsUpdateInput' /><input type='hidden' value='" + IsDelete + "' class='IsDeleteInput' />";
+                            AppendTd += "<input type='hidden' value='" + PayrollDetailId + "' class='PayrollDetailIdInput' input />"
+                            AppendTd += "<input type='hidden' value='" + $('#PayrollIdTable').val() + "' class='PayrollId' />";
+                            AppendTd += "<input type='hidden' value='" + PayrollDetailId + "' class='PayrollDetailId' />";
+                            $('.tBodyAppendUpper tbody').append(AppendTd);
+                            calculateSum();
+                            calculateDed();
+                        }
+                        else if (PayrollDetailId == 0) {
+                            $("#AboveTR" + sno).remove();
+                            AppendTd = "<tr id='AboveTR'" + sno + " class= '" + PayrollDetailId + "' value='" + sno + "' >";
+                            AppendTd += "<td class='sno'><input type='hidden' value='" + sno + "' class='sno'>" + sno + "</td>";
+                            AppendTd += "<td class='PayrollPolicyName'>" + title + "</td>";
+                            AppendTd += "<td class='Addition'><input type='hidden' class='Additions' value='" + addition + "'>" + addition + " </input></td >";
+                            AppendTd += "<td class='Deduction'><input type='hidden' class='Deductions' value='" + Math.abs(deduction) + "' />" + Math.abs(deduction) + " </input></td>";
+                            AppendTd += "<td class=PayrollId><a href='#' id='" + sno + "' class='Edit'>Edit</a> | <a href='#' class='Delete'>Delete</a> ";
+                            AppendTd += "<input type='hidden' value='" + PayrollDetailId + "' class='PayrollDetailIdInput' input />"
+                            AppendTd += "<input type='hidden' value='" + IsUpdate + "' class='IsUpdateInput' /><input type='hidden' value='" + IsDelete + "' class='IsDeleteInput' />";
+                            AppendTd += "<input type='hidden' value='" + $('#PayrollIdTable').val() + "' class='PayrollId' />";
+                            AppendTd += "<input type='hidden' value='" + PayrollDetailId + "' class='PayrollDetailId' />";
+                            $('.tBodyAppendUpper tbody').append(AppendTd);
+                            calculateSum();
+                            calculateDed();
+                        }
+                    }
+                    PayrollVariableIsActive = 1;
+                    IsDelete = 0;
+                    IsUpdate = 0;
+                    calculateSum();
+                    calculateDed();
+                });
+                //When Click Delete
+                $(".mytable").on("click", ".Delete", function () {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.value) {
+                            $(this).closest('tr').find('.IsDeleteInput').val("1");
+                            $(this).closest("tr").hide();
+                            calculateSum();
+                            calculateDed();
+                        }
+                    })
+                });
+                var ItemArray = [];
+                $(".SaveAll").click(function (e) {
 
-                    window.frames["print_frame"].document.body.innerHTML = printDivCSS + ' ' + printElement.html();
-                    window.frames["print_frame"].window.focus();
-                    setTimeout(function () {
-                        window.frames["print_frame"].window.print();
-                    }, 1000);
-                }
+                    ItemArray.push({
+                        PayrollId: $('#PayrollIdTable').val(),
+                        Addition: $('#TotalAdditions').text(),
+                        Deduction: -$('#TotalDeductions').text(),
+                        VMUserPayrollDetailEditList: []
+                    });
+                    e.preventDefault();
+                    var postSno = $('#TableEditTbody tr:last').find('td:first').text();
+                    for (var sno = 1; sno <= postSno; sno++) {
+                        $('#TableEdit #AboveTR' + sno).each(function () {
+                            var PayrollDetailAmount = 0.00;
+                            var AmountAddition = $(this).closest('#AboveTR' + sno).children('td.Addition').text();
+                            var AmountDeduction = -$(this).closest('#AboveTR' + sno).children('td.Deduction').text();
+                            if (AmountAddition > 0) {
+                                PayrollDetailAmount = AmountAddition;
+                            }
+                            else {
+                                PayrollDetailAmount = AmountDeduction;
+                            }
+                            ItemArray[0].VMUserPayrollDetailEditList.push({
+                                PayrollDetailId: $(this).closest('#AboveTR' + sno).find('.PayrollDetailIdInput').val(),
+                                PayrollPolicyName: $(this).closest('#AboveTR' + sno).children('td.PayrollPolicyName').text(),
+                                PayrollVariableName: $(this).closest('#AboveTR' + sno).children('td.PayrollPolicyName').text(),
+                                Amount: PayrollDetailAmount,
+                                IsUpdate: $(this).closest('#AboveTR' + sno).find('.IsUpdateInput').val(),
+                                IsDelete: $(this).closest('#AboveTR' + sno).find('.IsDeleteInput').val(),
+                            });
+                           
+                        });
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: "/Payroll/ModifyPayrollDetail2",
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        data: JSON.stringify(ItemArray),
+                        success: function (response) {
+                            if (response == "Success") {
+                                Swal.fire(
+                                    'Success!',
+                                    'Your work has been saved',
+                                    'success'
+                                )
+                            }
+                            if (response == "Failure") {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Something went wrong!',
+                                    text: 'Try again later'
+                                })
+                            }
+                        },
+                        failure: function (err) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Something went wrong!',
+                                text: 'Try again later'
+                            })
+                        }
+                    });
+                });
+            });
+        </script>
+        <style>
+            .PayrollVariableDetail, .OtherVariableName {
+                display: none;
+            }
+        </style>
+        <br />
+        <div class="page-box content-box mrg25B PayrollVariableDetail">
+            <h3 id="AddPayrollDetail" class="content-box-header bg-blue text-left mrg25B screenheading AddNewEntryHeading"><i class="glyph-icon icon-table"></i>Payroll Detail Edit</h3>
+            <div class="form-group">
+                <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Payroll Variables: </label>
+                <div class="col-sm-6">
+                    <input type="hidden" class="DropDownPayrollDetailId" value="" />
 
-                // Convert numbers to words
-                // copyright 25th July 2006, by Stephen Chapman http://javascript.about.com
-                // permission to use this Javascript on your web page is granted
-                // provided that all of the code (including this copyright notice) is
-                // used exactly as shown (you can change the numbering system if you wish)
+                </div>
+                <div class="col-sm-6">
+                    @Html.DropDownListFor(m => m.PayrollVariable, ViewBag.PayrollVariable as SelectList, "Other", new { @class = "form-control DropdownPayrollVariable Other", id = "DropdownPayrollVariable" })
+                </div>
+            </div>
 
-                // American Numbering System
-                var th = ['', 'thousand', 'million', 'billion', 'trillion'];
-                // uncomment this line for English Number System
-                // var th = ['','thousand','million', 'milliard','billion'];
 
-                var dg = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']; var tn = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen']; var tw = ['twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-                function toWords(s) { s = s.toString(); s = s.replace(/[\, ]/g, ''); if (s != parseFloat(s)) return 'not a number'; var x = s.indexOf('.'); if (x == -1) x = s.length; if (x > 15) return 'too big'; var n = s.split(''); var str = ''; var sk = 0; for (var i = 0; i < x; i++) { if ((x - i) % 3 == 2) { if (n[i] == '1') { str += tn[Number(n[i + 1])] + ' '; i++; sk = 1; } else if (n[i] != 0) { str += tw[n[i] - 2] + ' '; sk = 1; } } else if (n[i] != 0) { str += dg[n[i]] + ' '; if ((x - i) % 3 == 0) str += 'hundred '; sk = 1; } if ((x - i) % 3 == 1) { if (sk) str += th[(x - i - 1) / 3] + ' '; sk = 0; } } if (x != s.length) { var y = s.length; str += 'point '; for (var i = x + 1; i < y; i++) str += dg[n[i]] + ' '; } return str.replace(/\s+/g, ' '); }
 
-            </script>
+            <div class="form-group">
+                <label for="UserName" class="col-sm-4 control-label lblforinput ">Amount</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.Amount, new { maxlength = "200", @onkeyup = "currencyNumber(3)(this);", @class = "form-control Amount", placeholder = "Amount" })
+                </div>
+            </div>
+
+            <div class="form-group OtherVariableName">
+                <label for="UserName" class="col-sm-4 control-label lblforinput">New Variable Name</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.OtherVariable, new { maxlength = "200", @class = "form-control OtherVariableNameTextBox", placeholder = "Enter Name" })
+                </div>
+            </div>
+            <br />
+            <br />
+
+            <div class="form-group">
+
+                <div class="col-sm-4"></div>
+                <br />
+                <div class="col-sm-2">
+                    <a href="#" class="AddRows EditAboveTableSave BelowEdit"><button type="submit" class="btn btn-block btn-success BelowEdit" disabled="disabled">Add</button></a>
+                </div>
+                <div class="col-sm-2">
+                    <a href="#" class="AddRows AddAboveTableSave BelowAdd"><button type="submit" class="btn btn-block btn-success BelowAdd">Add</button></a>
+                </div>
+
+            </div>
+        </div>
+
+
+    }
+</div>
+
+
 

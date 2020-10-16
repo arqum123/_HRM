@@ -9,7 +9,7 @@
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true)
-        
+
         <div class="form-group">
             <label for="UserShiftId" class="col-sm-4 control-label lblforinput">Shift: </label>
             <div class="col-sm-6">
@@ -39,23 +39,111 @@
 
     @if (Model.UserList != null && Model.UserList.Count > 0)
     {
-        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
-        tableStyle: "table table-striped table-hover datatable",
-        headerStyle: "header",
-        alternatingRowStyle: "alternating-row",
-        rowStyle: "row-style",
-        columns:
-            grid.Columns(
-                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
-                grid.Column("ID", "Emp ID"),
-                grid.Column("FirstName", "Name", format: @<text><img width="36" src="@(item.ImagePath == "" ? "/assets/images/anonymoususer.jpg": item.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a title="Click here to Assign Shift to User" href="/Shift/Assign?id=@item.Id">@item.FirstName</a><input type="hidden" class="hdnUserId" value="@item.id" /></text>),
-                grid.Column("Department.Name", header: "Department", format: (item) => item.Department != null ? item.Department.Name : Html.Raw("N/A")),
-                grid.Column("Shift", header: "Shift", format: @<text><a target="_blank" title="Click here to View User Shifts History" href="/Shift/AssignHistory?id=@item.Id">@(item.Shift != null ? item.Shift.Name : Html.Raw("N/A"))</a></text>),
-                grid.Column("UserContactEmail.Detail", header: "Email Address", format: (item) => (item.UserContactEmail.Detail != null && item.UserContactEmail.Detail != "") ? item.UserContactEmail.Detail : Html.Raw("N/A")),
-                grid.Column("UserContactMobile.Detail", header: "Mobile Number", format: (item) => (item.UserContactMobile.Detail != null && item.UserContactMobile.Detail != "") ? item.UserContactMobile.Detail : Html.Raw("N/A")),
-                grid.Column("Designation", header: "Designation", format: (item) => (item.Designation != null && item.Designation != "") ? item.Designation : Html.Raw("N/A"))
-                )
-        )
+        int j = 0;
+        <table class="table table-striped table-hover datatable">
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Shift</th>
+                    <th>Designation</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.UserList.Count; i++)
+                {
+                    j = i + 1;
+                <tr>
+                    <td>@j</td>
+                    <td>@Model.UserList[i].Id</td>
+                    <td>@Model.UserList[i].FirstName</td>
+                    <td>@Model.UserList[i].Department.Name</td>
+                    @if (@Model.UserList[i].Shift == null)
+                    {
+                        <td>N/A</td>
+                    }
+                    else
+                    {
+                        <td>@Model.UserList[i].Shift.Name</td>
+                    }
+                     @if (@Model.UserList[i].Designation == null)
+                    {
+                        <td>N/A</td>
+                    }
+                    else
+                    {
+                        <td>@Model.UserList[i].Designation</td>
+                    }
+                </tr>
+                }
+            </tbody>
+
+        </table>
+        if (ViewBag.TotalPages != null)
+        {
+            double TotalPages = ViewBag.TotalPages;
+            if (TotalPages > 1)
+            {
+            <ul class="pagination">
+                <li>@Html.ActionLink("First", "AssignList", new { UserName = Model.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = 1 })</li>
+
+                @if (ViewBag.PageNumber == 1)
+                {
+                    <li>@Html.ActionLink("Previous", "AssignList", new { UserName = Model.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Previous", "AssignList", new { UserName = Model.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber - 1 })</li>
+                }
+
+                @for (int i = 1; i <= TotalPages; i++)
+                {
+
+
+                    if (i == ViewBag.PageNumber)
+                    {
+                        <li class="active">@Html.ActionLink(i.ToString(), "AssignList", new { UserName = Model.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink(i.ToString(), "AssignList", new { UserName = Model.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = i.ToString() })</li>
+
+                    }
+
+
+                }
+                @if (ViewBag.PageNumber == TotalPages)
+                {
+                    <li>@Html.ActionLink("Next", "AssignList", new { UserName = Model.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Next", "AssignList", new { UserName = Model.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber + 1 })</li>
+                }
+                <li>@Html.ActionLink("Last", "AssignList", new { UserName = Model.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = TotalPages })</li>
+            </ul>
+            }
+        }
+        @*@grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+            tableStyle: "table table-striped table-hover datatable",
+            headerStyle: "header",
+            alternatingRowStyle: "alternating-row",
+            rowStyle: "row-style",
+            columns:
+                grid.Columns(
+                    grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                    grid.Column("ID", "Emp ID"),
+                    grid.Column("FirstName", "Name", format: @<text><img width="36" src="@(item.ImagePath == "" ? "/assets/images/anonymoususer.jpg": item.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a title="Click here to Assign Shift to User" href="/Shift/Assign?id=@item.Id">@item.FirstName</a><input type="hidden" class="hdnUserId" value="@item.id" /></text>),
+                    grid.Column("Department.Name", header: "Department", format: (item) => item.Department != null ? item.Department.Name : Html.Raw("N/A")),
+                    grid.Column("Shift", header: "Shift", format: @<text><a target="_blank" title="Click here to View User Shifts History" href="/Shift/AssignHistory?id=@item.Id">@(item.Shift != null ? item.Shift.Name : Html.Raw("N/A"))</a></text>),
+
+                    //grid.Column("UserContactMobile.Detail", header: "Mobile Number", format: (item) => (item.UserContactMobile.Detail != null && item.UserContactMobile.Detail != "") ? item.UserContactMobile.Detail : Html.Raw("N/A")),
+                    grid.Column("Designation", header: "Designation", format: (item) => (item.Designation != null && item.Designation != "") ? item.Designation : Html.Raw("N/A"))
+                    )
+            )*@
     }
 
 </div>

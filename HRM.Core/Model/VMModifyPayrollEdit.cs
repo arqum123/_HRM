@@ -7,30 +7,28 @@ namespace HRM.Core.Model
 {
     public class VMModifyPayrollEdit
     {
-        public int? PayrollCycleId { get; set; }
-        public int? PayrollId { get; set; }
-        public int? PayrollDetailId { get; set; }
-        public int? PayrollVariableId { get; set; }
-        public int? UserId { get; set; }
-        public int? SalaryTypeId { get; set; }
-        public int? DepartmentId { get; set; }
-        public string UserName { get; set; }
-        public string UserFName { get; set; }
-        public string UserMName { get; set; }
-        public string UserLName { get; set; }
+       
 
-        public string DepartmentName { get; set; }
-        public string PayrollDetailName { get; set; }
-        public string PayrollVariableName { get; set; }
-        public string Designation { get; set; }
-        public string NICNo { get; set; }
-        public string SalaryTypeName { get; set; }
-        public string PayrollCycleName { get; set; }
-        public decimal? Salary { get; set; }
-        public decimal? Addition { get; set; }
-        public decimal? Deduction { get; set; }
-        public decimal? ExtraAddition {get;set;}
-        public decimal? ExtraDeduction { get; set; }
-        public decimal? NetSalary { get; set; }
+        public Int32? UserId { get; set; } //User
+        public Int32? PayrollId { get; set; } ////User
+        //public Int32? PayrollDetailId { get; set; } //New
+        public string UserName { get; set; } //User
+        public string UserFName { get; set; } //User
+        public string UserMName { get; set; } //User
+        public string UserLName { get; set; } //User
+
+        public string DepartmentName { get; set; } //Department       //New
+        public Decimal? Addition { get; set; } //Payroll
+        public Decimal? Deduction { get; set; } //Payroll
+
+        public string Designation { get; set; } //User
+        public Int32? PayrollCycleId { get; set; } //PayrollCycle
+        public string PayrollCycleName { get; set; } //PayrollCycle
+        public Int32? DepartmentId { get; set; } //Department
+        public Decimal? Salary { get; set; } //User
+        public Int32? SalaryTypeId { get; set; } //SalaryType
+        public Decimal? NetSalary { get; set; } //Payroll
+        public List<VMModifyPayrollEditVariable> VMModifyPayrollEditVariableList { get; set; }
     }
+
 }

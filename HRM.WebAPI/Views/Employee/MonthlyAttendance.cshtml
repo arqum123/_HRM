@@ -1,0 +1,238 @@
+﻿@model HRM.Core.Model.EmpMonthlyAttendance
+@{
+    ViewBag.Title = "HRMS - Monthly Attendance";
+    //WebGrid grid = new WebGrid(Model.EmpMonthlyDetailAttendanceList, canSort: true, canPage: true, rowsPerPage: 10);//whenever rowsperpage will be changed, change it in script as well
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B">
+        <i class="glyph-icon icon-table"></i>Monthly Attendance Report
+        <div class="col-sm-3" style="float: right;">
+            <a href="javascript:;" onclick="Print(1);" style="float: right">
+                <img src="/assets/images/printer.png" style="width: 20px" />&nbsp;Print
+            </a>
+        </div>
+    </h3>
+    @using (Html.BeginForm("MonthlyAttendance", "Employee", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "DailyAttendanceListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+        <div class="form-group">
+            <label for="StartDate" class="col-sm-4 control-label lblforinput">From: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.StartDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control startdate", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="EndDate" class="col-sm-4 control-label lblforinput">To: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.EndDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control enddate", @readonly = "readonly" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success" id="submit">Search</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-12">
+                <div class="text-danger" id="error"></div>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+
+    @if (Model.EmpMonthlyDetailAttendanceList != null && Model.EmpMonthlyDetailAttendanceList.Count > 0)
+    {
+        @*@grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+           tableStyle: "table table-striped table-hover datatable",
+           headerStyle: "header",
+           alternatingRowStyle: "alternating-row",
+           rowStyle: "row-style",
+           columns:
+               grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),              
+                grid.Column("AttendanceDate", "Date", format: @<text>&nbsp;<a href="/Employee/MonthlyDetailAttendace?StartDate=@Model.StartDate&EndDate=@Model.EndDate" target="_blank">@item.AttendanceDate.ToString("dd-MMM-yyy")</text>),
+                grid.Column("AtStartDate", header: "TimeIn", format: (item) => item.AtStartDate != null ? string.Format("{0:hh:mm tt}", item.AtStartDate) : Html.Raw("N/A")),
+                grid.Column("ATEndDate", header: "TimeOut", format: (item) => item.ATEndDate != null ? string.Format("{0:hh:mm tt}", item.ATEndDate) : Html.Raw("N/A")),
+                grid.Column("WorkingMin", header: "Working (Min)", format: (item) => item.WorkingMin != null ? item.WorkingMin : Html.Raw("N/A")),
+                grid.Column("TotalMin", header: "Total (Min)", format: (item) => item.TotalMin != null ? item.TotalMin : Html.Raw("N/A")),
+                grid.Column("IsShiftOffDay", header: "Off Day", format: (item) => (item.IsShiftOffDay == true) ? Html.Raw("Yes") : Html.Raw("No")),
+                grid.Column("IsLate", header: "Late", format: (item) => (item.IsLate == true) ? Html.Raw("Yes") : Html.Raw("No")),
+                grid.Column("IsEarly", header: "Early", format: (item) => (item.IsEarly == true) ? Html.Raw("Yes") : Html.Raw("No"))
+             )
+        )*@
+        <div id="pagination-container">
+            <table class="table table-striped table-hover datatable" id="Table">
+                <thead>
+                    <tr>
+                        <th>SNO</th>
+                        <th>@Html.ActionLink("Date", "MonthlyAttendance", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "Date", PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</th>
+                        <th>TimeIn</th>
+                        <th>TimeOut</th>
+                        <th>Working (Min)</th>
+                        <th>Total (Min)</th>
+                        <th>OffDay</th>
+                        <th>Late</th>
+                        <th>Early</th>
+
+
+                    </tr>
+                </thead>
+                @{
+                    int sno = 0;
+                }
+                @for (int i = 0; i < Model.EmpMonthlyDetailAttendanceList.Count; i++)
+                {
+                    <tbody>
+                        <tr>
+                            <td>
+
+                                @{ sno++; }
+                                @sno
+                            </td>
+                            <td>
+
+                                <a href="/Employee/DailyDetailAttendace?Date=@Model.EmpMonthlyDetailAttendanceList[i].AttendanceDate" target="_blank">@Model.EmpMonthlyDetailAttendanceList[i].AttendanceDate.ToString("MMM dd, yyy")
+                            </td>
+                            @if (@Model.EmpMonthlyDetailAttendanceList[i].AtStartDate == DateTime.MinValue)
+                            {
+                                <td>-</td>
+                            }
+                            else
+                            {
+                                <td>
+
+                                    @Model.EmpMonthlyDetailAttendanceList[i].AtStartDate.ToString("hh:mm tt")
+                                </td>
+                            }
+                            @if (@Model.EmpMonthlyDetailAttendanceList[i].ATEndDate == DateTime.MinValue)
+                            {
+                                <td>-</td>
+                            }
+                            else
+                            {
+                                <td>
+
+                                    @Model.EmpMonthlyDetailAttendanceList[i].ATEndDate.ToString("hh:mm tt")
+
+                                </td>
+                            }
+
+                            <td>
+
+                                @Model.EmpMonthlyDetailAttendanceList[i].WorkingMin
+                            </td>
+                            <td>
+
+                                @Model.EmpMonthlyDetailAttendanceList[i].TotalMin
+                            </td>
+
+                            @if (Model.EmpMonthlyDetailAttendanceList[i].IsShiftOffDay == false)
+                            {
+                                <td>
+                                    No
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    Yes
+                                </td>
+                            }
+                            @if (@Model.EmpMonthlyDetailAttendanceList[i].IsLate == false)
+                            {
+                                <td>
+                                    No
+
+                                </td>
+                            }
+                            else
+                            {
+                                <td>Yes</td>
+                            }
+                            @if (@Model.EmpMonthlyDetailAttendanceList[i].IsEarly == false)
+                            {
+
+                                <td>
+
+                                    No
+                                </td>
+                            }
+                            else
+                            {
+                                <td>Yes</td>
+                            }
+
+
+
+                        </tr>
+                    </tbody>
+
+                }
+
+            </table>
+            @if (ViewBag.TotalPages != null)
+            {
+                double TotalPages = ViewBag.TotalPages;
+                if (TotalPages > 1)
+                {
+            <ul class="pagination">
+                <li>@Html.ActionLink("First", "MonthlyAttendance", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = 1 })</li>
+
+                @if (ViewBag.PageNumber == 1)
+                {
+                    <li>@Html.ActionLink("Previous", "MonthlyAttendance", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Previous", "MonthlyAttendance", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = ViewBag.PageNumber - 1 })</li>
+                }
+
+                @for (int i = 1; i <= TotalPages; i++)
+                {
+
+
+                    if (i == ViewBag.PageNumber)
+                    {
+                        <li class="active">@Html.ActionLink(i.ToString(), "MonthlyAttendance", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink(i.ToString(), "MonthlyAttendance", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = i.ToString() })</li>
+                        @*<li><a href="/Attendance/MonthlyAttendanceReport?SortOrder=Asc&SortBy=Date&StartDate=@Model.StartDate&EndDate=@Model.EndDate&PageNumber?=@i">@i</a></li>*@
+                    }
+
+
+                }
+                @if (ViewBag.PageNumber == TotalPages)
+                {
+                    <li>@Html.ActionLink("Next", "MonthlyAttendance", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Next", "MonthlyAttendance", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = ViewBag.PageNumber + 1 })</li>
+                }
+                <li>@Html.ActionLink("Last", "MonthlyAttendance", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = TotalPages })</li>
+            </ul>
+                }
+            }
+        </div>
+        <div class="float-right">
+            <a target="_blank" href="/Employee/MonthlyDetailAttendace?UserId=@Model.UserId&DepartId=@Model.DepartmentId&StartDate=@Model.StartDate&EndDate=@Model.EndDate">View All</a>
+        </div>
+    }
+
+
+    @*<iframe src="~/Reports/web_forms/daily_summary.aspx" id="if_daily_sum" width="97%" height="760"></iframe>*@
+
+</div>
+
+
+

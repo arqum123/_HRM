@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace HRM.WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DepartmentController : Controller
     {
         [HttpGet]
@@ -93,18 +94,43 @@ namespace HRM.WebAPI.Controllers
 
         [HttpGet]
         [Authenticate]
-        public ActionResult DepartmentList()
+        public ActionResult DepartmentList(int? PageNumber,int? Id)
         {
+
+            if (PageNumber == null)
+                PageNumber = 1;
             VMDepartmentModel VMDepartmentModel = new VMDepartmentModel();
+            VMDepartmentModel model = new VMDepartmentModel();
             try
             {
                 IDepartmentService objDepartmentService = IoC.Resolve<IDepartmentService>("DepartmentService");
                 VMDepartmentModel.DepartmentList = objDepartmentService.GetAllDepartment(AuthBase.BranchId);
-
-                
-
                 if (VMDepartmentModel.DepartmentList == null || VMDepartmentModel.DepartmentList.Where(x => x.IsActive == true).ToList().Count == 0)
                     ModelState.AddModelError("", "No Records Found");
+                else
+                {
+                    IUserDepartmentService ObjUserDepartmentService = IoC.Resolve<IUserDepartmentService>("UserDepartmentService");
+                    List<UserDepartment> UserDepartmentList = ObjUserDepartmentService.GetUserDepartmentByUserId(Convert.ToInt32(Id));
+                    if (UserDepartmentList != null && UserDepartmentList.Count > 0)
+                    {
+                        model.UserDepartmentList = UserDepartmentList;
+                        foreach (var department in model.UserDepartmentList)
+                        {
+                            department.Department = objDepartmentService.GetDepartment((int)department.DepartmentId);
+                        }
+                        UserDepartmentList = ApplyDepartmentListPagination(Convert.ToInt32(PageNumber), UserDepartmentList);
+                        ViewBag.PageNumber = PageNumber;
+                        ViewBag.DepartmentID = Id;
+                    }
+                    if (UserDepartmentList == null || UserDepartmentList.Count ==0 && VMDepartmentModel.DepartmentList != null)
+                    {
+                        double PageCount = VMDepartmentModel.DepartmentList.Count;
+                        ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                        VMDepartmentModel.DepartmentList = VMDepartmentModel.DepartmentList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+                        ViewBag.PageNumber = PageNumber;
+                        ViewBag.DepartmentID = Id;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -116,8 +142,10 @@ namespace HRM.WebAPI.Controllers
 
         [HttpGet]
         [Authenticate]
-        public ActionResult DepartmentHistory(string Id)
+        public ActionResult DepartmentHistory(string Id, int? PageNumber)
         {
+            if (PageNumber == null)
+                PageNumber = 1;
             VMDepartmentModel model = new VMDepartmentModel();
             try
             {
@@ -133,6 +161,11 @@ namespace HRM.WebAPI.Controllers
                         {
                             department.Department = ObjDepartmentService.GetDepartment((int)department.DepartmentId);
                         }
+                        double PageCount = UserDepartmentList.Count;
+                        ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                        UserDepartmentList = UserDepartmentList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+                        ViewBag.PageNumber = PageNumber;
+                        ViewBag.DepartmentID = Id;
                     }
                     else
                         ModelState.AddModelError("", "No Records Found");
@@ -147,5 +180,13 @@ namespace HRM.WebAPI.Controllers
             return View(model);
         }
 
+        public List<UserDepartment> ApplyDepartmentListPagination(int PageNumber, List<UserDepartment> UserDepartmentList)
+        {
+
+            double PageCount = UserDepartmentList.Count;
+            ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+            UserDepartmentList = UserDepartmentList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+            return UserDepartmentList;
+        }
     }
 }

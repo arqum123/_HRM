@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace HRM.WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class LeaveController : Controller
     {
         //
@@ -56,7 +57,7 @@ namespace HRM.WebAPI.Controllers
 
             UserDepartment userdept = null;
             UserDepartmentRepository objuserdept = new UserDepartmentRepository();
-            userdept = objuserdept.GetUserDepartmentByUserId(UserId).Last();
+            //userdept = objuserdept.GetUserDepartmentByUserId(UserId).Last();
             IDepartmentService objDepartmentService = IoC.Resolve<IDepartmentService>("DepartmentService");
 
             IUserService objUserService = IoC.Resolve<IUserService>("UserService");
@@ -166,9 +167,317 @@ namespace HRM.WebAPI.Controllers
 
             return View(model);
         }
+        [HttpGet]
+        [Authenticate]
+        public ActionResult ApprovedLeaves(string UserName, int? DepartmentName, DateTime? StartDate, DateTime? EndDate, string SortOrder, string SortBy, int? PageNumber)
+        {
+            ViewBag.SortOrder = SortOrder;
+            ViewBag.PageNumber = PageNumber;
+            if (PageNumber == 0 || PageNumber == null)
+                PageNumber = 1;
+            if (SortOrder == null && SortBy == null && StartDate == null && EndDate == null)
+            {
+                VMApprovedLeaves model = new VMApprovedLeaves();
+                try
+                {
+                    model.StartDate = DateTime.Now;
+                    model.EndDate = DateTime.Now;
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
 
+                GetDepartmentsAndUsers(model.UserID, model.DepartmentID); //TODO
+                return View(model);
+            }
 
+            else
+            {
+                VMApprovedLeaves model = new VMApprovedLeaves();
+                if (StartDate != null || StartDate != DateTime.MinValue)
+                    model.StartDate = Convert.ToDateTime(StartDate);
+                if (EndDate != null || EndDate != DateTime.MinValue)
+                    model.EndDate = Convert.ToDateTime(EndDate);
+                IDepartmentService objDepartmentService = IoC.Resolve<IDepartmentService>("DepartmentService");
+                IUserService objUserService = IoC.Resolve<IUserService>("UserService");
+                ILeaveService objLeaveService = IoC.Resolve<ILeaveService>("LeaveService");
+                model.VMApprovedAllLeavesList = objLeaveService.GetApprovedLeavesByDateRange(model.UserID, model.DepartmentID, model.StartDate, model.EndDate).ToList();
+                if (model.UserName != null)
+                    model.VMApprovedAllLeavesList = model.VMApprovedAllLeavesList.Where(x => x.EmpName.ToLower().Contains(model.UserName.ToLower())).ToList();
+                if (model.VMApprovedAllLeavesList == null || model.VMApprovedAllLeavesList.Count == 0)
+                    ModelState.AddModelError("", "No Records Found");
+                else
+                {
+                    #region Pagination
+                    double PageCount = model.VMApprovedAllLeavesList.Count;
+                    ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                    model.VMApprovedAllLeavesList = model.VMApprovedAllLeavesList.Skip((Convert.ToInt32(PageNumber - 1)) * 5).Take(5).ToList();
+                    #endregion Pagination
+                    #region Sorting
+                    if (SortBy == "Date")
+                    {
+                        if (SortOrder == "Asc")
+                        {
+                            model.VMApprovedAllLeavesList = model.VMApprovedAllLeavesList.OrderBy(x => x.Date).ToList();
 
+                        }
+                        else if (SortOrder == "Desc")
+                        {
+                            model.VMApprovedAllLeavesList = model.VMApprovedAllLeavesList.OrderByDescending(x => x.Date).ToList();
+
+                        }
+                    }
+                    #endregion Sorting
+                }
+                GetDepartmentsAndUsers(model.UserID, model.DepartmentID); //TODO
+                return View(model);
+            }
+        }
+        [HttpPost]
+        [Authenticate]
+        public ActionResult ApprovedLeaves(VMApprovedLeaves model, string SortOrder, string SortBy, int PageNumber = 1)
+        {
+            ViewBag.SortOrder = SortOrder;
+            ViewBag.PageNumber = PageNumber;
+            IDepartmentService objDepartmentService = IoC.Resolve<IDepartmentService>("DepartmentService");
+            IUserService objUserService = IoC.Resolve<IUserService>("UserService");
+            ILeaveService objLeaveService = IoC.Resolve<ILeaveService>("LeaveService");
+            model.VMApprovedAllLeavesList = objLeaveService.GetApprovedLeavesByDateRange(model.UserID, model.DepartmentID, model.StartDate, model.EndDate).ToList();
+            if (model.UserName != null)
+                model.VMApprovedAllLeavesList = model.VMApprovedAllLeavesList.Where(x => x.EmpName.ToLower().Contains(model.UserName.ToLower())).ToList();
+            if (model.VMApprovedAllLeavesList == null || model.VMApprovedAllLeavesList.Count == 0)
+                ModelState.AddModelError("", "No Records Found");
+            else
+            {
+                #region Pagination
+                double PageCount = model.VMApprovedAllLeavesList.Count;
+                ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                model.VMApprovedAllLeavesList = model.VMApprovedAllLeavesList.Skip((Convert.ToInt32(PageNumber - 1)) * 5).Take(5).ToList();
+                #endregion Pagination
+                #region Sorting
+                if (SortBy == "Date")
+                {
+                    if (SortOrder == "Asc")
+                    {
+                        model.VMApprovedAllLeavesList = model.VMApprovedAllLeavesList.OrderBy(x => x.Date).ToList();
+
+                    }
+                    else if (SortOrder == "Desc")
+                    {
+                        model.VMApprovedAllLeavesList = model.VMApprovedAllLeavesList.OrderByDescending(x => x.Date).ToList();
+
+                    }
+                }
+                #endregion Sorting
+            }
+            GetDepartmentsAndUsers(model.UserID, model.DepartmentID); //TODO
+            return View(model);
+        }
+        [HttpGet]
+        [Authenticate]
+        public ActionResult ManageLeaves(string UserName, int? DepartmentName, DateTime? StartDate, DateTime? EndDate, string SortOrder, string SortBy, int? PageNumber)
+        {
+            ViewBag.SortOrder = SortOrder;
+            ViewBag.PageNumber = PageNumber;
+            if (PageNumber == 0 || PageNumber == null)
+                PageNumber = 1;
+            if (SortOrder == null && SortBy == null && StartDate == null && EndDate == null)
+            {
+                VMViewPendingLeaves model = new VMViewPendingLeaves();
+                try
+                {
+                    model.StartDate = DateTime.Now;
+                    model.EndDate = DateTime.Now;
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
+
+                GetDepartmentsAndUsers(model.UserID, model.DepartmentID); //TODO
+                return View(model);
+            }
+            else
+            {
+                VMViewPendingLeaves model = new VMViewPendingLeaves();
+                if (StartDate != null || StartDate != DateTime.MinValue)
+                    model.StartDate = Convert.ToDateTime(StartDate);
+                if (EndDate != null || EndDate != DateTime.MinValue)
+                    model.EndDate = Convert.ToDateTime(EndDate);
+                IDepartmentService objDepartmentService = IoC.Resolve<IDepartmentService>("DepartmentService");
+                IUserService objUserService = IoC.Resolve<IUserService>("UserService");
+                ILeaveService objLeaveService = IoC.Resolve<ILeaveService>("LeaveService");
+                model.VMPendingViewAllLeavesList = objLeaveService.GetAllPendingLeavesByDateRange(model.UserID, model.DepartmentID, model.StartDate, model.EndDate).Where(x => x.IsReject == false).ToList();
+                if (model.UserName != null)
+                    model.VMPendingViewAllLeavesList = model.VMPendingViewAllLeavesList.Where(x => x.EmpName.ToLower().Contains(model.UserName.ToLower())).ToList();
+                if (model.VMPendingViewAllLeavesList == null || model.VMPendingViewAllLeavesList.Count == 0)
+                    ModelState.AddModelError("", "No Records Found");
+                else
+                {
+                    #region Pagination
+                    double PageCount = model.VMPendingViewAllLeavesList.Count;
+                    ViewBag.TotalPages = Math.Ceiling(PageCount / 5);
+                    model.VMPendingViewAllLeavesList = model.VMPendingViewAllLeavesList.Skip((Convert.ToInt32(PageNumber - 1)) * 5).Take(5).ToList();
+                    #endregion Pagination
+                    #region Sorting
+                    if (SortBy == "Date")
+                    {
+                        if (SortOrder == "Asc")
+                        {
+                            model.VMPendingViewAllLeavesList = model.VMPendingViewAllLeavesList.OrderBy(x => x.Date).ToList();
+
+                        }
+                        else if (SortOrder == "Desc")
+                        {
+                            model.VMPendingViewAllLeavesList = model.VMPendingViewAllLeavesList.OrderByDescending(x => x.Date).ToList();
+
+                        }
+                    }
+                    #endregion Sorting
+                }
+                GetDepartmentsAndUsers(model.UserID, model.DepartmentID); //TODO
+                return View(model);
+            }
+        }
+        [HttpPost]
+        [Authenticate]
+        public ActionResult ManageLeaves(VMViewPendingLeaves model, string SortOrder, string SortBy, int PageNumber = 1)
+        {
+            ViewBag.SortOrder = SortOrder;
+            ViewBag.PageNumber = PageNumber;
+            IDepartmentService objDepartmentService = IoC.Resolve<IDepartmentService>("DepartmentService");
+            IUserService objUserService = IoC.Resolve<IUserService>("UserService");
+            ILeaveService objLeaveService = IoC.Resolve<ILeaveService>("LeaveService");
+            model.VMPendingViewAllLeavesList = objLeaveService.GetAllPendingLeavesByDateRange(model.UserID, model.DepartmentID, model.StartDate, model.EndDate).Where(x=>x.IsReject == false).ToList();
+            if (model.UserName != null)
+                model.VMPendingViewAllLeavesList = model.VMPendingViewAllLeavesList.Where(x => x.EmpName.ToLower().Contains(model.UserName.ToLower())).ToList();
+            if(model.VMPendingViewAllLeavesList ==null || model.VMPendingViewAllLeavesList.Count ==0)
+                ModelState.AddModelError("", "No Records Found");
+            else
+            {
+                #region Pagination
+                double PageCount = model.VMPendingViewAllLeavesList.Count;
+                ViewBag.TotalPages = Math.Ceiling(PageCount / 5);
+                model.VMPendingViewAllLeavesList = model.VMPendingViewAllLeavesList.Skip((Convert.ToInt32(PageNumber - 1)) * 5).Take(5).ToList();
+                #endregion Pagination
+                #region Sorting
+                if (SortBy == "Date")
+                {
+                    if (SortOrder == "Asc")
+                    {
+                        model.VMPendingViewAllLeavesList = model.VMPendingViewAllLeavesList.OrderBy(x => x.Date).ToList();
+
+                    }
+                    else if (SortOrder == "Desc")
+                    {
+                        model.VMPendingViewAllLeavesList = model.VMPendingViewAllLeavesList.OrderByDescending(x => x.Date).ToList();
+
+                    }
+                }
+                #endregion Sorting
+            }
+            GetDepartmentsAndUsers(model.UserID, model.DepartmentID); //TODO
+            return View(model);
+        }
+        [HttpPost]
+        [Authenticate]
+        public JsonResult ManageLeavesUpdation(List<VMPendingViewAllLeaves> VMPendingViewAllLeavesList)
+        {
+            try
+            {
+                ILeaveService objLeaveService = IoC.Resolve<ILeaveService>("LeaveService");
+                foreach (VMPendingViewAllLeaves model in VMPendingViewAllLeavesList)
+                {
+                    if (model.IsApproved == true)
+                    {
+                        #region Update Leave
+                        Leave LeaveList = objLeaveService.GetLeave(model.LeaveID);
+                        Leave LeaveDetail = new Leave()
+                        {
+                            Id = model.LeaveID,
+                            UserId = model.UserID,
+                            Date = model.Date,
+                            Reason = LeaveList.Reason,
+                            LeaveTypeId = LeaveList.LeaveTypeId,
+                            IsActive = LeaveList.IsActive,
+                            UpdateDate = DateTime.Now,
+                            UserIp = Request.UserHostAddress,
+                            CreationDate = LeaveList.CreationDate,
+                            AdminReason = model.AdminReason,
+                            IsApproved = model.IsApproved,
+                            IsReject = model.IsReject,
+                            UpdatedBy = AuthBase.UserId
+                        };
+                        LeaveDetail = objLeaveService.UpdateLeave(LeaveDetail);
+                        #endregion
+                    }
+                    else if (model.IsReject == true)
+                    {
+                        #region Update Leave
+                        Leave LeaveList = objLeaveService.GetLeave(model.LeaveID);
+                        var LeaveID = LeaveList.Id;
+                        Leave LeaveDetail = new Leave()
+                        {
+                            Id = model.LeaveID,
+                            UserId = model.UserID,
+                            Date = model.Date,
+                            Reason = LeaveList.Reason,
+                            LeaveTypeId = LeaveList.LeaveTypeId,
+                            IsActive = LeaveList.IsActive,
+                            UpdateDate = DateTime.Now,
+                            UserIp = Request.UserHostAddress,
+                            CreationDate = LeaveList.CreationDate,
+                            AdminReason = model.AdminReason,
+                            IsApproved = model.IsApproved,
+                            IsReject = model.IsReject,
+                            UpdatedBy = AuthBase.UserId
+                        };
+                        LeaveDetail = objLeaveService.UpdateLeave(LeaveDetail);
+                        #endregion
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return Json(new { Success = false, Status = "Failure", ModelError = true });
+            }
+                return Json(new { Success = false, Status = "Success" }); 
+        }
+      private void GetDepartmentsAndUsers(int? UserId, int? DepartmentId)
+        {
+            IUserService objUserService = IoC.Resolve<IUserService>("UserService");
+            List<User> Users = objUserService.GetAllUser();
+            if (UserId.HasValue && UserId.Value > 0)
+                ViewBag.UserName = Users.Where(x => x.Id == UserId.Value).FirstOrDefault().FirstName;
+            if (Users != null && Users.Count > 0)
+                ViewBag.User = new SelectList(Users, "ID", "FirstName");
+            else
+            {
+                List<SelectListItem> blank = new List<SelectListItem>();
+                blank.Add(new SelectListItem() { Text = "User", Value = "-1" });
+                ViewBag.User = new SelectList(blank, "Value", "Text", "");
+            }
+            IDepartmentService objDepartmentService = IoC.Resolve<IDepartmentService>("DepartmentService");
+            List<Department> DepartmentList = objDepartmentService.GetAllDepartment();
+            List<Department> DistinctDepartmentList = new List<Department>();
+            foreach (string dep in DepartmentList.GroupBy(l => l.Name).Select(x => x.Key))
+            {
+                DistinctDepartmentList.Add(new Department() { Name = dep, Id = DepartmentList.Where(x => x.Name == dep).FirstOrDefault().Id });
+            }
+            //DepartmentList = DepartmentList.GroupBy(l => l.Name).SelectMany(cl => cl.Select(csLine => new Department { Name = csLine.Name, Id = cl.Max(c => c.Id), })).ToList<Department>();
+            if (DepartmentId != null && DepartmentId.Value > 0)
+                ViewBag.DeptName = DistinctDepartmentList.Where(x => x.Id == DepartmentId).FirstOrDefault().Name;
+            if (DistinctDepartmentList != null && DepartmentList != null && DepartmentList.Count > 0 && DistinctDepartmentList.Count > 0)
+                ViewBag.Department = new SelectList(DistinctDepartmentList, "Id", "Name");
+            else
+            {
+                List<SelectListItem> blank = new List<SelectListItem>();
+                blank.Add(new SelectListItem() { Text = "Department", Value = "-1" });
+                ViewBag.Department = new SelectList(blank, "Value", "Text", "");
+            }
+        }
 
         private void UserPrerequisiteData()
         {

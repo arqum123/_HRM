@@ -1,0 +1,58 @@
+﻿@model HRM.Core.Model.VMEmpShift
+@{
+    ViewBag.Title = "HRM Assign Shift";
+}
+
+
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Current Shift</h3>
+    <table class="table table-striped table-hover datatable">
+        <thead>
+            <tr>
+                <th>SNO</th>
+                <th>Name</th>
+                <th>Start Hour</th>
+                <th>End Hour</th>
+                <th>Break Hour</th>
+                <th>Off Days</th>
+                <th></th>
+
+
+            </tr>
+        </thead>
+        @{
+            int sno = 0;
+        }
+        <tbody>
+            <tr>
+                <td>
+
+                    @{ sno++; }
+                    @sno
+                </td>
+                <td>
+                    <a href="/Employee/ShiftHistory" target="_blank"> @Model.ShiftName</a>
+
+                </td>
+                <td>
+
+                    @Convert.ToDateTime(@Model.StartHour).ToString("hh:mm tt")
+                </td>
+                <td>
+
+                    @Convert.ToDateTime(@Model.EndHour).ToString("hh:mm tt")
+                </td>
+
+                <td>
+
+                    @Model.BreakHour 
+
+                </td>
+
+                <td>
+                    @Model.ShiftOffDaysInWords
+                </td>
+
+            </tr>
+        </tbody>
+    </table>

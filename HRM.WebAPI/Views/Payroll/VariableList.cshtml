@@ -7,27 +7,112 @@
     <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Payroll Variables List</h3>
     @using (Html.BeginForm("VariableList", "Payroll", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "VariableListForm", @class = "form-horizontal customclass" }))
     {
-        @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true)
-        if (Model.PayrollPolicyList != null && Model.PayrollPolicyList.Count > 0)
+        int j = 0;
+        <table class="table table-striped table-hover datatable">
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>Name</th>
+                    <th>Factor</th>
+                    <th>Value</th>
+                    <th>Formula On</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.PayrollPolicyList.Count; i++)
+                {
+                    j = i + 1;
+                    <tr>
+                        <td>@j</td>
+                        <td>@Model.PayrollPolicyList[i].PayrollVariableName</td>
+                        <td>@Model.PayrollPolicyList[i].PayrollVariableFactor</td>
+                        <td>@Model.PayrollPolicyList[i].PayrollPolicyValue</td>
+                        @if (@Model.PayrollPolicyList[i].IsUnit == false)
+                        {
+                            <td>Salary Percentage</td>
+                        }
+                        else
+                        {
+                            <td>Salary Unit</td>}
+                        @if (@Model.PayrollPolicyList[i].Description == "" || @Model.PayrollPolicyList[i].Description == null)
+                        {
+                            <td>N/A</td>
+                        }
+                        else
+                        {
+                            <td>@Model.PayrollPolicyList[i].Description</td>
+                        }
+                        <td><a id="Delete_@Model.PayrollPolicyList[i].Id" href="javascript:;" onclick="javascript:return DeleteVariable(this);">Delete</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @*@Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            if (Model.PayrollPolicyList != null && Model.PayrollPolicyList.Count > 0)
+            {
+            @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+                     tableStyle: "table table-striped table-hover datatable",
+                     headerStyle: "header",
+                     alternatingRowStyle: "alternating-row",
+                     rowStyle: "row-style",
+                     columns:
+                         grid.Columns(
+                             grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                             grid.Column("Name", "Name", format: @<text><a title="Click here to Add/Edit Payroll Variables" href="/Payroll/Variable?id=@item.Id">@item.PayrollVariableName</a></text>),
+                             grid.Column("Factor", format: item => item.PayrollVariableFactor),
+                             grid.Column("Value", "Value", format: @<text>@item.PayrollPolicyValue</text>),
+                             grid.Column("Formula On", header: "Formula On", format: (item) => item.IsUnit == true ? "Salary Unit" : "Salary Percentage"),
+                             grid.Column("Description", header: "Description", format: (item) => (item.Description != null && item.Description != "") ? item.Description : Html.Raw("N/A")),
+                             grid.Column("", header: "Action", format: @<text><a id="Delete_@item.Id" href="javascript:;" onclick="javascript:return DeleteVariable(this);">Delete</a></text>)
+                             )
+                     )
+            }*@
+        if (ViewBag.TotalPages != null)
         {
-        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
-        tableStyle: "table table-striped table-hover datatable",
-        headerStyle: "header",
-        alternatingRowStyle: "alternating-row",
-        rowStyle: "row-style",
-        columns:
-            grid.Columns(
-                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
-                grid.Column("Name", "Name", format: @<text><a title="Click here to Add/Edit Payroll Variables" href="/Payroll/Variable?id=@item.Id">@item.PayrollVariableName</a></text>),
-                grid.Column("Factor", format: item => item.PayrollVariableFactor),
-                grid.Column("Value", "Value", format: @<text>@item.PayrollPolicyValue</text>),
-                grid.Column("Formula On", header: "Formula On", format: (item) => item.IsUnit == true ? "Salary Unit" : "Salary Percentage"),
-                grid.Column("Description", header: "Description", format: (item) => (item.Description != null && item.Description != "") ? item.Description : Html.Raw("N/A")),
-                grid.Column("", header: "Action", format: @<text><a id="Delete_@item.Id" href="javascript:;" onclick="javascript:return DeleteVariable(this);">Delete</a></text>)
-                )
-        )
+            double TotalPages = ViewBag.TotalPages;
+            <ul class="pagination">
+                <li>@Html.ActionLink("First", "VariableList", new { PageNumber = 1 })</li>
+
+                @if (ViewBag.PageNumber == 1)
+                {
+                    <li>@Html.ActionLink("Previous", "VariableList", new {  PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Previous", "VariableList", new {   PageNumber = ViewBag.PageNumber - 1 })</li>
+                }
+
+                @for (int i = 1; i <= TotalPages; i++)
+                {
+
+
+                    if (i == ViewBag.PageNumber)
+                    {
+                        <li class="active">@Html.ActionLink(i.ToString(), "VariableList", new {  PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink(i.ToString(), "VariableList", new {  PageNumber = i.ToString() })</li>
+                        @*<li><a href="/Attendance/MonthlyAttendanceReport?SortOrder=Asc&SortBy=Date&StartDate=@Model.StartDate&EndDate=@Model.EndDate&PageNumber?=@i">@i</a></li>*@
+                    }
+
+
+                }
+                @if (ViewBag.PageNumber == TotalPages)
+                {
+                    <li>@Html.ActionLink("Next", "VariableList", new {  PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Next", "VariableList", new {  PageNumber = ViewBag.PageNumber + 1 })</li>
+                }
+                <li>@Html.ActionLink("Last", "VariableList", new { PageNumber = TotalPages })</li>
+            </ul>
         }
+
     }
 </div>
 <script>

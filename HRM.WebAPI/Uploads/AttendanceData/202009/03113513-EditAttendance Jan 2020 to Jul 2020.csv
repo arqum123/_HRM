@@ -1,0 +1,680 @@
+Date,Day,UserId,DateTimeIn,DateTimeOut,Hours,Is Late,Is Early,Is Off,Comments,null,
+3-Jan-20,Fri,30,10:12 AM,8:48 PM,#NAME?,,,,,,
+3-Jan-20,Fri,29,10:05 AM,10:10 PM,#NAME?,,,,,,
+3-Jan-20,Fri,31,11:00 AM,10:30 PM,#NAME?,Y,,,1 hour late,,
+3-Jan-20,Fri,32,2:00 PM,10:30 PM,#NAME?,Y,,,"4 hours late, left 30 minutes before",,
+4-Jan-20,Sat,30,10:10 AM,7:21 PM,#NAME?,,,,,,
+4-Jan-20,Sat,29,10:05 AM,7:35 PM,#NAME?,,,,,,
+4-Jan-20,Sat,31,1:20 PM,7:35 PM,#NAME?,,,,,,
+4-Jan-20,Sat,32,null,null,null,,,,,,
+6-Jan-20,Mon,30,10:19 AM,7:20 PM,#NAME?,,,,,,
+6-Jan-20,Mon,29,10:19 AM,7:20 PM,#NAME?,,,,,,
+6-Jan-20,Mon,31,12:00 PM,7:45 PM,#NAME?,Y,Y,,2 hours late. Left 1 hour before,,
+6-Jan-20,Mon,32,11:30 AM,7:45 PM,#NAME?,Y,Y,,"1.5 hours late, left 45 minutes before",,
+7-Jan-20,Tue,30,10:11 AM,7:20 PM,#NAME?,,,,,,
+7-Jan-20,Tue,29,10:26 AM,7:20 PM,#NAME?,,,,,,
+7-Jan-20,Tue,31,11:25 AM,6:50 PM,#NAME?,Y,Y,,"1.5 hours late, Left 1.5 hour before",,
+7-Jan-20,Tue,32,1:55 PM,9:05 PM,#NAME?,Y,Y,,"4 hours late, left 2 hours before",,
+8-Jan-20,Wed,30,11:20 AM,10:30 PM,#NAME?,Y,,,1 hour late,,
+8-Jan-20,Wed,29,10:05 AM,10:46 PM,#NAME?,,,,,,
+8-Jan-20,Wed,31,11:10 AM,11:00 PM,#NAME?,Y,,,1 hour late,,
+8-Jan-20,Wed,32,11:20 AM,11:00 PM,#NAME?,Y,,,1 hour late,,
+9-Jan-20,Thu,30,10:15 AM,9:05 PM,#NAME?,,,,,,
+9-Jan-20,Thu,29,10:40 AM,8:43 PM,#NAME?,Y,,,1 hour late,,
+9-Jan-20,Thu,31,11:50 AM,10:00 PM,#NAME?,Y,,,2 hours late,,
+9-Jan-20,Thu,32,2:55 PM,10:00 PM,#NAME?,Y,Y,,"5 hours late, left 2 hours before",,
+10-Jan-20,Fri,30,10:19 AM,9:13 PM,#NAME?,,,,,,
+10-Jan-20,Fri,29,10:13 AM,9:28 PM,#NAME?,,,,,,
+10-Jan-20,Fri,31,11:00 AM,9:30 PM,#NAME?,Y,,,1 hour late,,
+10-Jan-20,Fri,32,null,null,null,,,Y,,,
+11-Jan-20,Sat,30,null,null,null,,,,,,
+11-Jan-20,Sat,29,10:05 AM,8:48 PM,#NAME?,,,,,,
+11-Jan-20,Sat,31,11:00 AM,7:05 PM,#NAME?,,,,,,
+11-Jan-20,Sat,32,3:20 PM,9:15 PM,#NAME?,,,,,,
+13-Jan-20,Mon,30,10:00 AM,8:20 PM,#NAME?,,,,,,
+13-Jan-20,Mon,29,10:50 AM,8:20 PM,#NAME?,Y,,,,,
+13-Jan-20,Mon,31,11:26 AM,8:20 PM,#NAME?,Y,,,1.5 hours late,,
+13-Jan-20,Mon,32,null,null,null,,,Y,,,
+14-Jan-20,Tue,30,10:15 AM,10:15 PM,#NAME?,,,,,,
+14-Jan-20,Tue,29,10:25 AM,10:15 PM,#NAME?,,,,,,
+14-Jan-20,Tue,31,10:25 AM,8:15 PM,#NAME?,,,,,,
+14-Jan-20,Tue,32,10:30 AM,8:15 PM,#NAME?,Y,,,,,
+15-Jan-20,Wed,30,10:35 AM,7:22 PM,#NAME?,Y,,,,,
+15-Jan-20,Wed,29,10:05 AM,7:40 PM,#NAME?,,,,,,
+15-Jan-20,Wed,31,10:15 AM,7:40 PM,#NAME?,,,,,,
+15-Jan-20,Wed,32,1:00 PM,10:15 PM,#NAME?,Y,,,3 hours late,,
+16-Jan-20,Thu,30,9:20 AM,7:00 PM,#NAME?,,,,,9 AM to 6 PM shift,
+16-Jan-20,Thu,29,9:15 AM,7:00 PM,#NAME?,,,,,9 AM to 6 PM shift,
+16-Jan-20,Thu,31,9:15 AM,7:00 PM,#NAME?,,,,,9 AM to 6 PM shift,
+16-Jan-20,Thu,32,11:15 AM,8:26 PM,#NAME?,Y,,,1 hour late,9 AM to 6 PM shift,
+17-Jan-20,Fri,30,9:18 AM,8:12 PM,#NAME?,,,,,,
+17-Jan-20,Fri,29,9:20 AM,8:05 PM,#NAME?,,,,,NOTE: ,No comments on Saturdays
+17-Jan-20,Fri,31,9:20 AM,8:35 PM,#NAME?,,,,,,
+17-Jan-20,Fri,32,10:55 AM,8:35 PM,#NAME?,Y,,,2 hours late,,
+20-Jan-20,Mon,30,9:10 AM,7:20 PM,#NAME?,,,,,,
+20-Jan-20,Mon,29,9:44 AM,7:20 PM,#NAME?,Y,,,,,
+20-Jan-20,Mon,31,11:20 AM,5:00 PM,#NAME?,Y,Y,,TIMOUT MISSING null LAST DAY,,
+20-Jan-20,Mon,32,12:00 PM,7:20 PM,#NAME?,Y,Y,,,,
+21-Jan-20,Tue,30,9:20 AM,6:30 PM,#NAME?,,,,,,
+21-Jan-20,Tue,29,9:45 AM,6:30 PM,#NAME?,Y,,,,,
+21-Jan-20,Tue,32,11:10 AM,6:30 PM,#NAME?,Y,Y,,2 hours late null 2 hours early,,
+22-Jan-20,Wed,30,9:26 AM,7:50 PM,#NAME?,,,,,,
+22-Jan-20,Wed,29,9:42 AM,7:50 PM,#NAME?,Y,,,,,
+22-Jan-20,Wed,32,9:50 AM,7:50 PM,#NAME?,Y,,,,,
+23-Jan-20,Thu,30,9:20 AM,7:30 PM,#NAME?,,,,,,
+23-Jan-20,Thu,29,null,null,null,,,Y,OFF,,
+23-Jan-20,Thu,32,null,null,null,,,Y,OFF,,
+24-Jan-20,Fri,30,9:15 AM,8:30 PM,#NAME?,,,,,,
+24-Jan-20,Fri,29,9:20 AM,8:30 PM,#NAME?,,,,,,
+24-Jan-20,Fri,32,9:50 AM,8:30 PM,#NAME?,Y,,,,,
+27-Jan-20,Mon,30,9:30 AM,9:30 PM,#NAME?,Y,,,,,
+27-Jan-20,Mon,29,9:15 AM,9:30 PM,#NAME?,,,,,,
+27-Jan-20,Mon,32,9:55 AM,9:30 PM,#NAME?,Y,,,,,
+28-Jan-20,Tue,30,9:10 AM,8:50 PM,#NAME?,,,,,,
+28-Jan-20,Tue,29,9:34 AM,8:10 PM,#NAME?,Y,,,,,
+28-Jan-20,Tue,32,2:20 PM,8:50 PM,#NAME?,Y,Y,,,,
+29-Jan-20,Wed,30,9:18 AM,7:10 PM,#NAME?,,,,,10 to 7,
+29-Jan-20,Wed,29,10:50 AM,7:10 PM,#NAME?,Y,Y,,,10 to 7,
+29-Jan-20,Wed,32,10:40 AM,7:10 PM,#NAME?,Y,,,,10 to 7,
+29-Jan-20,Wed,33,10:10 AM,,#NAME?,,,,,,
+29-Jan-20,Wed,34,10:10 AM,,#NAME?,,,,,,
+30-Jan-20,Thu,30,10:05 AM,8:20 PM,#NAME?,,,,,,
+30-Jan-20,Thu,29,10:15 AM,8:20 PM,#NAME?,,,,,,
+30-Jan-20,Thu,33,null,null,#NAME?,null,null,null,null,null,null
+30-Jan-20,Thu,34,null,null,#NAME?,null,null,null,null,null,null
+30-Jan-20,Thu,32,11:40 AM,8:35 PM,#NAME?,Y,null,null,null,null,null
+31-Jan-20,Fri,30,10:12 AM,7:40 PM,#NAME?,null,null,null,null,null,null
+31-Jan-20,Fri,29,10:00 AM,8:05 PM,#NAME?,null,null,null,null,null,null
+31-Jan-20,Fri,32,11:00 AM,8:05 PM,#NAME?,Y,null,null,null,null,null
+31-Jan-20,Fri,33,null,null,#NAME?,null,null,null,null,null,null
+31-Jan-20,Fri,34,null,null,#NAME?,null,null,null,null,null,null
+3-Feb-20,Mon,30,10:00 AM,8:20 PM,#NAME?,null,null,null,null,null,null
+3-Feb-20,Mon,29,10:15 AM,9:22 PM,#NAME?,null,null,null,null,null,null
+3-Feb-20,Mon,34,10:00 AM,7:00 PM,#NAME?,null,null,null,timeout missing,null,null
+3-Feb-20,Mon,33,10:00 AM,7:00 PM,#NAME?,null,null,null,timeout missing,null,null
+3-Feb-20,Mon,32,11:40 AM,8:40 PM,#NAME?,Y,null,null,null,null,null
+4-Feb-20,Tue,30,10:00 AM,7:05 PM,#NAME?,null,null,null,null,null,null
+4-Feb-20,Tue,29,10:20 AM,7:05 PM,#NAME?,null,null,null,null,null,null
+4-Feb-20,Tue,34,10:05 AM,6:40 PM,#NAME?,null,null,null,null,null,null
+4-Feb-20,Tue,33,10:05 AM,4:15 PM,#NAME?,null,null,null,null,null,null
+4-Feb-20,Tue,32,null,null,#NAME?,null,null,Y,null,null,null
+5-Feb-20,Wed,30,10:00 AM,9:36 PM,#NAME?,null,null,null,null,null,null
+5-Feb-20,Wed,29,11:40 AM,9:36 PM,#NAME?,null,null,null,null,null,null
+5-Feb-20,Wed,32,1:30 PM,9:36 PM,#NAME?,null,null,null,timeout missing,null,null
+5-Feb-20,Wed,34,null,null,#NAME?,null,null,null,null,null,null
+5-Feb-20,Wed,33,null,null,#NAME?,null,null,null,null,null,null
+6-Feb-20,Thu,29,10:00 AM,7:25 PM,#NAME?,null,null,null,null,null,null
+6-Feb-20,Thu,34,10:20 AM,6:50 PM,#NAME?,null,null,null,null,null,null
+6-Feb-20,Thu,33,10:20 AM,4:25 PM,#NAME?,null,null,null,null,null,null
+6-Feb-20,Thu,32,null,null,#NAME?,null,null,Y,null,null,null
+6-Feb-20,Thu,30,null,null,#NAME?,null,null,Y,null,null,null
+7-Feb-20,Fri,29,10:00 AM,7:46 PM,#NAME?,null,null,null,null,null,null
+7-Feb-20,Fri,33,10:10 AM,6:00 PM,#NAME?,null,null,null,null,null,null
+7-Feb-20,Fri,34,null,null,#NAME?,null,null,Y,null,null,null
+7-Feb-20,Fri,32,11:10 AM,9:15 PM,#NAME?,Y,null,null,null,null,null
+7-Feb-20,Fri,30,null,null,#NAME?,null,null,Y,null,null,null
+10-Feb-20,Mon,29,10:00 AM,7:00 PM,#NAME?,null,null,null,null,null,null
+10-Feb-20,Mon,33,10:15 AM,7:00 PM,#NAME?,null,null,null,null,null,null
+10-Feb-20,Mon,34,10:15 AM,7:00 PM,#NAME?,null,null,null,null,null,null
+10-Feb-20,Mon,32,10:35 AM,7:20 PM,#NAME?,Y,null,null,null,null,null
+10-Feb-20,Mon,30,null,null,#NAME?,null,null,Y,null,null,null
+11-Feb-20,Tue,29,10:00 AM,9:50 PM,#NAME?,null,null,null,null,null,null
+11-Feb-20,Tue,34,10:15 AM,7:00 PM,#NAME?,null,null,null,timout missing,null,null
+11-Feb-20,Tue,33,10:15 AM,4:35 PM,#NAME?,null,null,null,null,null,null
+11-Feb-20,Tue,32,2:35 PM,11:00 PM,#NAME?,Y,Y,null,null,null,null
+11-Feb-20,Tue,30,null,null,#NAME?,null,null,Y,null,null,null
+12-Feb-20,Wed,29,10:10 AM,7:15 PM,#NAME?,null,null,null,null,null,null
+12-Feb-20,Wed,32,1:10 PM,7:15 PM,#NAME?,Y,Y,null,Shift changed to 9to6,null,null
+12-Feb-20,Wed,34,10:15 AM,6:40 PM,#NAME?,null,Y,null,null,null,null
+12-Feb-20,Wed,33,10:15 AM,6:40 PM,#NAME?,null,null,null,null,null,null
+12-Feb-20,Wed,30,null,null,#NAME?,null,null,Y,null,null,null
+13-Feb-20,Thu,32,9:45 AM,7:05 PM,#NAME?,Y,null,null,null,null,null
+13-Feb-20,Thu,29,10:10 AM,7:15 PM,#NAME?,null,null,null,null,null,null
+13-Feb-20,Thu,34,10:15 AM,4:10 PM,#NAME?,null,Y,null,null,null,null
+13-Feb-20,Thu,33,10:15 AM,4:25 PM,#NAME?,null,null,null,null,null,null
+13-Feb-20,Thu,30,null,null,#NAME?,null,null,Y,null,null,null
+14-Feb-20,Fri,33,9:50 AM,6:21 PM,#NAME?,null,null,null,null,null,null
+14-Feb-20,Fri,32,9:58 AM,7:30 PM,#NAME?,Y,null,null,null,null,null
+14-Feb-20,Fri,29,10:10 AM,8:05 PM,#NAME?,null,null,null,null,null,null
+14-Feb-20,Fri,34,null,null,#NAME?,null,null,Y,null,null,null
+14-Feb-20,Fri,30,null,null,#NAME?,null,null,Y,null,null,null
+17-Feb-20,Mon,29,10:15 AM,8:20 PM,#NAME?,null,null,null,null,null,null
+17-Feb-20,Mon,32,10:05 AM,6:05 PM,#NAME?,Y,Y,null,null,null,null
+17-Feb-20,Mon,33,9:55 AM,7:00 PM,#NAME?,null,null,null,null,null,null
+17-Feb-20,Mon,34,9:55 AM,7:00 PM,#NAME?,null,null,null,null,null,null
+17-Feb-20,Mon,30,null,null,#NAME?,null,null,Y,null,null,null
+18-Feb-20,Tue,34,10:05 AM,7:00 PM,#NAME?,null,null,null,null,null,null
+18-Feb-20,Tue,33,10:05 AM,4:20 PM,#NAME?,null,null,null,null,null,null
+18-Feb-20,Tue,29,10:15 AM,7:25 PM,#NAME?,null,null,null,null,null,null
+18-Feb-20,Tue,32,null,null,#NAME?,null,null,Y,null,null,null
+18-Feb-20,Tue,30,null,null,#NAME?,null,null,Y,null,null,null
+19-Feb-20,Wed,32,9:55 AM,7:37 PM,#NAME?,Y,null,null,null,null,null
+19-Feb-20,Wed,33,10:05 AM,6:45 PM,#NAME?,null,null,null,null,null,null
+19-Feb-20,Wed,34,10:05 AM,6:45 PM,#NAME?,null,null,null,null,null,null
+19-Feb-20,Wed,29,10:15 AM,9:05 PM,#NAME?,null,null,null,null,null,null
+19-Feb-20,Wed,30,null,null,#NAME?,null,null,Y,null,null,null
+20-Feb-20,Thu,30,10:10 AM,7:45 PM,#NAME?,null,null,null,null,null,null
+20-Feb-20,Thu,33,10:20 AM,4:45 PM,#NAME?,null,null,null,null,null,null
+20-Feb-20,Thu,34,10:20 AM,3:20 PM,#NAME?,null,Y,null,null,null,null
+20-Feb-20,Thu,32,11:30 AM,7:45 PM,#NAME?,Y,Y,null,null,null,null
+20-Feb-20,Thu,29,null,null,#NAME?,null,null,Y,null,null,null
+21-Feb-20,Fri,30,10:05 AM,7:40 PM,#NAME?,null,null,null,null,null,null
+21-Feb-20,Fri,29,10:15 AM,7:40 PM,#NAME?,null,null,null,null,null,null
+21-Feb-20,Fri,32,10:20 AM,7:40 PM,#NAME?,Y,null,null,null,null,null
+21-Feb-20,Fri,34,null,null,#NAME?,null,null,null,attendance missing,null,null
+21-Feb-20,Fri,33,null,null,#NAME?,null,null,null,attendance missing,null,null
+24-Feb-20,Mon,30,10:00 AM,7:50 PM,#NAME?,null,null,null,null,null,null
+24-Feb-20,Mon,32,10:00 AM,7:25 PM,#NAME?,Y,null,null,null,null,null
+24-Feb-20,Mon,29,10:00 AM,8:13 PM,#NAME?,null,null,null,null,null,null
+24-Feb-20,Mon,34,10:00 AM,4:30 PM,#NAME?,null,Y,null,null,null,null
+24-Feb-20,Mon,33,10:00 AM,6:40 PM,#NAME?,null,null,null,null,null,null
+25-Feb-20,Tue,30,10:00 AM,8:20 PM,#NAME?,null,null,null,null,null,null
+25-Feb-20,Tue,29,10:15 AM,8:30 PM,#NAME?,null,null,null,null,null,null
+25-Feb-20,Tue,34,10:05 AM,7:15 PM,#NAME?,null,null,null,null,null,null
+25-Feb-20,Tue,33,10:05 AM,4:30 PM,#NAME?,null,null,null,null,null,null
+25-Feb-20,Tue,32,null,null,#NAME?,null,null,Y,null,null,null
+26-Feb-20,Wed,30,10:10 AM,7:55 PM,#NAME?,null,null,null,null,null,null
+26-Feb-20,Wed,29,10:10 AM,8:00 PM,#NAME?,null,null,null,null,null,null
+26-Feb-20,Wed,34,9:50 AM,7:20 PM,#NAME?,null,null,null,null,null,null
+26-Feb-20,Wed,32,10:23 AM,7:30 PM,#NAME?,Y,null,null,null,null,null
+26-Feb-20,Wed,33,null,null,#NAME?,null,null,Y,null,null,null
+27-Feb-20,Thu,29,10:03 AM,7:07 PM,#NAME?,null,null,null,null,null,null
+27-Feb-20,Thu,33,9:50 AM,7:23 PM,#NAME?,null,null,null,null,null,null
+27-Feb-20,Thu,34,9:50 AM,4:30 PM,#NAME?,null,null,null,null,null,null
+27-Feb-20,Thu,30,10:07 AM,7:23 PM,#NAME?,null,null,null,null,null,null
+27-Feb-20,Thu,32,2:33 PM,7:23 PM,#NAME?,Y,Y,null,null,null,null
+28-Feb-20,Fri,30,10:05 AM,8:15 PM,#NAME?,null,null,null,null,null,null
+28-Feb-20,Fri,33,10:10 AM,6:30 PM,#NAME?,null,Y,null,null,null,null
+28-Feb-20,Fri,34,10:10 AM,6:30 PM,#NAME?,null,Y,null,null,null,null
+28-Feb-20,Fri,29,10:15 AM,7:00 PM,#NAME?,null,null,null,timout missing,null,null
+28-Feb-20,Fri,32,11:29 AM,8:40 PM,#NAME?,Y,null,null,null,null,null
+29-Feb-20,Sat,30,9:45 AM,4:00 PM,#NAME?,null,null,null,null,null,null
+29-Feb-20,Sat,29,10:40 AM,4:00 PM,#NAME?,null,null,null,timout missing,null,null
+29-Feb-20,Sat,32,3:05 PM,10:45 PM,#NAME?,null,null,null,null,null,null
+29-Feb-20,Sat,null,null,null,null,null,null,null,null,null,null
+29-Feb-20,Sat,null,null,null,null,null,null,null,null,null,null
+2-Mar-20,Mon,32,null,null,#NAME?,null,null,Y,1,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+3-Mar-20,Tue,32,null,null,#NAME?,null,null,Y,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+4-Mar-20,Wed,32,12:45 PM,8:30 PM,#NAME?,Y,Y,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+5-Mar-20,Thu,32,3:00 PM,9:31 PM,#NAME?,Y,Y,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+6-Mar-20,Fri,32,null,null,#NAME?,null,null,Y,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+9-Mar-20,Mon,32,1:10 PM,9:23 PM,#NAME?,Y,Y,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+10-Mar-20,Tue,32,null,null,#NAME?,null,null,Y,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+11-Mar-20,Wed,32,12:20 PM,7:32 PM,#NAME?,Y,Y,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+12-Mar-20,Thu,32,12:00 PM,8:40 PM,#NAME?,Y,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+13-Mar-20,Fri,32,10:50 AM,10:10 PM,#NAME?,Y,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+14-Mar-20,Sat,32,2:25 PM,6:15 PM,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+16-Mar-20,Mon,32,null,null,#NAME?,null,null,Y,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+17-Mar-20,Tue,32,10:29 AM,null,#NAME?,null,null,null,Timeout missing,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+18-Mar-20,Wed,32,null,null,#NAME?,null,null,Y,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+19-Mar-20,Thu,32,null,null,#NAME?,null,null,Y,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+20-Mar-20,Fri,32,1:25 PM,8:30 PM,#NAME?,Y,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,#NAME?,null,null,null,null,null,null
+24-Mar-20,Tue,Arquam,10:31 AM,8:10 PM,#NAME?,Y,null,null,null,null,null
+24-Mar-20,Tue,35,10:30 AM,7:40 PM,#NAME?,null,null,null,null,null,null
+24-Mar-20,Tue,30,11:11 AM,6:43 PM,#NAME?,Y,Y,null,null,null,null
+24-Mar-20,Tue,33,11:47 AM,8:11 PM,#NAME?,Y,Y,null,null,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+25-Mar-20,Wed,Arquam,10:04 AM,7:23 PM,#NAME?,null,null,null,null,null,null
+25-Mar-20,Wed,35,10:20 AM,7:34 PM,#NAME?,null,null,null,null,null,null
+25-Mar-20,Wed,30,10:19 AM,7:33 PM,#NAME?,null,null,null,null,null,null
+25-Mar-20,Wed,33,10:30 AM,7:40 PM,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+26-Mar-20,Thu,Arquam,10:22 AM,7:04 PM,#NAME?,null,null,null,null,null,null
+26-Mar-20,Thu,35,10:23 AM,7:10 PM,#NAME?,null,null,null,null,null,null
+26-Mar-20,Thu,33,10:30 AM,7:00 PM,#NAME?,null,null,null,null,null,null
+26-Mar-20,Thu,30,10:31 AM,6:52 PM,#NAME?,null,Y,null,null,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+27-Mar-20,Fri,Arquam,10:06 AM,7:32 PM,#NAME?,null,null,null,null,null,null
+27-Mar-20,Fri,33,10:15 AM,7:08 PM,#NAME?,null,null,null,null,null,null
+27-Mar-20,Fri,35,10:44 AM,7:13 PM,#NAME?,Y,Y,null,null,null,null
+27-Mar-20,Fri,30,null,null,#NAME?,null,null,Y,ill,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+30-Mar-20,Mon,Arquam,10:02 AM,7:15 PM,#NAME?,null,null,null,null,null,null
+30-Mar-20,Mon,35,10:15 AM,7:18 PM,#NAME?,null,null,null,null,null,null
+30-Mar-20,Mon,33,10:19 AM,7:15 PM,#NAME?,null,null,null,null,null,null
+30-Mar-20,Mon,30,null,null,#NAME?,null,null,Y,10:24 appeared but no internet,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+31-Mar-20,Tue,33,10:04 AM,7:10 PM,#NAME?,null,null,null,null,null,null
+31-Mar-20,Tue,Arquam,10:07 AM,7:25 PM,#NAME?,null,null,null,null,null,null
+31-Mar-20,Tue,35,10:13 AM,7:07 PM,#NAME?,null,null,null,null,null,null
+31-Mar-20,Tue,30,null,null,#NAME?,null,null,Y,Internet issue,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+1-Apr-20,Wed,Arquam,10:07 AM,7:38 PM,#NAME?,null,null,null,null,null,null
+1-Apr-20,Wed,35,10:17 AM,7:22 PM,#NAME?,null,null,null,null,null,null
+1-Apr-20,Wed,33,10:51 AM,7:25 PM,#NAME?,Y,null,null,null,null,null
+1-Apr-20,Wed,30,null,null,#NAME?,null,null,Y,10:18 appeared but internet/laptop issue,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+2-Apr-20,Thu,33,10:32 AM,7:32 PM,#NAME?,Y,null,null,null,null,null
+2-Apr-20,Thu,35,10:34 AM,7:32 PM,#NAME?,Y,null,null,null,null,null
+2-Apr-20,Thu,Arquam,null,null,#NAME?,null,null,Y,null,null,null
+2-Apr-20,Thu,30,null,null,#NAME?,null,null,Y,null,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+3-Apr-20,Fri,Arquam,10:06 AM,7:08 PM,#NAME?,null,null,null,null,null,null
+3-Apr-20,Fri,35,10:13 AM,7:03 PM,#NAME?,null,null,null,null,null,null
+3-Apr-20,Fri,33,10:36 AM,7:05 PM,#NAME?,Y,Y,null,null,null,null
+3-Apr-20,Fri,30,null,null,#NAME?,null,null,Y,null,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+6-Apr-20,Mon,35,10:26 AM,7:15 PM,#NAME?,null,null,null,null,null,null
+6-Apr-20,Mon,Arquam,10:27 AM,7:11 PM,#NAME?,null,null,null,null,null,null
+6-Apr-20,Mon,33,11:14 AM,7:35 PM,#NAME?,Y,Y,null,null,null,null
+6-Apr-20,Mon,30,null,null,#NAME?,null,null,Y,null,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+7-Apr-20,Tue,Arquam,10:05 AM,null,#NAME?,null,Y,null,Timeout missing,null,null
+7-Apr-20,Tue,33,10:06 AM,7:22 PM,#NAME?,null,null,null,null,null,null
+7-Apr-20,Tue,35,11:16 AM,7:22 PM,#NAME?,Y,Y,null,null,null,null
+7-Apr-20,Tue,30,null,null,#NAME?,null,null,Y,null,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+8-Apr-20,Wed,Arquam,10:01 AM,7:11 PM,#NAME?,null,null,null,null,null,null
+8-Apr-20,Wed,33,10:01 AM,7:18 PM,#NAME?,null,null,null,null,null,null
+8-Apr-20,Wed,36n,10:01 AM,9:59 PM,#NAME?,null,null,null,null,null,null
+8-Apr-20,Wed,35,10:02 AM,7:15 PM,#NAME?,null,null,null,null,null,null
+8-Apr-20,Wed,30,10:03 AM,7:15 PM,#NAME?,null,null,null,null,null,null
+9-Apr-20,Thu,36n,10:01 AM,10:10 PM,#NAME?,null,null,null,null,null,null
+9-Apr-20,Thu,35,10:02 AM,7:10 PM,#NAME?,null,null,null,null,null,null
+9-Apr-20,Thu,Arquam,10:04 AM,7:11 PM,#NAME?,null,null,null,null,null,null
+9-Apr-20,Thu,33,10:05 AM,7:30 PM,#NAME?,null,null,null,null,null,null
+9-Apr-20,Thu,30,10:15 AM,6:52 PM,#NAME?,null,null,null,null,null,null
+10-Apr-20,Fri,Arquam,10:06 AM,7:28 PM,#NAME?,null,null,null,null,null,null
+10-Apr-20,Fri,Samia,10:10 AM,null,#NAME?,null,Y,null,Timeout missing,null,null
+10-Apr-20,Fri,36n,10:13 AM,7:24 PM,#NAME?,null,null,null,null,null,null
+10-Apr-20,Fri,30,10:18 AM,null,#NAME?,null,Y,null,"work time issue, timeout missing",null,null
+10-Apr-20,Fri,33,10:22 AM,8:10 PM,#NAME?,null,null,null,null,null,null
+10-Apr-20,Fri,35,10:22 AM,7:34 PM,#NAME?,null,null,null,null,null,null
+13-Apr-20,Mon,36n,10:08 AM,8:00 PM,#NAME?,null,null,null,null,null,null
+13-Apr-20,Mon,Arquam,10:12 AM,null,#NAME?,null,null,Y,Laptop issue,null,null
+13-Apr-20,Mon,30,10:18 AM,7:40 PM,#NAME?,null,null,null,null,null,null
+13-Apr-20,Mon,35,10:26 AM,7:30 PM,#NAME?,null,null,null,null,null,null
+13-Apr-20,Mon,Samia,10:55 AM,7:55 PM,#NAME?,Y,null,null,null,null,null
+13-Apr-20,Mon,33,12:15 PM,8:01 PM,#NAME?,Y,Y,null,null,null,null
+14-Apr-20,Tue,Samia,9:52 AM,null,#NAME?,null,Y,null,Timeout missing,null,null
+14-Apr-20,Tue,36n,10:06 AM,8:15 PM,#NAME?,null,null,null,null,null,null
+14-Apr-20,Tue,30,10:15 AM,7:45 PM,#NAME?,null,null,null,null,null,null
+14-Apr-20,Tue,33,10:21 AM,5:48 PM,#NAME?,null,Y,null,due to family emergency,null,null
+14-Apr-20,Tue,35,10:27 AM,7:45 PM,#NAME?,null,null,null,null,null,null
+14-Apr-20,Tue,Arquam,null,null,#NAME?,null,null,Y,Laptop Issue,null,null
+15-Apr-20,Wed,Arquam,10:05 AM,7:17 PM,#NAME?,null,null,null,null,null,null
+15-Apr-20,Wed,Samia,10:05 AM,null,#NAME?,null,Y,null,Timeout missing,null,null
+15-Apr-20,Wed,36n,10:06 AM,null,#NAME?,null,Y,null,Timeout missing,null,null
+15-Apr-20,Wed,30,10:08 AM,7:02 PM,#NAME?,null,null,null,null,null,null
+15-Apr-20,Wed,35,10:24 AM,7:02 PM,#NAME?,null,null,null,null,null,null
+15-Apr-20,Wed,33,10:25 AM,7:02 PM,#NAME?,null,null,null,null,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+16-Apr-20,Thu,Arquam,10:01 AM,7:37 PM,#NAME?,null,null,null,null,null,null
+16-Apr-20,Thu,33,10:11 AM,8:03 PM,#NAME?,null,null,null,null,null,null
+16-Apr-20,Thu,35,10:14 AM,7:12 PM,#NAME?,null,null,null,null,null,null
+16-Apr-20,Thu,30,10:14 AM,7:58 PM,#NAME?,null,null,null,null,null,null
+16-Apr-20,Thu,36n,10:22 AM,8:20 PM,#NAME?,null,null,null,null,null,null
+16-Apr-20,Thu,Samia,11:24 AM,null,#NAME?,Y,Y,null,Timeout missing,null,null
+17-Apr-20,Fri,Arquam,10:02 AM,7:50 PM,#NAME?,null,null,null,null,null,null
+17-Apr-20,Fri,36n,10:04 AM,7:13 PM,#NAME?,null,null,null,null,null,null
+17-Apr-20,Fri,35,10:11 AM,7:00 PM,#NAME?,null,null,null,null,null,null
+17-Apr-20,Fri,33,10:25 AM,7:12 PM,#NAME?,null,null,null,null,null,null
+17-Apr-20,Fri,Samia,11:05 AM,null,#NAME?,Y,Y,null,Timeout missing,null,null
+17-Apr-20,Fri,30,2:07 PM,9:37 PM,#NAME?,Y,Y,null,null,null,null
+18-Apr-20,Sat,Arquam,10:34 AM,null,#NAME?,Y,Y,null,Timeout missing,null,null
+18-Apr-20,Sat,30,10:39 AM,6:29 PM,#NAME?,Y,Y,null,null,null,null
+20-Apr-20,Mon,Samia,10:06 AM,null,#NAME?,null,Y,null,Timeout missing,null,null
+20-Apr-20,Mon,36n,10:11 AM,7:14 PM,#NAME?,null,null,null,null,null,null
+20-Apr-20,Mon,Arquam,10:12 AM,7:48 PM,#NAME?,null,null,null,null,null,null
+20-Apr-20,Mon,30,10:16 AM,null,#NAME?,null,Y,null,Timeout missing,null,null
+20-Apr-20,Mon,33,10:26 AM,8:04 PM,#NAME?,null,null,null,null,null,null
+20-Apr-20,Mon,35,11:05 AM,7:26 PM,#NAME?,Y,Y,null,null,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+21-Apr-20,Tue,Arquam,10:04 AM,7:14 PM,#NAME?,null,null,null,null,null,null
+21-Apr-20,Tue,Samia,10:05 AM,null,#NAME?,null,Y,null,Timeout missing,null,null
+21-Apr-20,Tue,35,10:06 AM,7:20 PM,#NAME?,null,null,null,null,null,null
+21-Apr-20,Tue,36n,10:15 AM,7:28 PM,#NAME?,null,null,null,null,null,null
+21-Apr-20,Tue,30,10:16 AM,null,#NAME?,null,Y,null,Timeout missing,null,null
+21-Apr-20,Tue,33,10:29 AM,9:00 PM,#NAME?,null,null,null,null,null,null
+22-Apr-20,Wed,Samia,9:47 AM,null,#NAME?,null,Y,null,Timeout missing,null,null
+22-Apr-20,Wed,33,10:00 AM,8:20 PM,#NAME?,null,null,null,null,null,null
+22-Apr-20,Wed,36n,10:00 AM,8:21 PM,#NAME?,null,null,null,null,null,null
+22-Apr-20,Wed,Arquam,10:06 AM,7:06 PM,#NAME?,null,null,null,null,null,null
+22-Apr-20,Wed,35,10:11 AM,7:05 PM,#NAME?,null,null,null,null,null,null
+22-Apr-20,Wed,30,10:24 AM,7:14 PM,#NAME?,null,null,null,null,null,null
+23-Apr-20,Thu,35,10:03 AM,7:05 PM,#NAME?,null,null,null,null,null,null
+23-Apr-20,Thu,Arquam,10:05 AM,7:18 PM,#NAME?,null,null,null,null,null,null
+23-Apr-20,Thu,36n,10:05 AM,8:08 PM,#NAME?,null,null,null,null,null,null
+23-Apr-20,Thu,30,10:18 AM,8:23 PM,#NAME?,null,null,null,null,null,null
+23-Apr-20,Thu,Samia,10:43 AM,null,#NAME?,Y,Y,null,Timeout missing,null,null
+23-Apr-20,Thu,33,11:01 AM,8:05 PM,#NAME?,Y,null,null,null,null,null
+null,null,null,null,null,null,null,null,null,null,null,null
+24-Apr-20,Fri,33,10:01 AM,11:15 PM,#NAME?,null,null,null,null,null,null
+24-Apr-20,Fri,Arquam,10:14 AM,7:34 PM,#NAME?,null,null,null,null,null,null
+24-Apr-20,Fri,30,10:29 AM,8:29 PM,#NAME?,null,null,null,null,null,null
+24-Apr-20,Fri,35,10:32 AM,11:13 PM,#NAME?,Y,null,null,null,null,null
+24-Apr-20,Fri,Samia,11:53 AM,null,#NAME?,Y,Y,null,Timeout missing,null,null
+24-Apr-20,Fri,36n,null,null,#NAME?,null,null,Y,null,null,null
+27-Apr-20,Mon,36n,10:10 AM,8:30 PM,#NAME?,null,null,null,10 to 5 Ramadan null 7 hours,null,null
+27-Apr-20,Mon,Arquam,10:58 AM,6:12 PM,#NAME?,null,null,null,11 to 6 Ramadan null 7 hours,null,null
+27-Apr-20,Mon,30,10:59 AM,7:57 PM,#NAME?,null,null,null,11 to 6 Ramadan null 7 hours,null,null
+27-Apr-20,Mon,35,11:07 AM,6:07 PM,#NAME?,null,null,null,11 to 6 Ramadan null 7 hours,null,null
+27-Apr-20,Mon,33,11:21 AM,6:15 PM,#NAME?,null,null,null,11 to 6 Ramadan null 7 hours,null,null
+27-Apr-20,Mon,null,null,null,#NAME?,null,null,null,null,null,null
+28-Apr-20,Tue,36n,10:18 AM,6:29 PM,#NAME?,null,null,null,null,null,null
+28-Apr-20,Tue,30,10:57 AM,6:22 PM,#NAME?,null,null,null,null,null,null
+28-Apr-20,Tue,Arquam,11:02 AM,6:22 PM,#NAME?,null,null,null,null,null,null
+28-Apr-20,Tue,35,11:15 AM,6:00 PM,#NAME?,null,null,null,null,null,null
+28-Apr-20,Tue,33,11:24 AM,6:40 PM,#NAME?,null,null,null,null,null,null
+28-Apr-20,Tue,null,null,null,#NAME?,null,null,null,null,null,null
+29-Apr-20,Wed,36n,10:13 AM,6:21 PM,#NAME?,null,null,null,null,null,null
+29-Apr-20,Wed,33,10:51 AM,6:16 PM,#NAME?,null,null,null,null,null,null
+29-Apr-20,Wed,Arquam,10:56 AM,6:18 PM,#NAME?,null,null,null,null,null,null
+29-Apr-20,Wed,35,11:02 AM,6:16 PM,#NAME?,null,null,null,null,null,null
+29-Apr-20,Wed,30,11:05 AM,6:15 PM,#NAME?,null,null,null,null,null,null
+29-Apr-20,Wed,null,null,null,#NAME?,null,null,null,null,null,null
+30-Apr-20,Thu,36n,10:10 AM,6:47 PM,#NAME?,null,null,null,null,null,null
+30-Apr-20,Thu,Arquam,10:19 AM,6:33 PM,#NAME?,null,null,null,null,null,null
+30-Apr-20,Thu,35,10:33 AM,6:39 PM,#NAME?,null,null,null,null,null,null
+30-Apr-20,Thu,30,10:59 AM,6:39 PM,#NAME?,null,null,null,null,null,null
+30-Apr-20,Thu,33,11:38 AM,7:09 PM,#NAME?,Y,null,null,null,null,null
+30-Apr-20,Thu,null,null,null,#NAME?,null,null,null,null,null,null
+1-Jun-20,Monday,36n,10:03 AM,null,#NAME?,null,Y,null,Timout missing,null,null
+1-Jun-20,Monday,30,10:07 AM,7:19 PM,#NAME?,null,null,null,null,null,null
+1-Jun-20,Monday,35,10:12 AM,7:12 PM,#NAME?,null,null,null,null,null,null
+1-Jun-20,Monday,29,10:14 AM,7:16 PM,#NAME?,null,null,null,null,null,null
+2-Jun-20,Tuesday,33,9:57 AM,7:10 PM,#NAME?,null,null,null,null,null,null
+2-Jun-20,Tuesday,36n,10:00 AM,7:28 PM,#NAME?,null,null,null,null,null,null
+2-Jun-20,Tuesday,29,10:04 AM,null,#NAME?,null,Y,null,Timout missing,null,null
+2-Jun-20,Tuesday,35,10:14 AM,7:48 PM,#NAME?,null,null,null,null,null,null
+2-Jun-20,Tuesday,30,10:21 AM,7:24 PM,#NAME?,null,null,null,null,null,null
+3-Jun-20,Wednesday,33,10:01 AM,7:10 PM,#NAME?,null,null,null,null,null,null
+3-Jun-20,Wednesday,29,10:03 AM,7:54 PM,#NAME?,null,null,null,null,null,null
+3-Jun-20,Wednesday,36n,10:05 AM,7:34 PM,#NAME?,null,null,null,null,null,null
+3-Jun-20,Wednesday,35,10:06 AM,7:12 PM,#NAME?,null,null,null,null,null,null
+3-Jun-20,Wednesday,30,10:18 AM,7:24 PM,#NAME?,null,null,null,null,null,null
+4-Jun-20,Thursday,33,9:55 AM,7:16 PM,#NAME?,null,null,null,null,null,null
+4-Jun-20,Thursday,36n,9:59 AM,7:22 PM,#NAME?,null,null,null,null,null,null
+4-Jun-20,Thursday,30,10:21 AM,7:23 PM,#NAME?,null,null,null,null,null,null
+4-Jun-20,Thursday,35,10:28 AM,7:33 PM,#NAME?,null,null,null,null,null,null
+4-Jun-20,Thursday,29,10:37 AM,7:24 PM,#NAME?,Y,null,null,null,null,null
+5-Jun-20,Friday,36n,10:05 AM,8:19 PM,#NAME?,null,null,null,null,null,null
+5-Jun-20,Friday,29,10:09 AM,7:45 PM,#NAME?,null,null,null,null,null,null
+5-Jun-20,Friday,33,10:14 AM,7:40 PM,#NAME?,null,null,null,null,null,null
+5-Jun-20,Friday,35,10:17 AM,7:35 PM,#NAME?,null,null,null,null,null,null
+5-Jun-20,Friday,30,10:17 AM,7:30 PM,#NAME?,null,null,null,null,null,null
+6-Jun-20,Saturday,36n,10:02 AM,7:27 PM,#NAME?,null,null,null,null,null,null
+6-Jun-20,Saturday,33,11:03 AM,6:00 PM,#NAME?,null,null,null,null,null,null
+6-Jun-20,Saturday,35,11:06 AM,5:44 PM,#NAME?,null,null,null,null,null,null
+8-Jun-20,Monday,29,10:08 AM,7:32 PM,#NAME?,null,null,null,null,null,null
+8-Jun-20,Monday,36n,10:08 AM,7:35 PM,#NAME?,null,null,null,null,null,null
+8-Jun-20,Monday,33,10:11 AM,8:10 PM,#NAME?,null,null,null,null,null,null
+8-Jun-20,Monday,35,10:22 AM,8:07 PM,#NAME?,null,null,null,null,null,null
+8-Jun-20,Monday,30,10:24 AM,7:10 PM,#NAME?,null,null,null,null,null,null
+9-Jun-20,Tuesday,29,10:08 AM,7:32 PM,#NAME?,null,null,null,null,null,null
+9-Jun-20,Tuesday,36n,10:08 AM,7:35 PM,#NAME?,null,null,null,null,null,null
+9-Jun-20,Tuesday,33,10:11 AM,8:10 PM,#NAME?,null,null,null,null,null,null
+9-Jun-20,Tuesday,35,10:22 AM,8:07 PM,#NAME?,null,null,null,null,null,null
+9-Jun-20,Tuesday,30,10:24 AM,null,#NAME?,null,Y,null,null,null,null
+10-Jun-20,Wednesday,36n,10:01 AM,7:46 PM,#NAME?,null,null,null,null,null,null
+10-Jun-20,Wednesday,35,10:18 AM,7:44 PM,#NAME?,null,null,null,null,null,null
+10-Jun-20,Wednesday,33,10:18 AM,7:40 PM,#NAME?,null,null,null,null,null,null
+10-Jun-20,Wednesday,30,null,null,null,null,null,Y,null,null,null
+10-Jun-20,Wednesday,29,null,null,null,null,null,Y,null,null,null
+11-Jun-20,Thursday,36n,10:11 AM,8:10 PM,#NAME?,null,null,null,null,null,null
+11-Jun-20,Thursday,35,10:23 AM,7:28 PM,#NAME?,null,null,null,null,null,null
+11-Jun-20,Thursday,33,11:24 AM,8:30 PM,#NAME?,Y,null,null,null,null,null
+11-Jun-20,Thursday,29,9:57 AM,null,#NAME?,null,Y,null,Timout missing,null,null
+11-Jun-20,Thursday,30,null,null,null,null,null,Y,null,null,null
+12-Jun-20,Friday,33,9:51 AM,7:50 PM,#NAME?,null,null,null,null,null,null
+12-Jun-20,Friday,36n,10:02 AM,7:50 PM,#NAME?,null,null,null,null,null,null
+12-Jun-20,Friday,35,10:05 AM,7:40 PM,#NAME?,null,null,null,null,null,null
+12-Jun-20,Friday,29,null,null,null,null,null,Y,null,null,null
+12-Jun-20,Friday,30,null,null,null,null,null,Y,null,null,null
+13-Jun-20,Saturday,33,10:23 AM,6:20 PM,#NAME?,null,null,null,null,null,null
+15-Jun-20,Monday,36n,10:12 AM,8:33 PM,#NAME?,null,null,null,null,null,null
+15-Jun-20,Monday,33,10:33 AM,8:05 PM,#NAME?,Y,null,null,null,null,null
+15-Jun-20,Monday,35,10:55 AM,4:12 PM,#NAME?,Y,Y,null,null,null,null
+15-Jun-20,Monday,29,null,null,null,null,null,Y,null,null,null
+15-Jun-20,Monday,30,null,null,null,null,null,Y,null,null,null
+16-Jun-20,Tuesday,36n,10:11 AM,8:37 PM,#NAME?,null,null,null,null,null,null
+16-Jun-20,Tuesday,29,10:18 AM,7:39 PM,#NAME?,null,null,null,null,null,null
+16-Jun-20,Tuesday,33,10:19 AM,9:00 PM,#NAME?,null,null,null,null,null,null
+16-Jun-20,Tuesday,35,10:56 AM,9:21 PM,#NAME?,Y,null,null,null,null,null
+16-Jun-20,Tuesday,30,null,null,null,null,null,Y,null,null,null
+17-Jun-20,Wednesday,29,10:30 AM,7:43 PM,#NAME?,null,null,null,null,null,null
+17-Jun-20,Wednesday,33,9:51 AM,9:36 PM,#NAME?,null,null,null,null,null,null
+17-Jun-20,Wednesday,36n,10:16 AM,8:30 PM,#NAME?,null,null,null,null,null,null
+17-Jun-20,Wednesday,35,10:32 AM,9:21 PM,#NAME?,Y,null,null,null,null,null
+17-Jun-20,Wednesday,30,null,null,null,null,null,Y,null,null,null
+18-Jun-20,Thursday,36n,10:01 AM,8:26 PM,#NAME?,null,null,null,null,null,null
+18-Jun-20,Thursday,33,10:09 AM,8:45 PM,#NAME?,null,null,null,null,null,null
+18-Jun-20,Thursday,29,10:10 AM,8:02 PM,#NAME?,null,null,null,null,null,null
+18-Jun-20,Thursday,35,10:21 AM,8:45 PM,#NAME?,null,null,null,null,null,null
+18-Jun-20,Thursday,30,null,null,null,null,null,Y,null,null,null
+19-Jun-20,Friday,33,9:57 AM,6:00 PM,#NAME?,null,Y,null,null,null,null
+19-Jun-20,Friday,36n,10:01 AM,8:34 PM,#NAME?,null,null,null,null,null,null
+19-Jun-20,Friday,29,10:06 AM,9:53 PM,#NAME?,null,null,null,null,null,null
+19-Jun-20,Friday,35,10:11 AM,8:44 PM,#NAME?,null,null,null,null,null,null
+19-Jun-20,Friday,30,null,null,null,null,null,Y,null,null,null
+20-Jun-20,Saturday,35,11:04 AM,8:32 PM,#NAME?,null,null,null,null,null,null
+20-Jun-20,Saturday,33,12:12 PM,8:35 PM,#NAME?,null,null,null,null,null,null
+22-Jun-20,Monday,33,9:57 AM,8:20 PM,#NAME?,null,null,null,null,null,null
+22-Jun-20,Monday,29,10:01 AM,null,#NAME?,null,Y,null,Timout missing,null,null
+22-Jun-20,Monday,36n,10:10 AM,8:22 PM,#NAME?,null,null,null,null,null,null
+22-Jun-20,Monday,35,11:12 AM,8:16 PM,#NAME?,Y,null,null,null,null,null
+22-Jun-20,Monday,30,null,null,null,null,null,Y,null,null,null
+23-Jun-20,Tuesday,29,10:06 AM,9:24 PM,#NAME?,null,null,null,null,null,null
+23-Jun-20,Tuesday,36n,10:06 AM,8:58 PM,#NAME?,null,null,null,null,null,null
+23-Jun-20,Tuesday,35,10:21 AM,8:04 PM,#NAME?,null,null,null,null,null,null
+23-Jun-20,Tuesday,33,11:30 AM,8:05 PM,#NAME?,Y,null,null,null,null,null
+23-Jun-20,Tuesday,30,null,null,null,null,null,Y,null,null,null
+24-Jun-20,Wednesday,33,9:51 AM,8:05 PM,#NAME?,null,null,null,null,null,null
+24-Jun-20,Wednesday,36n,10:10 AM,7:26 PM,#NAME?,null,null,null,null,null,null
+24-Jun-20,Wednesday,29,10:10 AM,9:34 PM,#NAME?,null,null,null,null,null,null
+24-Jun-20,Wednesday,35,10:19 AM,7:58 PM,#NAME?,null,null,null,null,null,null
+24-Jun-20,Wednesday,30,null,null,null,null,null,Y,null,null,null
+25-Jun-20,Thursday,33,9:50 AM,9:15 PM,#NAME?,null,null,null,null,null,null
+25-Jun-20,Thursday,36n,10:04 AM,8:04 PM,#NAME?,null,null,null,null,null,null
+25-Jun-20,Thursday,29,10:17 AM,8:57 PM,#NAME?,null,null,null,null,null,null
+25-Jun-20,Thursday,35,10:33 AM,9:14 PM,#NAME?,Y,null,null,null,null,null
+25-Jun-20,Thursday,30,null,null,null,null,null,Y,null,null,null
+26-Jun-20,Friday,33,9:50 AM,8:15 PM,#NAME?,null,null,null,null,null,null
+26-Jun-20,Friday,29,9:55 AM,9:22 PM,#NAME?,null,null,null,null,null,null
+26-Jun-20,Friday,36n,9:59 AM,7:15 PM,#NAME?,null,null,null,null,null,null
+26-Jun-20,Friday,35,10:39 AM,8:05 PM,#NAME?,Y,null,null,null,null,null
+26-Jun-20,Friday,30,null,null,null,null,null,Y,null,null,null
+27-Jun-20,Saturday,35,8:45 AM,2:28 PM,#NAME?,null,null,null,null,null,null
+27-Jun-20,Saturday,36n,10:03 AM,3:39 PM,#NAME?,null,null,null,null,null,null
+27-Jun-20,Saturday,33,10:12 AM,7:33 PM,#NAME?,null,null,null,null,null,null
+29-Jun-20,Monday,29,10:13 AM,9:55 PM,#NAME?,null,null,null,null,null,null
+29-Jun-20,Monday,33,9:51 AM,8:05 PM,#NAME?,null,null,null,null,null,null
+29-Jun-20,Monday,36n,10:05 AM,8:50 PM,#NAME?,null,null,null,null,null,null
+29-Jun-20,Monday,35,10:35 AM,8:05 PM,#NAME?,Y,null,null,null,null,null
+29-Jun-20,Monday,30,null,null,null,null,null,Y,null,null,null
+30-Jun-20,Tuesday,33,9:51 AM,9:30 PM,#NAME?,null,null,null,null,null,null
+30-Jun-20,Tuesday,36n,9:59 AM,8:55 PM,#NAME?,null,null,null,null,null,null
+30-Jun-20,Tuesday,29,10:10 AM,8:52 PM,#NAME?,null,null,null,null,null,null
+30-Jun-20,Tuesday,30,10:14 AM,null,#NAME?,null,Y,null,Timout missing,null,null
+30-Jun-20,Tuesday,35,10:45 AM,9:22 PM,#NAME?,Y,null,null,null,null,null
+1-Jul-20,Wednesday,33,9:50 AM,8:25 PM,#NAME?,null,null,null,null,null,null
+1-Jul-20,Wednesday,36n,10:01 AM,8:10 PM,#NAME?,null,null,null,null,null,null
+1-Jul-20,Wednesday,35,10:22 AM,8:24 PM,#NAME?,null,null,null,null,null,null
+1-Jul-20,Wednesday,29,10:31 AM,8:36 PM,#NAME?,Y,null,null,null,null,null
+1-Jul-20,Wednesday,30,null,null,#NAME?,null,null,Y,null,null,null
+2-Jul-20,Thursday,33,9:40 AM,8:21 PM,#NAME?,null,null,null,null,null,null
+2-Jul-20,Thursday,35,9:57 AM,8:20 PM,#NAME?,null,null,null,null,null,null
+2-Jul-20,Thursday,36n,10:03 AM,8:11 PM,#NAME?,null,null,null,null,null,null
+2-Jul-20,Thursday,30,10:03 AM,7:18 PM,#NAME?,null,null,null,null,null,null
+2-Jul-20,Thursday,29,10:23 AM,7:13 PM,#NAME?,null,null,null,null,null,null
+3-Jul-20,Friday,29,null,null,#NAME?,null,null,Y,null,null,null
+3-Jul-20,Friday,33,null,null,#NAME?,null,null,Y,null,null,null
+3-Jul-20,Friday,30,null,null,#NAME?,null,null,Y,null,null,null
+3-Jul-20,Friday,35,null,null,#NAME?,null,null,Y,null,null,null
+3-Jul-20,Friday,36n,null,null,#NAME?,null,null,Y,null,null,null
+4-Jul-20,Saturday,35,11:04 AM,6:59 PM,#NAME?,null,null,null,null,null,null
+6-Jul-20,Monday,33,9:54 AM,8:31 PM,#NAME?,null,null,null,null,null,null
+6-Jul-20,Monday,35,9:57 AM,8:07 PM,#NAME?,null,null,null,null,null,null
+6-Jul-20,Monday,29,10:00 AM,8:15 PM,#NAME?,null,null,null,null,null,null
+6-Jul-20,Monday,36n,10:04 AM,8:27 PM,#NAME?,null,null,null,null,null,null
+6-Jul-20,Monday,30,null,null,#NAME?,null,null,Y,null,null,null
+7-Jul-20,Tuesday,36n,9:59 AM,7:45 PM,#NAME?,null,null,null,null,null,null
+7-Jul-20,Tuesday,35,10:01 AM,6:58 PM,#NAME?,null,null,null,null,null,null
+7-Jul-20,Tuesday,29,10:06 AM,8:07 PM,#NAME?,null,null,null,null,null,null
+7-Jul-20,Tuesday,33,null,null,#NAME?,null,null,Y,null,null,null
+7-Jul-20,Tuesday,30,null,null,#NAME?,null,null,Y,null,null,null
+8-Jul-20,Wednesday,33,9:51 AM,8:20 PM,#NAME?,null,null,null,null,null,null
+8-Jul-20,Wednesday,35,10:00 AM,8:25 PM,#NAME?,null,null,null,null,null,null
+8-Jul-20,Wednesday,36n,10:03 AM,8:20 PM,#NAME?,null,null,null,null,null,null
+8-Jul-20,Wednesday,29,10:33 AM,8:25 PM,#NAME?,Y,null,null,null,null,null
+8-Jul-20,Wednesday,30,null,null,#NAME?,null,null,Y,null,null,null
+9-Jul-20,Thursday,33,9:51 AM,8:00 PM,#NAME?,null,null,null,null,null,null
+9-Jul-20,Thursday,35,9:53 AM,7:56 PM,#NAME?,null,null,null,null,null,null
+9-Jul-20,Thursday,36n,10:02 AM,7:56 PM,#NAME?,null,null,null,null,null,null
+9-Jul-20,Thursday,29,10:09 AM,9:55 PM,#NAME?,null,null,null,null,null,null
+9-Jul-20,Thursday,30,10:10 AM,8:03 PM,#NAME?,null,null,null,null,null,null
+10-Jul-20,Friday,29,10:03 AM,8:06 PM,#NAME?,null,null,null,null,null,null
+10-Jul-20,Friday,36n,10:04 AM,8:05 PM,#NAME?,null,null,null,null,null,null
+10-Jul-20,Friday,35,10:04 AM,8:25 PM,#NAME?,null,null,null,null,null,null
+10-Jul-20,Friday,30,10:19 AM,7:57 PM,#NAME?,null,null,null,null,null,null
+10-Jul-20,Friday,33,10:50 AM,8:25 PM,#NAME?,Y,null,null,null,null,null
+10-Jul-20,Friday,Samia,10:51 AM,null,#NAME?,Y,Y,null,null,null,null
+13-Jul-20,Monday,33,9:51 AM,8:24 PM,#NAME?,null,null,null,null,null,null
+13-Jul-20,Monday,35,9:59 AM,8:21 PM,#NAME?,null,null,null,null,null,null
+13-Jul-20,Monday,36n,10:00 AM,3:32 PM,#NAME?,null,null,null,null,null,null
+13-Jul-20,Monday,29,10:08 AM,null,#NAME?,null,Y,null,null,null,null
+13-Jul-20,Monday,30,10:18 AM,null,#NAME?,null,Y,null,Timeout missing,null,null
+14-Jul-20,Tuesday,35,9:52 AM,8:16 PM,#NAME?,null,null,null,null,null,null
+14-Jul-20,Tuesday,33,9:53 AM,8:37 PM,#NAME?,null,null,null,null,null,null
+14-Jul-20,Tuesday,29,10:15 AM,8:45 PM,#NAME?,null,null,null,null,null,null
+14-Jul-20,Tuesday,30,null,null,#NAME?,null,null,Y,null,null,null
+14-Jul-20,Tuesday,36n,null,null,#NAME?,null,null,Y,null,null,null
+15-Jul-20,Wednesday,35,9:48 AM,3:13 PM,#NAME?,null,null,null,null,null,null
+15-Jul-20,Wednesday,33,9:50 AM,7:05 PM,#NAME?,null,null,null,null,null,null
+15-Jul-20,Wednesday,36n,10:03 AM,8:12 PM,#NAME?,null,null,null,null,null,null
+15-Jul-20,Wednesday,29,10:19 AM,8:41 PM,#NAME?,null,null,null,null,null,null
+15-Jul-20,Wednesday,30,null,null,#NAME?,null,null,Y,null,null,null
+16-Jul-20,Thursday,33,9:50 AM,7:28 PM,#NAME?,null,null,null,null,null,null
+16-Jul-20,Thursday,36n,10:18 AM,7:45 PM,#NAME?,null,null,null,null,null,null
+16-Jul-20,Thursday,35,10:21 AM,7:27 PM,#NAME?,null,null,null,null,null,null
+16-Jul-20,Thursday,29,11:09 AM,9:14 PM,#NAME?,Y,null,null,null,null,null
+16-Jul-20,Thursday,30,null,null,#NAME?,null,null,Y,null,null,null
+17-Jul-20,Friday,33,9:51 AM,7:16 PM,#NAME?,null,null,null,null,null,null
+17-Jul-20,Friday,35,9:54 AM,6:15 PM,#NAME?,null,null,null,null,null,null
+17-Jul-20,Friday,29,10:11 AM,8:08 PM,#NAME?,null,null,null,null,null,null
+17-Jul-20,Friday,36n,10:17 AM,6:40 PM,#NAME?,null,null,null,null,null,null
+17-Jul-20,Friday,30,null,null,#NAME?,null,null,Y,null,null,null
+18-Jul-20,Saturday,36n,10:12 AM,4:17 PM,#NAME?,null,null,null,null,null,null
+18-Jul-20,Saturday,33,10:56 AM,3:47 PM,#NAME?,null,null,null,null,null,null
+18-Jul-20,Saturday,35,11:40 AM,7:01 PM,#NAME?,null,null,null,null,null,null
+18-Jul-20,Saturday,29,null,null,#NAME?,null,null,null,null,null,null
+18-Jul-20,Saturday,30,null,null,#NAME?,null,null,null,null,null,null
+20-Jul-20,Monday,33,9:51 AM,7:10 PM,#NAME?,null,null,null,null,null,null
+20-Jul-20,Monday,35,10:03 AM,7:10 PM,#NAME?,null,null,null,null,null,null
+20-Jul-20,Monday,36n,10:03 AM,7:00 PM,#NAME?,null,null,null,null,null,null
+20-Jul-20,Monday,29,10:16 AM,8:02 PM,#NAME?,null,null,null,null,null,null
+20-Jul-20,Monday,30,null,null,#NAME?,null,null,Y,null,null,null
+21-Jul-20,Tuesday,36n,9:57 AM,7:53 PM,#NAME?,null,null,null,null,null,null
+21-Jul-20,Tuesday,35,9:57 AM,8:03 PM,#NAME?,null,null,null,null,null,null
+21-Jul-20,Tuesday,33,10:12 AM,8:03 PM,#NAME?,null,null,null,null,null,null
+21-Jul-20,Tuesday,29,10:12 AM,8:13 PM,#NAME?,null,null,null,null,null,null
+21-Jul-20,Tuesday,30,null,null,#NAME?,null,null,Y,null,null,null
+22-Jul-20,Wednesday,33,9:50 AM,7:10 PM,#NAME?,null,null,null,null,null,null
+22-Jul-20,Wednesday,35,9:53 AM,6:29 PM,#NAME?,null,null,null,null,null,null
+22-Jul-20,Wednesday,36n,9:57 AM,7:42 PM,#NAME?,null,null,null,null,null,null
+22-Jul-20,Wednesday,29,10:21 AM,7:21 PM,#NAME?,null,null,null,null,null,null
+22-Jul-20,Wednesday,30,null,null,#NAME?,null,null,Y,null,null,null
+23-Jul-20,Thursday,33,9:51 AM,7:53 PM,#NAME?,null,null,null,null,null,null
+23-Jul-20,Thursday,35,9:55 AM,4:57 PM,#NAME?,null,null,null,null,null,null
+23-Jul-20,Thursday,36n,10:02 AM,7:34 PM,#NAME?,null,null,null,null,null,null
+23-Jul-20,Thursday,29,10:02 AM,6:43 PM,#NAME?,null,null,null,null,null,null
+23-Jul-20,Thursday,30,null,null,#NAME?,null,null,Y,null,null,null
+24-Jul-20,Friday,35,9:59 AM,7:15 PM,#NAME?,null,null,null,null,null,null
+24-Jul-20,Friday,29,10:07 AM,8:09 PM,#NAME?,null,null,null,null,null,null
+24-Jul-20,Friday,36n,10:11 AM,8:09 PM,#NAME?,null,null,null,null,null,null
+24-Jul-20,Friday,33,2:26 PM,7:20 PM,#NAME?,Y,Y,null,null,null,null
+24-Jul-20,Friday,30,null,null,#NAME?,null,null,Y,null,null,null
+25-Jul-20,Saturday,33,10:36 AM,4:39 PM,#NAME?,null,null,null,null,null,null
+25-Jul-20,Saturday,35,11:21 AM,4:39 PM,#NAME?,null,null,null,null,null,null
+25-Jul-20,Saturday,36n,null,null,#NAME?,null,null,null,null,null,null
+25-Jul-20,Saturday,29,null,null,#NAME?,null,null,null,null,null,null
+25-Jul-20,Saturday,30,null,null,#NAME?,null,null,null,null,null,null
+27-Jul-20,Monday,33,9:50 AM,7:32 PM,#NAME?,null,null,null,null,null,null
+27-Jul-20,Monday,36n,9:53 AM,8:04 PM,#NAME?,null,null,null,null,null,null
+27-Jul-20,Monday,35,9:53 AM,7:20 PM,#NAME?,null,null,null,null,null,null
+27-Jul-20,Monday,29,10:15 AM,7:58 PM,#NAME?,null,null,null,null,null,null
+27-Jul-20,Monday,30,null,null,#NAME?,null,null,Y,null,null,null
+28-Jul-20,Tuesday,33,9:52 AM,7:15 PM,#NAME?,null,null,null,null,null,null
+28-Jul-20,Tuesday,36n,10:00 AM,7:12 PM,#NAME?,null,null,null,null,null,null
+28-Jul-20,Tuesday,35,10:06 AM,7:31 PM,#NAME?,null,null,null,null,null,null
+28-Jul-20,Tuesday,29,10:18 AM,9:03 PM,#NAME?,null,null,null,null,null,null
+28-Jul-20,Tuesday,30,null,null,#NAME?,null,null,Y,null,null,null
+29-Jul-20,Wednesday,33,9:51 AM,7:08 PM,#NAME?,null,null,null,null,null,null
+29-Jul-20,Wednesday,35,9:59 AM,6:56 PM,#NAME?,null,null,null,null,null,null
+29-Jul-20,Wednesday,36n,10:03 AM,8:14 PM,#NAME?,null,null,null,null,null,null
+29-Jul-20,Wednesday,29,11:49 AM,9:37 PM,#NAME?,Y,null,null,null,null,null
+29-Jul-20,Wednesday,30,null,null,#NAME?,null,null,Y,null,null,null
+30-Jul-20,Thursday,33,9:51 AM,7:55 PM,#NAME?,null,null,null,null,null,null
+30-Jul-20,Thursday,35,9:55 AM,7:54 PM,#NAME?,null,null,null,null,null,null
+30-Jul-20,Thursday,36n,9:57 AM,9:02 PM,#NAME?,null,null,null,null,null,null
+30-Jul-20,Thursday,29,10:03 AM,7:49 PM,#NAME?,null,null,null,null,null,null
+30-Jul-20,Thursday,30,null,null,#NAME?,null,null,Y,null,null,null
+31-Jul-20,Friday,33,9:51 AM,7:05 PM,#NAME?,null,null,null,null,null,null
+31-Jul-20,Friday,35,10:05 AM,7:05 PM,#NAME?,null,null,null,null,null,null
+31-Jul-20,Friday,36n,10:09 AM,7:08 PM,#NAME?,null,null,null,null,null,null
+31-Jul-20,Friday,29,10:30 AM,7:07 PM,#NAME?,null,null,null,null,null,null
+31-Jul-20,Friday,30,null,null,#NAME?,null,null,null,null,null,null

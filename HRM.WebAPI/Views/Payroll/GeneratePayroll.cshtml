@@ -13,7 +13,7 @@
         <div class="form-group">
             <label for="PayrollCycle" class="col-sm-4 control-label lblforinput">Payroll Cycle: </label>
             <div class="col-sm-6">
-                @Html.DropDownListFor(m => m.PayrollCycleId, ViewBag.PayrollCycle as SelectList, "--Select Payroll Cycle--", new { @class = "form-control" })
+                @Html.DropDownListFor(m => m.PayrollCycleId, ViewBag.PayrollCycle as SelectList, "--Select Payroll Cycle--", new { @class = "form-control" ,@id= "PayrollCycle_Id"})
 
             </div>
         </div>
@@ -28,8 +28,8 @@
             <div class="col-sm-3"></div>
         </div>
     }
-    @if (Model.DepartmentList != null && Model.DepartmentList.Count > 0)
-    {
+                    @if (Model.DepartmentList != null && Model.DepartmentList.Count > 0)
+                    {
         <div class="col-sm-11"></div><div class="col-sm-1" style="float: right;"><a class="printlink" href="javascript:;" onclick="Print();"><img src="/assets/images/printer.png" style="width: 20px;" />&nbsp;Print</a></div>
         @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
         tableStyle: "table table-striped table-hover attendancereport datatable",
@@ -62,7 +62,6 @@
         }
         return x1 + x2;
     }
-
     $(document).ready(function () {
         var totaluser = 0, totalsalary = 0.00, totaladdition = 0.00, totaldeduction = 0.00, totalnetsalary = 0.00;
         $('.user').each(function () {
@@ -81,7 +80,6 @@
         $('.netsal').each(function () {
             totalnetsalary += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
         });
-
         var tfoot = '<tfoot><tr><td colspan="2">Total</td>';
         tfoot += '<td>' + totaluser + '</td>';
         tfoot += '<td class="nmbr">' + totalsalary + '</td>';
@@ -94,21 +92,39 @@
             $(this).html(addCommas(parseFloat($(this).html()).toFixed(2)));
         });
     });
-
-    @*function RunPayroll(isFinal) {
+    function RunPayroll(isFinal) {
+        //If FinalRun
         var PayrollCycleID = $('#PayrollCycle_Id').val();
-        var flag = false;
+        var testflag = false;
+        var finalflag = false;
         if (isFinal == 1)
-            flag = confirm('Are you sure to run Final Payroll?');
+            finalflag = confirm('Are you sure to run Final Payroll?');
         else
-            flag = confirm('Are you sure to run Test Payroll?');
-
-        if (flag) {
+            testflag = confirm('Are you sure to run Test Payroll?');
+        if (finalflag) {
             $.ajax({
-                url: '@Url.Action("RunPayroll", "Payroll")',
+                url: '@Url.Action("RunFinalPayroll", "Payroll")',
                 type: 'POST',
                 dataType: 'json',
-                data: { PayrollCycleID: PayrollCycleID, IsFinal: isFinal },
+                data: { PayrollCycleID: PayrollCycleID, IsFinal: finalflag },
+                success: function (data) {
+                    if (data) {
+                        location.reload();
+                        return;
+                    }
+                    else {
+                        alert('There is some error');
+                    }
+                }
+            });
+        }
+        //If TestRun
+        if (testflag) {
+            $.ajax({
+                url: '@Url.Action("GeneratePayroll", "Payroll")',
+                type: 'POST',
+                dataType: 'json',
+                data: { PayrollCycleID: PayrollCycleID, IsTest: testflag },
                 success: function (data) {
                     if (data) {
                         location.reload();
@@ -121,7 +137,7 @@
             });
         }
         return false;
-    }*@
+    }
 
     function Print() {
         var printElement = $(".page-box").clone();

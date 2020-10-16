@@ -53,6 +53,32 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dll\webapi\Common.Logging.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus, Version=4.5.2.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.2.1\lib\net40\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net20\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Caching, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -88,6 +114,7 @@
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -105,9 +132,6 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http">
       <Private>True</Private>
@@ -203,6 +227,7 @@
     <Compile Include="Controllers\BranchController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
+    <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\HolidayController.cs" />
     <Compile Include="Controllers\LeaveController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -221,6 +246,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="WebRoleProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\applications\mailbox.css" />
@@ -741,6 +767,7 @@
     <Content Include="assets\widgets\wizard\wizard.css" />
     <Content Include="assets\widgets\wizard\wizard.js" />
     <Content Include="assets\widgets\wow\wow.js" />
+    <Content Include="Content\PagedList.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -823,6 +850,8 @@
     <Content Include="assets\images\icons\icons.psd" />
     <Content Include="assets\toggle\js\bootstrap-toggle.min.js.map" />
     <Content Include="assets\toggle\js\bootstrap2-toggle.min.js.map" />
+    <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\HRM-Fareed.pubxml" />
     <None Include="Scripts\jquery-1.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />
@@ -867,7 +896,6 @@
     <Content Include="Uploads\ProfileImages\0.jpg" />
     <Content Include="Web.config" />
     <Content Include="Content\Site.css" />
-    <Content Include="Scripts\_references.js" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\UserList.cshtml" />
@@ -923,7 +951,6 @@
     <Content Include="Views\Attendance\DetailDailyAttendanceUpdate.cshtml" />
     <Content Include="Views\Attendance\DailyDetailReport.cshtml" />
     <Content Include="Views\Attendance\MonthlyDetailReport.cshtml" />
-    <Content Include="Views\Attendance\PracticeMonthlyDetailReport.cshtml" />
     <Content Include="Views\Attendance\MonthlyAttendanceReport.cshtml" />
     <Content Include="Views\Attendance\DailyAttendanceReport.cshtml" />
     <Content Include="Views\Attendance\AbsentReport.cshtml" />
@@ -932,8 +959,30 @@
     <Content Include="Views\Payroll\PayrollEdit.cshtml" />
     <Content Include="Views\Payroll\ModifyPayroll.cshtml" />
     <Content Include="Views\Payroll\ModifyPayrollDetail.cshtml" />
+    <Content Include="Views\Payroll\NewPayslip.cshtml" />
+    <Content Include="Views\Payroll\NewPayslipDetail.cshtml" />
+    <Content Include="Views\Employee\DailyAttendance.cshtml" />
+    <Content Include="Views\Employee\DailyDetailAttendace.cshtml" />
+    <Content Include="Views\Employee\MonthlyAttendance.cshtml" />
+    <Content Include="Views\Employee\MonthlyDetailAttendace.cshtml" />
+    <Content Include="Views\Employee\Payroll.cshtml" />
+    <Content Include="Views\Employee\PayrollDetail.cshtml" />
+    <Content Include="Views\Attendance\UploadAttendanceViaExcel.cshtml" />
+    <Content Include="Views\Attendance\ExcelAttendance.cshtml" />
+    <Content Include="Views\Payroll\GeneratePayrollForUser.cshtml" />
+    <Content Include="Views\Employee\CurrentShift.cshtml" />
+    <Content Include="Views\Employee\ShiftHistory.cshtml" />
+    <Content Include="Views\Employee\Leave.cshtml" />
+    <Content Include="Views\Leave\ApprovedLeaves.cshtml" />
+    <Content Include="Views\Leave\ManageLeaves.cshtml" />
+    <Content Include="Views\Payroll\Ticket.cshtml" />
+    <Content Include="Views\Payroll\TicketHistory.cshtml" />
+    <Content Include="Views\Employee\AbsentReport.cshtml" />
+    <Content Include="Views\Employee\HolidayList.cshtml" />
+    <Content Include="Views\Employee\TicketHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Upload\" />
     <Folder Include="Images\" />
     <Folder Include="Services\" />
   </ItemGroup>
@@ -957,6 +1006,9 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -9,6 +9,8 @@ using HRM.Core.DataTransfer;
 using HRM.Core.DataTransfer.PayrollPolicy;
 using Validation;
 using System.Linq;
+using HRM.Core.Model;
+using System.Data;
 
 namespace HRM.Core.Service
 {
@@ -35,14 +37,20 @@ namespace HRM.Core.Service
             return this._iPayrollPolicyRepository.GetPayrollPolicyAdvanceSearchColumns();
            
         }
-        
+        public DataSet GetPayrollPolicyInformationSP(System.Int32? UserId,  System.Boolean? IsEarly, System.Boolean? IsLate, System.String StartDate, System.String EndDate)
+        {
 
-		public virtual List<PayrollPolicy> GetPayrollPolicyByPayrollVariableId(System.Int32? PayrollVariableId)
+            return this._iPayrollPolicyRepository.GetPayrollPolicyInformationSP(UserId,  IsEarly, IsLate,StartDate,EndDate);
+
+        }
+
+        public virtual List<PayrollPolicy> GetPayrollPolicyByPayrollVariableId(System.Int32? PayrollVariableId)
 		{
 			return _iPayrollPolicyRepository.GetPayrollPolicyByPayrollVariableId(PayrollVariableId);
 		}
 
-		public PayrollPolicy GetPayrollPolicy(System.Int32 Id)
+
+        public PayrollPolicy GetPayrollPolicy(System.Int32 Id)
 		{
 			return _iPayrollPolicyRepository.GetPayrollPolicy(Id);
 		}
@@ -217,7 +225,41 @@ namespace HRM.Core.Service
             }
             return tranfer;
         }
-	}
+        private string StringNull(object val) { if (val == null || val == DBNull.Value) return ""; else return val.ToString(); }
+        private DateTime? DateNull(object val) { if (val == null || val == DBNull.Value) return null; else return Convert.ToDateTime(val); }
+        private Double DoubleNull(object val) { if (val == null || val == DBNull.Value) return 0.0; else return Convert.ToDouble(val); }
+
+        private Decimal DecimalNull(object val) { if (val == null || val == DBNull.Value) return 0; else return Convert.ToDecimal(val); }
+        private Int32 IntNull(object val) { if (val == null || val == DBNull.Value) return 0; else return Convert.ToInt32(val); }
+        private Boolean BooleanNull(object val) { if (val == null || val == DBNull.Value) return false; else return Convert.ToBoolean(val); }
+        public List<VMPayslipVariableInformation> GetPayrollPolicyInformation(System.Int32? UserId,  System.Boolean? IsEarly, System.Boolean? IsLate, String StartDate, String EndDate)
+        {
+            List<VMPayslipVariableInformation> variableSummary = new List<VMPayslipVariableInformation>();
+            DataSet dsPayrollPolicy = _iPayrollPolicyRepository.GetPayrollPolicyInformationSP( UserId, IsEarly, IsLate,StartDate,EndDate);
+            if (dsPayrollPolicy != null && dsPayrollPolicy.Tables.Count > 0 && dsPayrollPolicy.Tables[0] != null)
+            {
+                foreach (DataRow dr in dsPayrollPolicy.Tables[0].Rows)
+                {
+                    VMPayslipVariableInformation objPayrollPolicyInformation = new VMPayslipVariableInformation()
+                    {
+                        AttendanceID = IntNull(dr["AttendanceID"]),
+                        Date = DateNull(dr["Date"]),
+                        TimeIn = DateNull(dr["TimeIn"]),
+                        TimeOutt = DateNull(dr["TimeOutt"]),
+                        ShiftTimeIn = DateNull(dr["ShiftTimeIn"]),
+                        ShiftTimeOut = DateNull(dr["ShiftTimeOut"]),
+                        IsEarly = BooleanNull(dr["IsEarly"]),
+                        IsLate = BooleanNull(dr["IsLate"]),
+                        IsOffDay = BooleanNull(dr["IsOffDay"]),
+                        ShiftName = dr["ShiftName"].ToString(),
+                        TicketAttendanceID = IntNull(dr["TicketAttendanceID"]),
+                    };
+                    variableSummary.Add(objPayrollPolicyInformation);
+                }
+            }
+            return variableSummary;
+        }
+    }
 	
 	
 }

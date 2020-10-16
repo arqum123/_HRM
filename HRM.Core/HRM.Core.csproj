@@ -36,6 +36,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="Spring.Core, Version=1.2.0.20313, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dll\core\Spring.Core.dll</HintPath>
@@ -73,6 +79,8 @@
     <Compile Include="DataInterfaces\IBranchShiftRepository.cs" />
     <Compile Include="DataInterfaces\IConfigurationRepository.base.cs" />
     <Compile Include="DataInterfaces\IConfigurationRepository.cs" />
+    <Compile Include="DataInterfaces\ICustomPayrollDetailRepository.cs" />
+    <Compile Include="DataInterfaces\ICustomPayrollDetailRepostiory.base.cs" />
     <Compile Include="DataInterfaces\IDeviceModalRepository.base.cs" />
     <Compile Include="DataInterfaces\IDeviceModalRepository.cs" />
     <Compile Include="DataInterfaces\IDeviceRepository.base.cs" />
@@ -91,6 +99,8 @@
     <Compile Include="DataInterfaces\IPayrollVariableRepository.cs" />
     <Compile Include="DataInterfaces\ISalaryTypeRepository.base.cs" />
     <Compile Include="DataInterfaces\ISalaryTypeRepository.cs" />
+    <Compile Include="DataInterfaces\ITicketRepository.cs" />
+    <Compile Include="DataInterfaces\ITicketRepositoryBase.cs" />
     <Compile Include="DataTransfer\BranchDepartment\GET\Output.cs" />
     <Compile Include="DataTransfer\BranchDepartment\POST\Input.cs" />
     <Compile Include="DataTransfer\BranchDepartment\POST\Output.cs" />
@@ -111,6 +121,11 @@
     <Compile Include="DataTransfer\Configuration\POST\Output.cs" />
     <Compile Include="DataTransfer\Configuration\PUT\Input.cs" />
     <Compile Include="DataTransfer\Configuration\PUT\Output.cs" />
+    <Compile Include="DataTransfer\CustomPayrollDetail\GET\Output.cs" />
+    <Compile Include="DataTransfer\CustomPayrollDetail\POST\Input.cs" />
+    <Compile Include="DataTransfer\CustomPayrollDetail\POST\Output.cs" />
+    <Compile Include="DataTransfer\CustomPayrollDetail\PUT\Input.cs" />
+    <Compile Include="DataTransfer\CustomPayrollDetail\PUT\Output.cs" />
     <Compile Include="DataTransfer\DeviceModal\GET\Output.cs" />
     <Compile Include="DataTransfer\DeviceModal\POST\Input.cs" />
     <Compile Include="DataTransfer\DeviceModal\POST\Output.cs" />
@@ -156,6 +171,11 @@
     <Compile Include="DataTransfer\SalaryType\POST\Output.cs" />
     <Compile Include="DataTransfer\SalaryType\PUT\Input.cs" />
     <Compile Include="DataTransfer\SalaryType\PUT\Output.cs" />
+    <Compile Include="DataTransfer\Ticket\GET\Output.cs" />
+    <Compile Include="DataTransfer\Ticket\POST\Input.cs" />
+    <Compile Include="DataTransfer\Ticket\POST\Output.cs" />
+    <Compile Include="DataTransfer\Ticket\PUT\Input.cs" />
+    <Compile Include="DataTransfer\Ticket\PUT\Output.cs" />
     <Compile Include="Entities\Attendance.cs" />
     <Compile Include="Entities\Attendance.base.cs">
       <DependentUpon>Attendance.cs</DependentUpon>
@@ -200,6 +220,8 @@
     <Compile Include="Entities\Country.base.cs">
       <DependentUpon>Country.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entities\CustomPayrollDetail.base.cs" />
+    <Compile Include="Entities\CustomPayrollDetail.cs" />
     <Compile Include="Entities\Department.cs" />
     <Compile Include="Entities\Department.base.cs">
       <DependentUpon>Department.cs</DependentUpon>
@@ -250,6 +272,8 @@
     <Compile Include="Entities\State.base.cs">
       <DependentUpon>State.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entities\Ticket.cs" />
+    <Compile Include="Entities\TicketBase.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\User.base.cs">
       <DependentUpon>User.cs</DependentUpon>
@@ -373,6 +397,7 @@
     <Compile Include="IService\IBranchService.cs" />
     <Compile Include="IService\IBranchShiftService.cs" />
     <Compile Include="IService\IConfigurationService.cs" />
+    <Compile Include="IService\ICustomPayrollDetailService.cs" />
     <Compile Include="IService\IDeviceModalService.cs" />
     <Compile Include="IService\IDeviceService.cs" />
     <Compile Include="IService\ILeaveService.cs" />
@@ -382,6 +407,16 @@
     <Compile Include="IService\IPayrollService.cs" />
     <Compile Include="IService\IPayrollVariableService.cs" />
     <Compile Include="IService\ISalaryTypeService.cs" />
+    <Compile Include="IService\ITicketService.cs" />
+    <Compile Include="Model\AttendanceAndAttendanceStatusViewList.cs" />
+    <Compile Include="Model\AttendanceAndAttendanceStatusViewStatus.cs" />
+    <Compile Include="Model\EmpDailyAttendance.cs" />
+    <Compile Include="Model\EmpDailyDetailAttendance.cs" />
+    <Compile Include="Model\EmpDailyDetailAttendanceDuration.cs" />
+    <Compile Include="Model\EmpMonthlyAttendance.cs" />
+    <Compile Include="Model\EmpMonthlyDetailAttendance.cs" />
+    <Compile Include="Model\EmpMonthlyDetailAttendanceDuration.cs" />
+    <Compile Include="Model\ExcelAttendanceModel.cs" />
     <Compile Include="Model\PracticeVMDetailReport.cs" />
     <Compile Include="Model\PracticeVMMonthlyReport.cs" />
     <Compile Include="Model\PracticeVMReport.cs" />
@@ -396,11 +431,27 @@
     <Compile Include="Model\VMDailyAttendanceUpdate.cs" />
     <Compile Include="Model\VMDailyAttendanceUpdateStatus.cs" />
     <Compile Include="Model\VMDailyAttendanceUpdateTime.cs" />
+    <Compile Include="Model\VMEmpAbsent.cs" />
+    <Compile Include="Model\VMEmpLeave.cs" />
+    <Compile Include="Model\VMEmpPayroll.cs" />
+    <Compile Include="Model\VMEMPPayrollDetail.cs" />
+    <Compile Include="Model\VMEmpPayrollService.cs" />
+    <Compile Include="Model\VMEmpPayslipDetailPayroll.cs" />
+    <Compile Include="Model\VMEmpPayslipDetailUser.cs" />
+    <Compile Include="Model\VMEmpPayslipDetailVariables.cs" />
+    <Compile Include="Model\VMEmpShift.cs" />
+    <Compile Include="Model\VMEmpShiftOffDays.cs" />
+    <Compile Include="Model\VMEmpTicketFilter.cs" />
+    <Compile Include="Model\VMFinalPayroll.cs" />
     <Compile Include="Model\VMGeneratePayrollEdit.cs" />
+    <Compile Include="Model\VMGeneratePayrollForUser.cs" />
+    <Compile Include="Model\VMGetPayrollEditFirst.cs" />
+    <Compile Include="Model\VMGetPayrollEditSecond.cs" />
     <Compile Include="Model\VMHolidayModel.cs" />
     <Compile Include="Model\VMLeave.cs" />
     <Compile Include="Model\VMModifyPayroll.cs" />
     <Compile Include="Model\VMModifyPayrollEdit.cs" />
+    <Compile Include="Model\VMModifyPayrollEditVariable.cs" />
     <Compile Include="Model\VMMonthlyAttendance.cs" />
     <Compile Include="Model\VMMonthlyAttendanceReport.cs" />
     <Compile Include="Model\VMMonthlyUserAttDetail.cs" />
@@ -413,8 +464,26 @@
     <Compile Include="Model\VMAttendanceModel.cs" />
     <Compile Include="Model\VMDepartmentModel.cs" />
     <Compile Include="Model\VMPayrollModelNew.cs" />
+    <Compile Include="Model\VMPayslip.cs" />
+    <Compile Include="Model\VMPayslipAbsentInformation.cs" />
+    <Compile Include="Model\VMPayslipDetail.cs" />
+    <Compile Include="Model\VMPayslipDetailUser.cs" />
+    <Compile Include="Model\VMPayslipDetailPayroll.cs" />
+    <Compile Include="Model\VMPayslipDetailVariables.cs" />
+    <Compile Include="Model\VMPayslipVariableInformation.cs" />
+    <Compile Include="Model\VMPayslipVariables.cs" />
+    <Compile Include="Model\VMPendingViewAllLeaves.cs" />
     <Compile Include="Model\VMShiftModel.cs" />
+    <Compile Include="Model\VMTicket.cs" />
+    <Compile Include="Model\VMTicketFilter.cs" />
+    <Compile Include="Model\VMTicketHistory.cs" />
     <Compile Include="Model\VMUserModel.cs" />
+    <Compile Include="Model\VMUserPayroll.cs" />
+    <Compile Include="Model\VMUserPayrollDetailEdit.cs" />
+    <Compile Include="Model\VMUserPayrollEdit.cs" />
+    <Compile Include="Model\VMViewAllLeaves.cs" />
+    <Compile Include="Model\VMViewLeaves.cs" />
+    <Compile Include="Model\VMViewPendingLeaves.cs" />
     <Compile Include="MOLogAttribute.cs" />
     <Compile Include="Extensions\DateTimeExtension.cs" />
     <Compile Include="Extensions\OperandExtension.cs" />
@@ -457,6 +526,7 @@
     <Compile Include="Service\ConfigurationService.cs" />
     <Compile Include="Service\ContactTypeService.cs" />
     <Compile Include="Service\CountryService.cs" />
+    <Compile Include="Service\CustomPayrollDetailService.cs" />
     <Compile Include="Service\DepartmentService.cs" />
     <Compile Include="Service\DeviceModalService.cs" />
     <Compile Include="Service\DeviceService.cs" />
@@ -474,6 +544,7 @@
     <Compile Include="Service\ShiftService.cs" />
     <Compile Include="Service\ShiftOffDayService.cs" />
     <Compile Include="Service\StateService.cs" />
+    <Compile Include="Service\TicketService.cs" />
     <Compile Include="Service\UserService.cs" />
     <Compile Include="Service\UserContactService.cs" />
     <Compile Include="Service\UserDepartmentService.cs" />
@@ -591,6 +662,15 @@
     <Compile Include="DataTransfer\UserType\POST\Input.cs" />
     <Compile Include="DataTransfer\UserType\GET\Output.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="System\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\PagedList.css" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

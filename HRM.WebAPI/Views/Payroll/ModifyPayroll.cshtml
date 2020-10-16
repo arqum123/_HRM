@@ -1,4 +1,4 @@
-﻿@model HRM.Core.Model.VMModifyPayroll
+﻿@model HRM.Core.Model.VMGetPayrollEditFirst
 @{
     ViewBag.Title = "HRMS - Modify Edit";
     WebGrid grid = new WebGrid(Model.PayrollList, canSort: true, canPage: false, rowsPerPage: 10);
@@ -23,12 +23,14 @@
                 @Html.TextBoxFor(m => m.UserName, new { maxlength = "200", @class = "form-control", placeholder = "User Name" })
             </div>
         </div>
+
         <div class="form-group">
             <label for="PayrollMonth" class="col-sm-4 control-label lblforinput">Payroll Cycle</label>
             <div class="col-sm-6">
                 @Html.DropDownListFor(m => m.PayrollCycleId, ViewBag.PayrollCycle as SelectList, new { @class = "form-control" })
             </div>
         </div>
+
         <div class="form-group">
             <div class="col-sm-5"></div>
             <div class="col-sm-2">
@@ -38,15 +40,15 @@
         </div>
     }
 
-    @if (Model.VMModifyPayrollEditList != null && Model.VMModifyPayrollEditList.Count > 0)
+    @if (Model.VMGetPayrollEditSecondList != null && Model.VMGetPayrollEditSecondList.Count > 0)
     {
         <table class="table table-striped table-hover attendancereport datatable">
             <thead>
 
                 <tr>
-                    @*<th>
+                    <th>
                         SNo
-                    </th>*@
+                    </th>
                     <th>
                         EMP ID
                     </th>
@@ -65,15 +67,11 @@
                     <th>
                         Deduction
                     </th>
-                    <th>
-                        Extra Addition
-                    </th>
-                    <th>
-                        Extra Deduction
-                    </th>
+
                     <th>
                         Net Salary
                     </th>
+
                     <th>
                         Action
                     </th>
@@ -81,54 +79,92 @@
 
 
             </thead>
-            @*@{
+            @{
                 int sno = 0;
-            }*@
+            }
             <tbody>
 
-                @for (int i = 0; i < Model.VMModifyPayrollEditList.Count; i++)
+                @for (int i = 0; i < Model.VMGetPayrollEditSecondList.Count; i++)
                 {
                     <tr>
-                        @*<td>
+                        <td>
                             @{ sno++; }
                             @sno
-                        </td>*@
+                        </td>
 
-                        <td>@Model.VMModifyPayrollEditList[i].UserId</td>
-                        <td>@Model.VMModifyPayrollEditList[i].UserName</td>
-                        <td>@Model.VMModifyPayrollEditList[i].DepartmentName</td>
+                        <td>@Model.VMGetPayrollEditSecondList[i].UserId</td>
+                        <td>@Model.VMGetPayrollEditSecondList[i].UserName</td>
+                        <td>@Model.VMGetPayrollEditSecondList[i].DepartmentName</td>
 
-                        @if (Model.VMModifyPayrollEditList[i].SalaryTypeId == 1)
+                        @if (Model.VMGetPayrollEditSecondList[i].SalaryTypeId == 1)
                         {
-                            <td>@Model.VMModifyPayrollEditList[i].Salary</td>
+                            <td>@Model.VMGetPayrollEditSecondList[i].Salary</td>
                         }
-                        @if (Model.VMModifyPayrollEditList[i].SalaryTypeId == 2)
+                        @if (Model.VMGetPayrollEditSecondList[i].SalaryTypeId == 2)
                         {
-                            <td>@Model.VMModifyPayrollEditList[i].Salary*4</td>
+                            <td>@Model.VMGetPayrollEditSecondList[i].Salary*4</td>
                         }
-                        @if (Model.VMModifyPayrollEditList[i].SalaryTypeId == 3)
+                        @if (Model.VMGetPayrollEditSecondList[i].SalaryTypeId == 3)
                         {
-                            <td>@Model.VMModifyPayrollEditList[i].Salary*30</td>
+                            <td>@Model.VMGetPayrollEditSecondList[i].Salary*30</td>
                         }
 
-                        <td>@Model.VMModifyPayrollEditList[i].Addition</td>
-                        <td>@Model.VMModifyPayrollEditList[i].Deduction</td>
-                        <td></td>
-                        <td></td>
-                        <td>@Model.VMModifyPayrollEditList[i].NetSalary</td>
-                        <td><a target="_blank" href="/Payroll/ModifyPayrollDetail?PayrollId=@Model.VMModifyPayrollEditList[i].PayrollId&UserId=@Model.VMModifyPayrollEditList[i].UserId&DepartmentId=@Model.VMModifyPayrollEditList[i].DepartmentId">Edit</a></td>
+                        <td>@Model.VMGetPayrollEditSecondList[i].Addition</td>
+                        <td>@Model.VMGetPayrollEditSecondList[i].Deduction</td>
+                        <td>@Model.VMGetPayrollEditSecondList[i].NetSalary</td>
+
+                        <td><a target="_blank" href="/Payroll/ModifyPayrollDetail?PayrollId=@Model.VMGetPayrollEditSecondList[i].PayrollId&UserId=@Model.VMGetPayrollEditSecondList[i].UserId&DepartmentId=@Model.VMGetPayrollEditSecondList[i].DepartmentId">Edit</a></td>
                     </tr>
                 }
             </tbody>
 
         </table>
-    }
+                                if (ViewBag.TotalPages != null)
+                                {
+                                    double TotalPages = ViewBag.TotalPages;
+                                    if (TotalPages > 1)
+                                    {
+            <ul class="pagination">
+                <li>@Html.ActionLink("First", "ModifyPayroll", new { UserName = Model.UserName, DepartmentId = Model.DepartmentId, PayrollCycleID = Model.PayrollCycleId, SortOrder = ViewBag.SortOrder, SortBy = "Employee", PageNumber = 1 })</li>
+
+                @if (ViewBag.PageNumber == 1)
+                {
+                    <li>@Html.ActionLink("Previous", "ModifyPayroll", new { UserName = Model.UserName, DepartmentId = Model.DepartmentId, PayrollCycleID = Model.PayrollCycleId, SortOrder = ViewBag.SortOrder, SortBy = "Employee", PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Previous", "ModifyPayroll", new { UserName = Model.UserName, DepartmentId = Model.DepartmentId, PayrollCycleID = Model.PayrollCycleId, SortOrder = ViewBag.SortOrder, SortBy = "Employee", PageNumber = ViewBag.PageNumber - 1 })</li>
+                }
+
+                @for (int i = 1; i <= TotalPages; i++)
+                {
 
 
+                    if (i == ViewBag.PageNumber)
+                    {
+                        <li class="active">@Html.ActionLink(i.ToString(), "ModifyPayroll", new { UserName = Model.UserName, DepartmentId = Model.DepartmentId, PayrollCycleID = Model.PayrollCycleId, SortOrder = ViewBag.SortOrder, SortBy = "Employee", PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink(i.ToString(), "ModifyPayroll", new { UserName = Model.UserName, DepartmentId = Model.DepartmentId, PayrollCycleID = Model.PayrollCycleId, SortOrder = ViewBag.SortOrder, SortBy = "Employee", PageNumber = i.ToString() })</li>
+                    }
+
+
+                }
+                @if (ViewBag.PageNumber == TotalPages)
+                {
+                    <li>@Html.ActionLink("Next", "ModifyPayroll", new { UserName = Model.UserName, DepartmentId = Model.DepartmentId, PayrollCycleID = Model.PayrollCycleId, SortOrder = ViewBag.SortOrder, SortBy = "Employee", PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Next", "ModifyPayroll", new { UserName = Model.UserName, DepartmentId = Model.DepartmentId, PayrollCycleID = Model.PayrollCycleId, SortOrder = ViewBag.SortOrder, SortBy = "Employee", PageNumber = ViewBag.PageNumber + 1 })</li>
+                }
+                <li>@Html.ActionLink("Last", "ModifyPayroll", new { UserName = Model.UserName, DepartmentId = Model.DepartmentId, PayrollCycleID = Model.PayrollCycleId, SortOrder = ViewBag.SortOrder, SortBy = "Employee", PageNumber = TotalPages })</li>
+            </ul>
+                                        }
+                                    }
+                                }
 </div>
-    
-
-
     </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
@@ -152,161 +188,4 @@
 
 </script>
 <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
-@*<script>
-        var links = $('a[href*=page], a[href*=sort]'), form = $('form');
-        links.click(function () {
-            form.attr("action", this.href);
-            $(this).attr("href", "javascript:");
-            form.submit();
-        });
-
-        function addCommas(nStr) {
-            nStr += '';
-            x = nStr.split('.');
-            x1 = x[0];
-            x2 = x.length > 1 ? '.' + x[1] : '';
-            var rgx = /(\d+)(\d{3})/;
-            while (rgx.test(x1)) {
-                x1 = x1.replace(rgx, '$1' + ',' + '$2');
-            }
-            return x1 + x2;
-        }
-
-        $(document).ready(function () {
-            //$("option[value='-1']").remove();
-            //$('#Month').val(new Date().getMonth() + 1);
-            //$('#Year').val(new Date().getFullYear());
-
-            var totalsalary = 0.00, totaladdition = 0.00, totaldeduction = 0.00, totalnetsalary = 0.00;
-            $('.sal').each(function () {
-                //alert(parseFloat($(this).text()));
-                totalsalary += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
-            });
-            $('.add').each(function () {
-                totaladdition += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
-            });
-            $('.ded').each(function () {
-                totaldeduction += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
-            });
-            $('.netsal').each(function () {
-                totalnetsalary += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
-            });
-
-            var tfoot = '<tfoot><tr><td colspan="5">Total</td>';
-            tfoot += '<td class="nmbr">' + totalsalary + '</td>';
-            tfoot += '<td class="nmbr">' + totaladdition + '</td>';
-            tfoot += '<td class="nmbr">' + totaldeduction + '</td>';
-            tfoot += '<td class="nmbr">' + totalnetsalary + '</td>';
-            tfoot += '<td>&nbsp;</td>';
-            $('#gridtbl').append(tfoot);
-
-            $('.nmbr').each(function () {
-                $(this).html(addCommas(parseFloat($(this).html()).toFixed(2)));
-            });
-        });
-
-        $("#UserName").blur(function () {
-            var keyEvent = $.Event("keydown");
-            keyEvent.keyCode = $.ui.keyCode.ENTER;
-            $(this).trigger(keyEvent);
-        }).autocomplete({
-            minLength: 3,
-            autoFocus: true,
-            open: function () { $(this).removeClass("ui-autocomplete-loading"); },
-            source: function (request, response) {
-                $(".ErrorMessage").text("");
-                $(".ViewBagErrorMessage").text("");
-                $.ajax({
-                    url: '@Url.Action("SearchUserList", "User")',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: { ShiftID: "", DepartmentId: $("#DepartmentID").val(), UserName: request.term, recCount: 5 },
-                    success: function (data) {
-                        if (data != null) {
-                            response($.map(data, function (item) {
-                                return {
-                                    label: item.FirstName + " <" + (item.UserContactEmail.Detail != "" ? item.UserContactEmail.Detail : "No Email Address") + ">",
-                                    value: item.FirstName,
-                                    encryptedID: item.EncryptedID,
-                                    id: item.ID
-                                };
-                            }))
-                        }
-                        else {
-                            $("#UserName").removeClass("ui-autocomplete-loading");
-                            $(".ErrorMessage").text("No Users Found");
-                            $(".ViewBagErrorMessage").text("");
-                        }
-                    }
-                })
-            },
-            select: function (event, ui) {
-                var label = ui.item.label;
-                label = label.substring(0, label.indexOf(' <'));
-                var value = ui.item.encryptedID;
-                var id = ui.item.id;
-
-                this.value = "";
-                this.focus();
-                $("#UserName").val(label);
-                //$("#UserName").attr('readonly', true);
-                //window.location = "ViewDetail?key=" + value;
-                return false;
-            },
-            change: function (event, ui) {
-                var referenceValue = $(this).val();
-                var matches = false;
-
-                $(".ui-autocomplete li").each(function () {
-                    if ($(this).text() == referenceValue) {
-                        matches = true;
-                        return false;
-                    }
-                });
-
-                //if (!matches) {
-                //    this.value = "";
-                //    this.focus();
-                //    this.style.border = "solid 1px red";
-                //    $(this).removeClass("ui-autocomplete-loading");
-                //    $(".ErrorMessage").text("No Customer Found");
-                //    $(".ViewBagErrorMessage").text("");
-                //}
-                //else {
-                //    this.style.border = "";
-                //}
-            },
-            messages: {
-                noResults: "", results: ""
-            }
-        });
-
-        function Print() {
-            var printElement = $(".page-box").clone();
-            //printElement.find("h3").hide();
-            printElement.find(".form-group").hide();
-            printElement.find(".printlink").hide();
-            printElement.find("a").each(function (e) { $(this).attr("href", "#"); });
-            printElement.find("img").hide();
-
-            printDivCSS = new String('<link rel="stylesheet" type="text/css" href="/assets/helpers/helpers-all.css">');
-            printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/elements/elements-all.css">';
-            printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/fontawesome/fontawesome.css">';
-            printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/linecons/linecons.css">';
-            printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/snippets/snippets-all.css">';
-            printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/applications/mailbox.css">';
-            printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/layout.css">';
-            printDivCSS += '<link id="layout-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/layout-color.css">';
-            printDivCSS += '<link id="framework-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/framework-color.css">';
-            printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/border-radius.css">';
-            printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/helpers/colors.css">';
-            printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/custom.css">';
-
-            window.frames["print_frame"].document.body.innerHTML = printDivCSS + ' ' + printElement.html();
-            window.frames["print_frame"].window.focus();
-            setTimeout(function () {
-                window.frames["print_frame"].window.print();
-            }, 1000);
-        }
-    </script>*@
 

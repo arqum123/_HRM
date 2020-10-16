@@ -11,9 +11,18 @@ using System.Web.Mvc;
 using System.IO;
 using System.Data;
 using System.Text;
+using ExcelDataReader;
+using System.Data.OleDb;
+using System.Data.SqlClient;
+using System.Configuration;
+using Excel = Microsoft.Office.Interop.Excel;
+using OfficeOpenXml;
+using PagedList.Mvc;
+using PagedList;
 
 namespace HRM.WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AttendanceController : Controller
     {
         public ActionResult Index()
@@ -167,55 +176,126 @@ namespace HRM.WebAPI.Controllers
                 ViewBag.User = new SelectList(blank, "Value", "Text", "");
             }
         }
-        [HttpGet]
+        //[HttpGet]
         [Authenticate]
-        public ActionResult DailyAttendanceUpdate()
+        [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
+        public ActionResult DailyAttendanceUpdate(VMDailyAttendanceUpdate model, String SortOrder, String SortBy, int? PageNumber, string UserName, int? UserId, DateTime? StartDate, DateTime? EndDate)
         {
-            VMDailyAttendanceUpdate model = new VMDailyAttendanceUpdate();
-            try
+            IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
+            if (model.StartDate == DateTime.MinValue && model.EndDate == DateTime.MinValue)
             {
-                model.EndDate = model.StartDate = DateTime.Now;
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", ex.Message);
-            }
-
+                try
+                {
+                    model.EndDate = model.StartDate = DateTime.Now;
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
+         
             GetDailyAttendanceUpdateUsers(model.UserId); //TODO
             return View(model);
-        }
-
-        [HttpPost]
-        [Authenticate]
-        public ActionResult DailyAttendanceUpdate(VMDailyAttendanceUpdate model)
-        {
-            try
-            {
-                IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
-                model.VMDailyAttendanceUpdateStatusList = new List<VMDailyAttendanceUpdateStatus>();
-                model.VMDailyAttendanceUpdateTimeList = new List<VMDailyAttendanceUpdateTime>(); //ForDateTimeIn DateTimeOut Values in View
-
-                if (model.StartDate != null && model.StartDate.Year > 2000)
-                    model.VMDailyAttendanceUpdateStatusList = objAttendanceService.GetDailyAttendanceUpdateSummary(model.StartDate, model.EndDate, model.UserId);
-
-                else
-                    ModelState.AddModelError("", "No Records Found");
-
             }
-            catch (Exception ex)
+            else if (model != null)
             {
-                ModelState.AddModelError("", ex.Message);
+                if (StartDate != null && EndDate != null)
+                {
+                    model.StartDate = Convert.ToDateTime(StartDate);
+                    model.EndDate = Convert.ToDateTime(EndDate);
+                    model.UserName = UserName;
+                    model.VMDailyAttendanceUpdateStatusList = objAttendanceService.GetDailyAttendanceUpdateSummary(Convert.ToDateTime(StartDate), Convert.ToDateTime(EndDate), UserId);
+                    if (model.UserName != null)
+                        model.VMDailyAttendanceUpdateStatusList = model.VMDailyAttendanceUpdateStatusList.Where(x => x.EmployeeFName.ToLower().Contains(model.UserName.ToLower())).ToList();
+                    if (model.VMDailyAttendanceUpdateStatusList.Count != 0 || model.VMDailyAttendanceUpdateStatusList != null)
+                    {
+                        if (PageNumber == null)
+                            PageNumber = 1;
+                        //pagination
+                        model.VMDailyAttendanceUpdateStatusList = ApplyAttendanceUpdatePagination(Convert.ToInt32(PageNumber), model.VMDailyAttendanceUpdateStatusList);
+                        ViewBag.SortOrder = SortOrder;
+                        ViewBag.PageNumber = PageNumber;
+                        //Sorting
+                        model.VMDailyAttendanceUpdateStatusList = ApplyAttendanceUpdateSorting(SortOrder, SortBy, model.VMDailyAttendanceUpdateStatusList);
+                    }
+                }
+                
             }
-
-            GetDailyAttendanceUpdateUsers(model.UserId);
             return View(model);
 
         }
+        public List<VMDailyAttendanceUpdateStatus> ApplyAttendanceUpdateSorting(string SortOrder, string SortBy, List<VMDailyAttendanceUpdateStatus> VMDailyAttendanceUpdateStatusList)
+        {
+            if (SortBy == "Date")
+            {
+                if (SortOrder == "Asc")
+                {
+                    VMDailyAttendanceUpdateStatusList = VMDailyAttendanceUpdateStatusList.OrderBy(x => x.AttendanceDate).ToList();
+
+                }
+                else if (SortOrder == "Desc")
+                {
+                    VMDailyAttendanceUpdateStatusList = VMDailyAttendanceUpdateStatusList.OrderByDescending(x => x.AttendanceDate).ToList();
+
+                }
+                else
+                {
+                    VMDailyAttendanceUpdateStatusList = VMDailyAttendanceUpdateStatusList.OrderBy(x => x.AttendanceDate).ToList();
+                    SortOrder = "Asc";
+                }
+            }
+            return VMDailyAttendanceUpdateStatusList;
+        }
+        public List<VMDailyAttendanceUpdateStatus> ApplyAttendanceUpdatePagination(int PageNumber, List<VMDailyAttendanceUpdateStatus> VMDailyAttendanceUpdateStatusList)
+        {
+
+            double PageCount = VMDailyAttendanceUpdateStatusList.Count;
+            ViewBag.TotalPages = Math.Ceiling(PageCount / 5);
+            VMDailyAttendanceUpdateStatusList = VMDailyAttendanceUpdateStatusList.Skip((Convert.ToInt32(PageNumber - 1)) * 5).Take(5).ToList();
+            return VMDailyAttendanceUpdateStatusList;
+        }
+        //[HttpPost]
+        //[Authenticate]
+        //public ActionResult DailyAttendanceUpdate(VMDailyAttendanceUpdate model, String SortOrder, String SortBy, int? PageNumber)
+        //{
+        //    try
+        //    {
+        //        IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
+        //        model.VMDailyAttendanceUpdateStatusList = new List<VMDailyAttendanceUpdateStatus>();
+        //        model.VMDailyAttendanceUpdateTimeList = new List<VMDailyAttendanceUpdateTime>(); //ForDateTimeIn DateTimeOut Values in View
+
+        //        if (model.StartDate != null && model.StartDate.Year > 2000)
+        //            model.VMDailyAttendanceUpdateStatusList = objAttendanceService.GetDailyAttendanceUpdateSummary(model.StartDate, model.EndDate, model.UserId);
+        //        if(model.UserName !=null )
+        //            model.VMDailyAttendanceUpdateStatusList = model.VMDailyAttendanceUpdateStatusList.Where(x => x.EmployeeFName.ToLower().Contains(model.UserName.ToLower())).ToList();
+
+        //        if(model.VMDailyAttendanceUpdateStatusList.Count == 0 || model.VMDailyAttendanceUpdateStatusList == null)
+        //            ModelState.AddModelError("", "No Records Found");
+        //        else
+        //        {
+        //            if (PageNumber == null)
+        //                PageNumber = 1;
+        //            //Sorting
+        //            model.VMDailyAttendanceUpdateStatusList = ApplyAttendanceUpdateSorting(SortOrder, SortBy, model.VMDailyAttendanceUpdateStatusList);
+        //            //pagination
+        //            model.VMDailyAttendanceUpdateStatusList = ApplyAttendanceUpdatePagination(Convert.ToInt32(PageNumber), model.VMDailyAttendanceUpdateStatusList);
+        //            ViewBag.SortOrder = SortOrder;
+        //            ViewBag.PageNumber = PageNumber;
+        //        }
+
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ModelState.AddModelError("", ex.Message);
+        //    }
+        //    //GetDailyAttendanceUpdateUsers(model.UserId);
+        //    return View(model);
+        //}
 
         [HttpPost]
         [Authenticate]
         public ActionResult DailyAttendanceUpdation(List<VMDailyAttendanceUpdateStatus> VMDailyAttendanceUpdateStatusList)
-        {
+        { 
             try
             {
                 IAttendanceDetailService objAttendanceDetailService = IoC.Resolve<IAttendanceDetailService>("AttendanceDetailService");
@@ -226,7 +306,6 @@ namespace HRM.WebAPI.Controllers
                 IShiftService objShiftService = IoC.Resolve<IShiftService>("ShiftService");
                 IHolidayService objHolidayService = IoC.Resolve<IHolidayService>("HolidayService");
                 IShiftOffDayService objShiftOffDayService = IoC.Resolve<IShiftOffDayService>("ShiftOffDayService");
-
                 foreach (VMDailyAttendanceUpdateStatus models in VMDailyAttendanceUpdateStatusList)
                 {
                     foreach (VMDailyAttendanceUpdateTime model in models.VMDailyAttendanceUpdateTimeList)
@@ -236,7 +315,6 @@ namespace HRM.WebAPI.Controllers
                         #region Update AttendanceDetail
                         AttendanceDetail attendanceDetailList = objAttendanceDetailService.GetAttendanceDetail(model.AttendanceDetailId);
                         var AttendanceId = attendanceDetailList.AttendanceId;
-
                         AttendanceDetail attendanceDetail = new AttendanceDetail()
                         {
                             StartDate = model.DateTimeIn,
@@ -254,9 +332,7 @@ namespace HRM.WebAPI.Controllers
                         attendanceDetail = objAttendanceDetailService.UpdateAttendanceDetail(attendanceDetail);
 
                         #endregion
-
                         #region Update Attendance Table by min & max DateTime 
-
                         List<AttendanceDetail> attendanceDetails = objAttendanceDetailService.GetAttendanceDetailByAttendanceId(attendanceDetailList.AttendanceId);
                         Attendance attendance = objAttendanceService.GetAttendance(attendanceDetailList.AttendanceId.Value);
                         attendance.DateTimeIn = attendanceDetails.Where(x => x.StartDate != null).Min(x => x.StartDate);
@@ -264,44 +340,30 @@ namespace HRM.WebAPI.Controllers
                         attendance.UpdateDate = DateTime.Now;
                         attendance.UpdateBy = AuthBase.UserId;
                         attendance.UserIp = Request.UserHostAddress;
-
                         attendance = objAttendanceService.UpdateAttendance(attendance);
                         #endregion
-
                         #region Update AttendanceStatus Table by checking and calculating AttendanceTable
-
-
                         AttendanceStatus attendanceStatus = objAttendanceStatusService.GetAttendanceStatusByAttendanceId(attendance.Id).FirstOrDefault();
-
                         List<UserShift> userShifts = objUserShiftService.GetUserShiftByUserId(attendance.UserId);
                         userShifts = userShifts.Where(x => x.EffectiveDate <= attendance.Date && (x.RetiredDate == null || x.RetiredDate >= attendance.Date)).ToList();
-                        UserShift userShift = userShifts.FirstOrDefault();
-                        
+                        UserShift userShift = userShifts.FirstOrDefault();             
                         List<AttendancePolicy> attendancePolicies = objAttendancePolicyService.GetAttendancePolicyByShiftId(userShift.ShiftId);
-                        attendancePolicies = attendancePolicies.Where(x => x.EffectiveDate <= attendance.Date && (x.RetiredDate == null || x.RetiredDate >= attendance.Date)).ToList();
-                        
+                        attendancePolicies = attendancePolicies.Where(x => x.EffectiveDate <= attendance.Date && (x.RetiredDate == null || x.RetiredDate >= attendance.Date)).ToList();           
                         Shift shift = objShiftService.GetShift(userShift.ShiftId.Value);
-
                         //ShiftOffDays
                         List<ShiftOffDay> shiftOffDays = objShiftOffDayService.GetShiftOffDayByShiftId(userShift.ShiftId);
                         if (shiftOffDays != null)
                         {
                             shiftOffDays = shiftOffDays.Where(x => x.EffectiveDate <= attendance.Date && (x.RetiredDate == null || x.RetiredDate >= attendance.Date)).ToList();
-
                         }
                         //Holidays
                         List<Holiday> holidays = objHolidayService.GetAllHoliday();
                         if (holidays != null)
                         {
                             holidays = holidays.Where(x => x.Date == attendance.Date).ToList();
-
-
                         }
                         //TotalMinutes
-
                         attendanceStatus.TotalMinutes = Convert.ToInt32((Convert.ToDateTime(attendance.DateTimeOut) - Convert.ToDateTime(attendance.DateTimeIn)).TotalMinutes);
-
-
                         //LateMinutes
                         //if (attendanceStatus.LateMinutes == 0)
                         //{
@@ -322,19 +384,14 @@ namespace HRM.WebAPI.Controllers
                             attendanceStatus.EarlyMinutes = 0;
                             attendanceStatus.OverTimeMinutes = Math.Abs(Convert.ToInt32(EarlyMinutes));
                         }
-
-
-
                         //Working Minutes
                         AttendanceDetail last = attendanceDetails.Last();
                         foreach (AttendanceDetail wm in attendanceDetails)
                         {
-
                             if (wm.Equals(last))
                             {
                                 attendanceStatus.WorkingMinutes += Convert.ToInt32((wm.EndDate.Value - wm.StartDate.Value).TotalMinutes);
                             }
-
                         }
                         //List<Holiday> holidays = 
                         foreach (AttendancePolicy attendancePolicy in attendancePolicies)
@@ -381,10 +438,8 @@ namespace HRM.WebAPI.Controllers
                                     else
                                         attendanceStatus.IsEarly = attendanceStatus.IsEarly;
                                     break;
-
                             }
                         }
-
                         attendanceStatus = objAttendanceStatusService.UpdateAttendanceStatus(attendanceStatus);
                             #endregion
                         }
@@ -398,47 +453,35 @@ namespace HRM.WebAPI.Controllers
             //return View(VMDailyAttendanceUpdateStatusList);
             return RedirectToAction("DailyAttendanceUpdate","Attendance");
         }
-      
-
-
         //New MonthlyDetailAttendanceReport
-        [HttpGet]
-        [Authenticate]
-        public ActionResult MonthlyDetailReport(String StartDate, String EndDate, int? UserId, int? DepartId)
-        {
-            VMAttendanceModel model = new VMAttendanceModel();
-            try
-            {
+        //[HttpGet]
+        //[Authenticate]
+        //public ActionResult MonthlyDetailReport(String StartDate, String EndDate, int? UserId, int? DepartId)
+        //{
+        //    VMAttendanceModel model = new VMAttendanceModel();
+        //    try
+        //    {
+        //        IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
+        //        List<VMAttendanceSummary> _attendanceList = new List<VMAttendanceSummary>();
+        //        //if (Date != null && Date > 2000)
+        //        _attendanceList = objAttendanceService.GetMonthlyDetailAttendanceReport(string.Format("{0:dd-MMM-yyyy}", StartDate), string.Format("{0:dd-MMM-yyyy}", EndDate), UserId, DepartId);
 
-                IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
-                List<VMAttendanceSummary> _attendanceList = new List<VMAttendanceSummary>();
-
-                //if (Date != null && Date > 2000)
-                _attendanceList = objAttendanceService.GetMonthlyDetailAttendanceReport(string.Format("{0:dd-MMM-yyyy}", StartDate), string.Format("{0:dd-MMM-yyyy}", EndDate), UserId, DepartId);
-
-                if (_attendanceList != null && _attendanceList.Count > 0)
-                {
-
-                    model.AttendanceSummaryList = _attendanceList;
-                }
-                else
-                {
-                    ModelState.AddModelError("", "No Records Found");
-                }
-
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", ex.Message);
-            }
-
-            AttendancePrerequisiteData(model);
-            return View(model);
-        }
-
-
-
-
+        //        if (_attendanceList != null && _attendanceList.Count > 0)
+        //        {
+        //            model.AttendanceSummaryList = _attendanceList;
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("", "No Records Found");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ModelState.AddModelError("", ex.Message);
+        //    }
+        //    AttendancePrerequisiteData(model);
+        //    return View(model);
+        //}
         // New PracticeMonthlyAttendanceReport
         private void GetDailyAttendanceUpdateUsersPractice(int? UserId,int? DepartmentId)
         {
@@ -454,7 +497,6 @@ namespace HRM.WebAPI.Controllers
                 blank.Add(new SelectListItem() { Text = "User", Value = "-1" });
                 ViewBag.User = new SelectList(blank, "Value", "Text", "");
             }
-
             IDepartmentService objDepartmentService = IoC.Resolve<IDepartmentService>("DepartmentService");
             List<Department> DepartmentList = objDepartmentService.GetAllDepartment();
             List<Department> DistinctDepartmentList = new List<Department>();
@@ -473,60 +515,104 @@ namespace HRM.WebAPI.Controllers
                 blank.Add(new SelectListItem() { Text = "Department", Value = "-1" });
                 ViewBag.Department = new SelectList(blank, "Value", "Text", "");
             }
-
         }
-
-
         //New PracticeMonthlyAttendanceReport
         [HttpGet]
         [Authenticate]
-        public ActionResult DailyAttendanceReport()
+        public ActionResult DailyAttendanceReport(int? PageNumber,DateTime? Date)
         {
-            PracticeVMMonthlyReport model = new PracticeVMMonthlyReport();
+            ViewBag.PageNumber = PageNumber;
+            if (PageNumber == null || PageNumber ==0)
+            {
+                ViewBag.PageNumber = 1;
+                PracticeVMMonthlyReport model = new PracticeVMMonthlyReport();
             try
             {
-                model.StartDate = DateTime.Now;
-               
+                model.StartDate = DateTime.Now; 
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
             }
-
             GetDailyAttendanceUpdateUsersPractice(model.UserId, model.DepartmentId); //TODO
             return View(model);
-        }
+            }
+            else
+            {
+                PracticeVMMonthlyReport model = new PracticeVMMonthlyReport();
+                if(Date != null || Date == DateTime.MinValue)
+                {
+                    model.StartDate = Convert.ToDateTime(Date);
+                    model.EndDate = Convert.ToDateTime(Date);
+                }
+                try
+                {
+                    IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
+                    List<PracticeVMReport> PracticeVMReportList = new List<PracticeVMReport>();
+                    model.PracticeVMReportList = new List<PracticeVMReport>();
+                    model.EndDate = model.StartDate;
+                    if (model.StartDate != null && model.StartDate.Year > 2000)
+                        model.PracticeVMReportList = objAttendanceService.GetMonthlyAttendanceReportPractice(string.Format("{0:dd-MMM-yyyy}", model.StartDate), string.Format("{0:dd-MMM-yyyy}", model.EndDate), model.UserId, model.DepartmentId);
+                    if (model.UserName != null)
+                        model.PracticeVMReportList = model.PracticeVMReportList.Where(x => x.FirstName.ToLower().Contains(model.UserName.ToLower())).ToList();
+                    if (model.PracticeVMReportList.Count == 0 || model.PracticeVMReportList == null)
+                        ModelState.AddModelError("", "No Records Found");
 
+                    else
+                    {
+                        #region Pagination
+                        double PageCount = model.PracticeVMReportList.Count;
+                        ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                        model.PracticeVMReportList = model.PracticeVMReportList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+                        #endregion Pagination
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
+                GetDailyAttendanceUpdateUsersPractice(model.UserId, model.DepartmentId); //TODO
+                return View(model);
+            }
+        }
         //New PracticeMonthlyAttendanceReport
         [HttpPost]
         [Authenticate]
-        public ActionResult DailyAttendanceReport(PracticeVMMonthlyReport model)
+        public ActionResult DailyAttendanceReport(PracticeVMMonthlyReport model, int? PageNumber)
         {
+
+            if (PageNumber == 0 || PageNumber == null)
+                PageNumber = 1;
+            ViewBag.PageNumber = PageNumber;
             try
             {
                 IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
                 List<PracticeVMReport> PracticeVMReportList = new List<PracticeVMReport>();
                 model.PracticeVMReportList = new List<PracticeVMReport>();
                 model.EndDate = model.StartDate;
-
-
-
                 if (model.StartDate != null && model.StartDate.Year > 2000)
                     model.PracticeVMReportList = objAttendanceService.GetMonthlyAttendanceReportPractice(string.Format("{0:dd-MMM-yyyy}", model.StartDate), string.Format("{0:dd-MMM-yyyy}", model.EndDate), model.UserId, model.DepartmentId);
-
-                else
+                if (model.UserName != null)
+                    model.PracticeVMReportList = model.PracticeVMReportList.Where(x => x.FirstName.ToLower().Contains(model.UserName.ToLower())).ToList();
+                if (model.PracticeVMReportList.Count == 0 || model.PracticeVMReportList == null)
                     ModelState.AddModelError("", "No Records Found");
 
+                else
+                {
+                    #region Pagination
+                    double PageCount = model.PracticeVMReportList.Count;
+                    ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                    model.PracticeVMReportList = model.PracticeVMReportList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+                    #endregion Pagination
+                }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
             }
-
             GetDailyAttendanceUpdateUsersPractice(model.UserId, model.DepartmentId); //TODO
             return View(model);
         }
-
         //New DailyDetailReport
         [HttpGet]
         [Authenticate]
@@ -537,41 +623,41 @@ namespace HRM.WebAPI.Controllers
             PracticeVMMonthlyReport model = new PracticeVMMonthlyReport();
             try
             {
-
                 IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
                 List<PracticeVMReport> _attendanceList = new List<PracticeVMReport>();
                 model.PracticeVMReportList = new List<PracticeVMReport>();
 
                 //if (Date != null && Date > 2000)
                 model.PracticeVMReportList = objAttendanceService.GetMonthlyDetailAttendanceReportPractice(string.Format("{0:dd-MMM-yyyy}", StartDate), string.Format("{0:dd-MMM-yyyy}", EndDate), UserId, DepartId);
-
                 if (model.PracticeVMReportList != null && _attendanceList.Count > 0)
                 {
-
                     //model.PracticeVMReportList = _attendanceList;
                 }
                 else
                 {
                     ModelState.AddModelError("", "No Records Found");
                 }
-
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
             }
-
-
             GetDailyAttendanceUpdateUsersPractice(model.UserId, model.DepartmentId); //TODO
             return View(model);
         }
         //New PracticeMonthlyAttendanceReport
         [HttpGet]
         [Authenticate]
-        public ActionResult MonthlyAttendanceReport()
+        public ActionResult MonthlyAttendanceReport(string UserName, int? DepartmentName, DateTime? StartDate,DateTime? EndDate,string SortOrder, string SortBy, int? PageNumber)
         {
-            PracticeVMMonthlyReport model = new PracticeVMMonthlyReport();
-            try
+            ViewBag.SortOrder = SortOrder;
+            ViewBag.PageNumber = PageNumber;
+            if (PageNumber == 0 || PageNumber == null)
+                PageNumber = 1;
+            if (SortOrder == null && SortBy == null && StartDate == null && EndDate == null)
+            {
+                PracticeVMMonthlyReport model = new PracticeVMMonthlyReport();
+                try
             {
                 model.StartDate = DateTime.Now;
                 model.EndDate = DateTime.Now;
@@ -580,29 +666,112 @@ namespace HRM.WebAPI.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-
             GetDailyAttendanceUpdateUsersPractice(model.UserId, model.DepartmentId); //TODO
-            return View(model);
-        }
+                return View(model);
+            }
+            else
+            {
+                PracticeVMMonthlyReport model = new PracticeVMMonthlyReport();
+                model.StartDate = Convert.ToDateTime(StartDate);
+                model.EndDate = Convert.ToDateTime(EndDate);
+                model.UserName = UserName;
+                model.DepartmentId = DepartmentName;
+                ViewBag.SortOrder = SortOrder;
+                ViewBag.PageNumber = PageNumber;
+            try
+            {
 
-        //New PracticeMonthlyAttendanceReport
-       [HttpPost]
+                IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
+                List<PracticeVMReport> PracticeVMReportList = new List<PracticeVMReport>();
+                model.PracticeVMReportList = new List<PracticeVMReport>();
+                if (model.StartDate != null && model.StartDate.Year > 2000)
+                    model.PracticeVMReportList = objAttendanceService.GetMonthlyAttendanceReportPractice(string.Format("{0:dd-MMM-yyyy}", model.StartDate), string.Format("{0:dd-MMM-yyyy}", model.EndDate), model.UserId, model.DepartmentId);
+                if (model.UserName != null)
+                {
+                    model.PracticeVMReportList = model.PracticeVMReportList.Where(x => x.FirstName.ToLower().Contains(model.UserName.ToLower())).ToList();
+                    }
+                    if (model.PracticeVMReportList.Count == 0 || model.PracticeVMReportList == null)
+                    ModelState.AddModelError("", "No Records Found");
+                else
+                {
+                        #region Pagination
+                        double PageCount = model.PracticeVMReportList.Count;
+                        ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                        model.PracticeVMReportList = model.PracticeVMReportList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+                        #endregion Pagination
+                        #region Sorting
+                        if (SortBy == "Date")
+                        {
+                            if (SortOrder == "Asc")
+                            {
+                                model.PracticeVMReportList = model.PracticeVMReportList.OrderBy(x => x.Date).ToList();
+
+                            }
+                            else if (SortOrder == "Desc")
+                            {
+                                model.PracticeVMReportList = model.PracticeVMReportList.OrderByDescending(x => x.Date).ToList();
+
+                            }
+                        }
+                        #endregion Sorting
+                    }
+                }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+            GetDailyAttendanceUpdateUsersPractice(model.UserId, model.DepartmentId); //TODO
+                return View(model);
+            }
+        }
+        [HttpPost]
         [Authenticate]
-        public ActionResult MonthlyAttendanceReport(PracticeVMMonthlyReport model)
+        public ActionResult MonthlyAttendanceReport(PracticeVMMonthlyReport model,string SortOrder, string SortBy,int PageNumber =1)
         {
+            ViewBag.SortOrder = SortOrder;
+            ViewBag.PageNumber = PageNumber;
             try
             {
                 IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
                 List<PracticeVMReport> PracticeVMReportList = new List<PracticeVMReport>();
                 model.PracticeVMReportList = new List<PracticeVMReport>();
-
-
-
                 if (model.StartDate != null && model.StartDate.Year > 2000)
                     model.PracticeVMReportList = objAttendanceService.GetMonthlyAttendanceReportPractice(string.Format("{0:dd-MMM-yyyy}", model.StartDate), string.Format("{0:dd-MMM-yyyy}", model.EndDate), model.UserId, model.DepartmentId);
-
-                else
+                if (model.UserName != null)
+                { 
+                    model.PracticeVMReportList = model.PracticeVMReportList.Where(x => x.FirstName.ToLower().Contains(model.UserName.ToLower())).ToList();
+                }
+                if (model.PracticeVMReportList.Count == 0 || model.PracticeVMReportList==null)
                     ModelState.AddModelError("", "No Records Found");
+                else
+                {
+                    #region Searching
+                    //if (SearchText != null)
+                    //{
+                    //    model.PracticeVMReportList = model.PracticeVMReportList.Where(x => x.FirstName.Contains(SearchText) || x.MiddleName.Contains(SearchText) || x.DepartmentName.Contains(SearchText)).ToList();
+                    //}
+                    #endregion Searching
+                    #region Pagination
+                    double PageCount = model.PracticeVMReportList.Count;
+                    ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                    model.PracticeVMReportList = model.PracticeVMReportList.Skip((PageNumber - 1) * 10).Take(10).ToList();
+                    #endregion Pagination
+                    #region Sorting
+                    if(SortBy == "Date")
+                    {
+                        if(SortOrder == "Asc")
+                        {
+                            model.PracticeVMReportList = model.PracticeVMReportList.OrderBy(x => x.Date).ToList();
+                            
+                        }
+                        else if(SortOrder == "Desc")
+                        {
+                            model.PracticeVMReportList = model.PracticeVMReportList.OrderByDescending(x => x.Date).ToList();
+                           
+                        }
+                    }
+                    #endregion Sorting
+                }
 
             }
             catch (Exception ex)
@@ -613,41 +782,33 @@ namespace HRM.WebAPI.Controllers
             GetDailyAttendanceUpdateUsersPractice(model.UserId, model.DepartmentId); //TODO
             return View(model);
         }
-
+        //public ActionResult MonthlyAttendanceReport()
+        //{
+      
+        //    return View();
+        //}
         // New PracticeMonthlyDetailReport
         [HttpGet]
         [Authenticate]
-        public ActionResult PracticeMonthlyDetailReport(String StartDate, String EndDate, int? UserId, int? DepartId)
-        {
-        
+        public ActionResult MonthlyDetailReport(String StartDate, String EndDate, int? UserId, int? DepartId)
+        {   
             PracticeVMMonthlyReport model = new PracticeVMMonthlyReport();
             try
             {
-
                 IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
                 List<PracticeVMReport> _attendanceList = new List<PracticeVMReport>();
                 model.PracticeVMReportList = new List<PracticeVMReport>();
-
-                //if (Date != null && Date > 2000)
                 model.PracticeVMReportList = objAttendanceService.GetMonthlyDetailAttendanceReportPractice(string.Format("{0:dd-MMM-yyyy}", StartDate), string.Format("{0:dd-MMM-yyyy}", EndDate), UserId, DepartId);
-
-                if (model.PracticeVMReportList != null && _attendanceList.Count > 0)
+                if (model.PracticeVMReportList == null && _attendanceList.Count == 0)
                 {
-
-                    //model.PracticeVMReportList = _attendanceList;
-                }
-                else
-                {
+                    
                     ModelState.AddModelError("", "No Records Found");
                 }
-
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
             }
-
-
             GetDailyAttendanceUpdateUsersPractice(model.UserId, model.DepartmentId); //TODO
             return View(model);
         }
@@ -656,36 +817,139 @@ namespace HRM.WebAPI.Controllers
 
         [HttpGet]
         [Authenticate]
-        public ActionResult AbsentReport()
+        public ActionResult AbsentReport(DateTime? StartDate, DateTime? EndDate, int? DepartmentId , string UserName,string SortOrder, string SortBy, int? PageNumber)
         {
-            VMAbsent model = new VMAbsent();
-            try
+            if (PageNumber == 0 || PageNumber == null)
+                PageNumber = 1;
+            if (SortOrder == null && SortBy == null && StartDate == null && EndDate == null)
             {
-                model.EndDate = model.StartDate = DateTime.Now;
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", ex.Message);
-            }
+                VMAbsent model = new VMAbsent();
+                try
+                {
+                    model.EndDate = model.StartDate = DateTime.Now;
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
 
-            GetDailyAttendanceUpdateUsersPractice(model.UserId, model.DepartmentId); //TODO
-            return View(model);
+                GetDailyAttendanceUpdateUsersPractice(model.UserId, model.DepartmentId); //TODO
+                return View(model);
+            }
+            else
+            {
+                VMAbsent model = new VMAbsent();
+                if (StartDate != null || StartDate!= DateTime.MinValue)
+                    model.StartDate = StartDate;
+                if (EndDate != null || EndDate != DateTime.MinValue)
+                    model.EndDate = EndDate;
+                if(DepartmentId != null || DepartmentId != 0)
+                    model.DepartmentId = Convert.ToInt32(DepartmentId);
+                if (UserName != null || UserName != "")
+                    model.UserName = UserName;
+                try
+                {
+                    IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
+                    model.VMAbsentReportList = new List<VMAbsentReport>();
+
+                    if (model.StartDate != null)
+                        model.VMAbsentReportList = objAttendanceService.GetAbsentReport(model.StartDate, model.EndDate, model.UserId, model.DepartmentId);
+                    if (model.UserName != null)
+                        model.VMAbsentReportList = model.VMAbsentReportList.Where(x => x.EmployeeFName.ToLower().Contains(model.UserName.ToLower())).ToList();
+
+                    if (model.VMAbsentReportList.Count == 0)
+                        ModelState.AddModelError("", "No Records Found");
+                    else
+                    {
+                        #region Pagination
+                        double PageCount = model.VMAbsentReportList.Count;
+                        ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                        model.VMAbsentReportList = model.VMAbsentReportList.Skip((Convert.ToInt32(PageNumber - 1)) * 10).Take(10).ToList();
+                        #endregion Pagination
+                        ViewBag.SortOrder = SortOrder;
+                        ViewBag.SortBy = SortBy;
+                        ViewBag.PageNumber = PageNumber;
+                        ViewBag.StartDate = StartDate;
+                        ViewBag.EndDate = EndDate;
+                        ViewBag.UserName = UserName;
+                        ViewBag.DepartmentId =DepartmentId;
+                        #region Sorting
+                        if (SortBy == "Date")
+                        {
+                            if (SortOrder == "Asc")
+                            {
+                                model.VMAbsentReportList = model.VMAbsentReportList.OrderBy(x => x.AttendanceDate).ToList();
+
+                            }
+                            else if (SortOrder == "Desc")
+                            {
+                                model.VMAbsentReportList = model.VMAbsentReportList.OrderByDescending(x => x.AttendanceDate).ToList();
+
+                            }
+                        }
+                        #endregion Sorting
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
+
+                GetDailyAttendanceUpdateUsersPractice(model.UserId, model.DepartmentId);
+                //DailyAttendanceUpdation(model);
+                return View(model);
+            }
         }
 
         [HttpPost]
         [Authenticate]
-        public ActionResult AbsentReport(VMAbsent model)
+        public ActionResult AbsentReport(VMAbsent model, string SortOrder, string SortBy, int PageNumber = 1)
         {
+            ViewBag.SortOrder = SortOrder;
+            ViewBag.PageNumber = PageNumber;
             try
             {
                 IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
                 model.VMAbsentReportList = new List<VMAbsentReport>();
 
-                //if (model.StartDate != null && model.StartDate.Year > 2000)
+                if (model.StartDate != null)
                     model.VMAbsentReportList = objAttendanceService.GetAbsentReport(model.StartDate, model.EndDate, model.UserId,model.DepartmentId);
+                if (model.UserName != null)
+                    model.VMAbsentReportList = model.VMAbsentReportList.Where(x => x.EmployeeFName.ToLower().Contains(model.UserName.ToLower())).ToList();
 
-                if (model.VMAbsentReportList == null)
+                if (model.VMAbsentReportList.Count == 0)
                     ModelState.AddModelError("", "No Records Found");
+                else
+                {
+                    #region Pagination
+                    double PageCount = model.VMAbsentReportList.Count;
+                    ViewBag.TotalPages = Math.Ceiling(PageCount / 10);
+                    model.VMAbsentReportList = model.VMAbsentReportList.Skip((PageNumber - 1) * 10).Take(10).ToList();
+                    #endregion Pagination
+                    ViewBag.SortOrder = SortOrder;
+                    ViewBag.SortBy = SortBy;
+                    ViewBag.PageNumber = PageNumber;
+                    ViewBag.StartDate = model.StartDate;
+                    ViewBag.EndDate = model.EndDate;
+                    ViewBag.UserName = model.UserName;
+                    ViewBag.DepartmentId = model.DepartmentId;
+                    #region Sorting
+                    if (SortBy == "Date")
+                    {
+                        if (SortOrder == "Asc")
+                        {
+                            model.VMAbsentReportList = model.VMAbsentReportList.OrderBy(x => x.AttendanceDate).ToList();
+
+                        }
+                        else if (SortOrder == "Desc")
+                        {
+                            model.VMAbsentReportList = model.VMAbsentReportList.OrderByDescending(x => x.AttendanceDate).ToList();
+
+                        }
+                    }
+                    #endregion Sorting
+                }
 
             }
             catch (Exception ex)
@@ -1640,14 +1904,7 @@ namespace HRM.WebAPI.Controllers
                             _attendanceStatus.UpdateDate = DateTime.Now;
                             _attendanceStatus = objAttendanceStatusService.UpdateAttendanceStatus(_attendanceStatus);
                         }
-
-
-
-
-
-
-
-
+                        
                     }
                 }
             }
@@ -1862,336 +2119,6 @@ namespace HRM.WebAPI.Controllers
             }
         }
 
-        [Authenticate]
-        public ActionResult Browse()
-        {
-            return View();
-        }
-
-
-        [HttpPost]
-        [Authenticate]
-        public ActionResult Browse(string posted = null)
-        {
-            HttpPostedFileBase file = null;
-            DateTime dtAttendance = DateTime.Now;
-            List<VMBrowseAttendance> BAttendanceList = new List<VMBrowseAttendance>();
-            List<VMBrowseAttendance> BTempAttendanceList = null;
-            List<VMBrowseAttendance> BUniqueAttendanceList = new List<VMBrowseAttendance>();
-            VMBrowseAttendance BAttendance = null;
-            List<string> msg = new List<string>();
-            ViewBag.Message = new string[] { "" };
-            #region Validate
-            if (Request.Files == null || Request.Files.Count <= 0 || Request.Files[0].ContentLength <= 0)
-            {
-                ViewBag.Message = new string[] { "Please browse file" };
-                return View();
-            }
-
-            #endregion Validate
-            #region File Upload
-            file = Request.Files[0];
-            if (!Directory.Exists(Server.MapPath("/Uploads")))
-                Directory.CreateDirectory(Server.MapPath("/Uploads"));
-            if (!Directory.Exists(Server.MapPath("/Uploads/AttendanceData")))
-                Directory.CreateDirectory(Server.MapPath("/Uploads/AttendanceData"));
-            if (!Directory.Exists(Server.MapPath("/Uploads/AttendanceData/" + dtAttendance.ToString("yyyyMM"))))
-                Directory.CreateDirectory(Server.MapPath("/Uploads/AttendanceData/" + dtAttendance.ToString("yyyyMM")));
-            string fileName = dtAttendance.ToString("ddhhmmss") + "-" + file.FileName;
-            string fullFilePath = Server.MapPath("/Uploads/AttendanceData/" + dtAttendance.ToString("yyyyMM") + "/" + fileName);
-            file.SaveAs(fullFilePath);
-            #endregion File Upload
-            #region Processing
-            #region Init
-
-            List<Attendance> _attendanceList = null;
-            Attendance _attendance = null;
-            List<AttendanceDetail> _attendanceDetailList = null;
-            AttendanceDetail _attendanceDetail = null;
-            List<AttendanceStatus> _attendanceStatusList = null;
-            AttendanceStatus _attendanceStatus = null;
-            List<VMAttendanceData> attendanceDataList = new List<VMAttendanceData>();
-
-            List<UserShift> _userShiftList = null;
-            List<AttendancePolicy> _attendancePolicyList = null;
-            List<AttendancePolicy> _attendancePolicyListTemp = null;
-            UserShift _userShift = null;
-            Shift _shift = null;
-            AttendancePolicy _attendancePolicy = null;
-
-            IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
-            IAttendanceDetailService objAttendanceDetailService = IoC.Resolve<IAttendanceDetailService>("AttendanceDetailService");
-            IAttendanceStatusService objAttendanceStatusService = IoC.Resolve<IAttendanceStatusService>("AttendanceStatusService");
-            IUserShiftService objUserShiftService = IoC.Resolve<IUserShiftService>("UserShiftService");
-            IShiftService objShiftService = IoC.Resolve<IShiftService>("ShiftService");
-            IAttendancePolicyService objAttendancePolicyService = IoC.Resolve<IAttendancePolicyService>("AttendancePolicyService");
-
-            #endregion Init
-            #region ReadData
-            string[] lines = System.IO.File.ReadAllLines(fullFilePath);
-            int i = 0;
-            foreach (string line in lines)
-            {
-                if (i == 0) { i++; continue; }
-                string[] parts = line.Split(',', '\t');
-                if (parts.Length != 4)
-                {
-                    msg.Add("Invalid number of columns. Error on line " + (i + 1).ToString());
-                    continue;
-                }
-                BAttendance = new VMBrowseAttendance();
-                try
-                {
-                    BAttendance.UserId = Convert.ToInt32(parts[(int)Cols.EmpNo]);
-                    BAttendance.AttendanceDate = Convert.ToDateTime(parts[(int)Cols.Date]);
-                    BAttendance.TimeIn = String.IsNullOrWhiteSpace(parts[(int)Cols.TimeIn]) ? (DateTime?)null : Convert.ToDateTime(parts[(int)Cols.TimeIn]);
-                    BAttendance.TimeOut = String.IsNullOrWhiteSpace(parts[(int)Cols.TimeOut]) ? (DateTime?)null : Convert.ToDateTime(parts[(int)Cols.TimeOut]);
-                    if (BAttendance.TimeIn == null && BAttendance.TimeOut == null)
-                        throw null;
-                    BAttendanceList.Add(BAttendance);
-                }
-                catch
-                {
-                    msg.Add("Invalid data. Error on line " + (i + 1).ToString());
-                    continue;
-                }
-            }
-            #endregion ReadData
-            #region FilterByUser
-            List<UserDate> userDate = BAttendanceList.Select(x => new UserDate() { UserID = x.UserId, Date = x.AttendanceDate }).Distinct().ToList();
-            foreach (UserDate _userDate in userDate)
-            {
-                #region Minimum TimeIn and Maximum Timeout
-                BTempAttendanceList = BAttendanceList.Where(x => x.UserId == _userDate.UserID && x.AttendanceDate == _userDate.Date && x.TimeIn != null).ToList();
-                if (BTempAttendanceList == null || BTempAttendanceList.Count <= 0)
-                    _userDate.TimeIn = null;
-                else
-                    _userDate.TimeIn = BTempAttendanceList.OrderBy(x => x.TimeIn).Select(x => x.TimeIn).First();
-
-                BTempAttendanceList = BAttendanceList.Where(x => x.UserId == _userDate.UserID && x.AttendanceDate == _userDate.Date && x.TimeOut != null).ToList();
-                if (BTempAttendanceList == null || BTempAttendanceList.Count <= 0)
-                    _userDate.TimeOut = null;
-                else
-                    _userDate.TimeOut = BTempAttendanceList.OrderBy(x => x.TimeOut).Select(x => x.TimeOut).Last();
-                #endregion Minimum TimeIn and Maximum Timeout
-
-                #region Attendance
-                _attendanceList = objAttendanceService.GetAttendanceByUserIDAndDate(_userDate.UserID, _userDate.Date);
-                //Insert Attendance
-                if (_attendanceList == null || _attendanceList.Count <= 0)
-                {
-                    _attendance = new Attendance() { UserId = _userDate.UserID, Date = _userDate.Date, IsActive = true, CreationDate = DateTime.Now, UserIp = Request.UserHostAddress };
-                    _attendance = objAttendanceService.InsertAttendance(_attendance);
-                }
-                //Attendance Already marked, Get Attendance
-                else
-                {
-                    _attendance = _attendanceList.FirstOrDefault();
-                }
-                #endregion Attendance
-                #region AttendanceDetail
-                //Timein Entry
-                if (_userDate.TimeIn != null)
-                {
-                    _attendanceDetailList = objAttendanceDetailService.GetAttendanceDetailByAttendanceId(_attendance.Id);
-                    //Already Timein Entry
-                    if (_attendanceDetailList != null && _attendanceDetailList.Count > 0)
-                    {
-                        _attendanceDetailList = _attendanceDetailList.Where(x => x.AttendanceTypeId == (int)Core.Enum.AttendanceType.DailyAttendance).ToList();
-                        if (_attendanceDetailList != null && _attendanceDetailList.Count > 0)
-                        {
-                            _attendanceDetail = _attendanceDetailList.FirstOrDefault();
-                            if (_attendanceDetailList.FirstOrDefault().StartDate == null)
-                            {
-                                _attendanceDetail.StartDate = _userDate.TimeIn;
-                                _attendanceDetail = objAttendanceDetailService.UpdateAttendanceDetail(_attendanceDetail);
-                            }
-                        }
-                        else
-                        {
-                            //Insert Timein
-                            _attendanceDetail = new AttendanceDetail()
-                            {
-                                AttendanceId = _attendance.Id,
-                                AttendanceTypeId = (int)Core.Enum.AttendanceType.DailyAttendance,
-                                StartDate = _userDate.TimeIn,
-                                IsActive = true,
-                                UserIp = Request.UserHostAddress,
-                                CreationDate = DateTime.Now
-                            };
-                            _attendanceDetail = objAttendanceDetailService.InsertAttendanceDetail(_attendanceDetail);
-                        }
-                    }
-                    else
-                    {
-
-
-
-                        //Insert Timein
-                        _attendanceDetail = new AttendanceDetail()
-                        {
-                            AttendanceId = _attendance.Id,
-                            AttendanceTypeId = (int)Core.Enum.AttendanceType.DailyAttendance,
-                            StartDate = _userDate.TimeIn,
-                            IsActive = true,
-                            UserIp = Request.UserHostAddress,
-                            CreationDate = DateTime.Now
-                        };
-                        _attendanceDetail = objAttendanceDetailService.InsertAttendanceDetail(_attendanceDetail);
-                    }
-                }
-                //Timeout Entry
-                if (_userDate.TimeOut != null)
-                {
-                    _attendanceDetailList = objAttendanceDetailService.GetAttendanceDetailByAttendanceId(_attendance.Id);
-                    //Already Timeout Entry
-                    if (_attendanceDetailList != null && _attendanceDetailList.Count > 0)
-                    {
-                        _attendanceDetailList = _attendanceDetailList.Where(x => x.AttendanceTypeId == (int)Core.Enum.AttendanceType.DailyAttendance).ToList();
-                        if (_attendanceDetailList != null && _attendanceDetailList.Count > 0)
-                        {
-                            if (_attendanceDetailList.FirstOrDefault().EndDate == null)
-                            {
-                                _attendanceDetail = _attendanceDetailList.FirstOrDefault();
-                                _attendanceDetail.EndDate = _userDate.TimeOut;
-                                _attendanceDetail = objAttendanceDetailService.UpdateAttendanceDetail(_attendanceDetail);
-                            }
-                        }
-                    }
-                }
-
-                #endregion AttendanceDetail
-                #region AttendanceStatus
-                if (_attendanceDetail != null && _attendanceDetail.Id > 0)
-                {
-                    _attendanceStatusList = objAttendanceStatusService.GetAttendanceStatusByAttendanceId(_attendance.Id);
-                    if (_attendanceStatusList != null && _attendanceStatusList.Count > 0)
-                    {
-                        _attendanceStatus = _attendanceStatusList.FirstOrDefault();
-                    }
-                    else
-                    {
-                        _attendanceStatus = new AttendanceStatus()
-                        {
-                            AttendanceId = _attendance.Id,
-                            IsShiftOffDay = false,
-                            IsLeaveDay = false,
-                            IsHoliday = false,
-                            IsFullDay = false,
-                            IsQuarterDay = false,
-                            IsHalfDay = false,
-                            IsLate = false,
-                            IsActive = true,
-                            CreationDate = DateTime.Now,
-                            UserIp = Request.UserHostAddress
-                        };
-                    }
-                    _userShiftList = objUserShiftService.GetUserShiftByUserId(_attendance.UserId);
-                    if (_userShiftList != null && _userShiftList.Count > 0)
-                    {
-                        _userShiftList = _userShiftList.Where(x => _userDate.Date >= x.EffectiveDate && _userDate.Date <= (x.RetiredDate == null ? _userDate.Date : x.RetiredDate)).ToList();
-                        if (_userShiftList != null && _userShiftList.Count > 0)
-                        {
-                            _userShift = _userShiftList.FirstOrDefault();
-                            _shift = objShiftService.GetShift(_userShift.ShiftId.Value);
-                            if (!_shift.StartHour.Contains(":"))
-                                _shift.StartHour += ":00";
-                            _attendancePolicyList = objAttendancePolicyService.GetAttendancePolicyByShiftId(_userShift.ShiftId.Value);
-                            if (_attendancePolicyList != null && _attendancePolicyList.Count > 0)
-                            {
-                                _attendancePolicyList = _attendancePolicyList.Where(x => _userDate.Date >= x.EffectiveDate && _userDate.Date <= (x.RetiredDate == null ? _userDate.Date : x.RetiredDate)).ToList();
-                                if (_attendancePolicyList != null && _attendancePolicyList.Count > 0)
-                                {
-                                    //FULL Day
-                                    _attendancePolicyListTemp = _attendancePolicyList.Where(x => x.AttendanceVariableId == (int)Core.Enum.AttendanceVariable.FullDay).ToList();
-                                    if (_attendancePolicyListTemp != null && _attendancePolicyListTemp.Count > 0)
-                                    {
-                                        _attendancePolicy = _attendancePolicyListTemp.FirstOrDefault();
-                                        if ((decimal)(_userDate.TimeIn.Value - Convert.ToDateTime(_userDate.Date.ToString("MM/dd/yyyy") + " " + _shift.StartHour)).TotalMinutes >= (decimal)_attendancePolicy.Hours.Value)
-                                            _attendanceStatus.IsFullDay = true;
-                                        else
-                                            _attendanceStatus.IsFullDay = false;
-                                    }
-                                    else
-                                    {
-                                        _attendanceStatus.IsFullDay = false;
-                                    }
-
-                                    //Half Day
-                                    _attendancePolicyListTemp = _attendancePolicyList.Where(x => x.AttendanceVariableId == (int)Core.Enum.AttendanceVariable.HalfDay).ToList();
-                                    if (_attendancePolicyListTemp != null && _attendancePolicyListTemp.Count > 0 && !_attendanceStatus.IsFullDay.Value)
-                                    {
-                                        _attendancePolicy = _attendancePolicyListTemp.FirstOrDefault();
-                                        if ((decimal)(_userDate.TimeIn.Value - Convert.ToDateTime(_userDate.Date.ToString("MM/dd/yyyy") + " " + _shift.StartHour)).TotalMinutes >= (decimal)_attendancePolicy.Hours.Value)
-                                            _attendanceStatus.IsHalfDay = true;
-                                        else
-                                            _attendanceStatus.IsHalfDay = false;
-                                    }
-                                    else
-                                    {
-                                        _attendanceStatus.IsHalfDay = false;
-                                    }
-
-                                    //Quater Day
-                                    _attendancePolicyListTemp = _attendancePolicyList.Where(x => x.AttendanceVariableId == (int)Core.Enum.AttendanceVariable.QuarterDay).ToList();
-                                    if (_attendancePolicyListTemp != null && _attendancePolicyListTemp.Count > 0 && !_attendanceStatus.IsFullDay.Value && !_attendanceStatus.IsHalfDay.Value)
-                                    {
-                                        _attendancePolicy = _attendancePolicyListTemp.FirstOrDefault();
-                                        if ((decimal)(_userDate.TimeIn.Value - Convert.ToDateTime(_userDate.Date.ToString("MM/dd/yyyy") + " " + _shift.StartHour)).TotalMinutes >= (decimal)_attendancePolicy.Hours.Value)
-                                            _attendanceStatus.IsQuarterDay = true;
-                                        else
-                                            _attendanceStatus.IsQuarterDay = false;
-                                    }
-                                    else
-                                    {
-                                        _attendanceStatus.IsQuarterDay = false;
-                                    }
-                                }
-                                else
-                                {
-                                    //Late
-                                    if (_userDate.TimeIn.Value > Convert.ToDateTime(_userDate.Date.ToString("MM/dd/yyyy") + " " + _shift.StartHour))
-                                        _attendanceStatus.IsLate = true;
-                                    else
-                                        _attendanceStatus.IsLate = false;
-                                }
-                            }
-                            //Late
-                            if (_userDate.TimeIn.Value > Convert.ToDateTime(_userDate.Date.ToString("MM/dd/yyyy") + " " + _shift.StartHour))
-                                _attendanceStatus.IsLate = true;
-                            else
-                                _attendanceStatus.IsLate = false;
-                        }
-                    }
-                    if (_attendanceStatus != null && _attendanceStatus.Id <= 0)
-                        _attendanceStatus = objAttendanceStatusService.InsertAttendanceStatus(_attendanceStatus);
-                    else
-                    {
-                        _attendanceStatus.UpdateDate = DateTime.Now;
-                        _attendanceStatus = objAttendanceStatusService.UpdateAttendanceStatus(_attendanceStatus);
-                    }
-                }
-                #endregion AttendanceStatus
-
-                _attendance = null;
-                _attendanceList = null;
-                _attendanceDetailList = null;
-                _attendanceDetail = null;
-                _attendanceList = null;
-                _attendanceStatus = null;
-                _attendanceStatusList = null;
-                _shift = null;
-                _userShift = null;
-                _userShiftList = null;
-            }
-            #endregion FilterByUser
-            #endregion Processing
-            if (msg.Count <= 0)
-                ViewBag.Message = new string[] { "File processed successfully" };
-            else
-                ViewBag.Message = msg.ToArray();
-            return View();
-        }
 
         [HttpPost]
         public JsonResult MarkLeave(string id)
@@ -2205,7 +2132,26 @@ namespace HRM.WebAPI.Controllers
                     string[] AttendanceIDList = id.Split(',');
                     foreach (var _attendanceID in AttendanceIDList)
                     {
-                        AttendanceStatus _attendanceStatus = _attendanceStatus = new AttendanceStatus() { AttendanceId = Convert.ToInt32(_attendanceID), IsShiftOffDay = false, IsLeaveDay = true, IsHoliday = false, IsFullDay = false, IsQuarterDay = false, IsHalfDay = false, IsLate = false, IsEarly = false, IsActive = true, CreationDate = DateTime.Now, UserIp = Request.UserHostAddress, LateMinutes = 0, EarlyMinutes = 0, TotalMinutes = 0, WorkingMinutes = 0, OverTimeMinutes = 0 };
+                        AttendanceStatus _attendanceStatus = _attendanceStatus = new AttendanceStatus()
+                        {
+                            AttendanceId = Convert.ToInt32(_attendanceID),
+                            IsShiftOffDay = false,
+                            IsLeaveDay = true,
+                            IsHoliday = false,
+                            IsFullDay = false,
+                            IsQuarterDay = false,
+                            IsHalfDay = false,
+                            IsLate = false,
+                            IsEarly = false,
+                            IsActive = true,
+                            CreationDate = DateTime.Now,
+                            UserIp = Request.UserHostAddress,
+                            LateMinutes = 0,
+                            EarlyMinutes = 0,
+                            TotalMinutes = 0,
+                            WorkingMinutes = 0,
+                            OverTimeMinutes = 0
+                        };
                         objAttendanceStatusService.InsertAttendanceStatus(_attendanceStatus);
                     }
                 }
@@ -2250,7 +2196,779 @@ namespace HRM.WebAPI.Controllers
                 return base.Json(false, JsonRequestBehavior.AllowGet);
             }
         }
+        private void GetAddAttendanceUsers(int? UserId)
+        {
+            IUserService objUserService = IoC.Resolve<IUserService>("UserService");
+            List<User> Users = objUserService.GetAllUser();
+            if (UserId.HasValue && UserId.Value > 0)
+                ViewBag.UserName = Users.Where(x => x.Id == UserId.Value).FirstOrDefault().FirstName;
+            if (Users != null && Users.Count > 0)
+                ViewBag.User = new SelectList(Users, "ID", "FirstName");
+            else
+            {
+                List<SelectListItem> blank = new List<SelectListItem>();
+                blank.Add(new SelectListItem() { Text = "User", Value = "-1" });
+                ViewBag.User = new SelectList(blank, "Value", "Text", "");
+            }
+        }
 
+        [HttpGet]
+        [Authenticate]
+        public ActionResult ExcelAttendance()
+        {
+            return View();
+        }
+        [HttpPost]
+        [Authenticate]
+        public ActionResult ExcelAttendance(string posted = null)
+        {
+            HttpPostedFileBase file = null;
+            DateTime dtAttendance = DateTime.Now;
+            List<VMBrowseAttendance> BAttendanceList = new List<VMBrowseAttendance>();
+       
+            List<VMBrowseAttendance> BUniqueAttendanceList = new List<VMBrowseAttendance>();
+            VMBrowseAttendance BAttendance = null;
+            List<string> msg = new List<string>();
+            ViewBag.Message = new string[] { "" };
+            #region Validate
+            if (Request.Files == null || Request.Files.Count <= 0 || Request.Files[0].ContentLength <= 0)
+            {
+                ViewBag.Message = new string[] { "Please browse file" };
+                return View();
+            }
+
+            #endregion Validate
+            #region File Upload
+            file = Request.Files[0];
+            if (!Directory.Exists(Server.MapPath("/Uploads")))
+                Directory.CreateDirectory(Server.MapPath("/Uploads"));
+            if (!Directory.Exists(Server.MapPath("/Uploads/AttendanceData")))
+                Directory.CreateDirectory(Server.MapPath("/Uploads/AttendanceData"));
+            if (!Directory.Exists(Server.MapPath("/Uploads/AttendanceData/" + dtAttendance.ToString("yyyyMM"))))
+                Directory.CreateDirectory(Server.MapPath("/Uploads/AttendanceData/" + dtAttendance.ToString("yyyyMM")));
+            string fileName = dtAttendance.ToString("ddhhmmss") + "-" + file.FileName;
+            string fullFilePath = Server.MapPath("/Uploads/AttendanceData/" + dtAttendance.ToString("yyyyMM") + "/" + fileName);
+            file.SaveAs(fullFilePath);
+            #endregion File Upload
+            #region Processing
+            #region Init
+
+            IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
+            IAttendanceDetailService objAttendanceDetailService = IoC.Resolve<IAttendanceDetailService>("AttendanceDetailService");
+            IAttendanceStatusService objAttendanceStatusService = IoC.Resolve<IAttendanceStatusService>("AttendanceStatusService");
+            IUserShiftService objUserShiftService = IoC.Resolve<IUserShiftService>("UserShiftService");
+            IShiftService objShiftService = IoC.Resolve<IShiftService>("ShiftService");
+            IAttendancePolicyService objAttendancePolicyService = IoC.Resolve<IAttendancePolicyService>("AttendancePolicyService");
+            IHolidayService objHolidayService = IoC.Resolve<IHolidayService>("HolidayService");
+            IShiftOffDayService objShiftOffDayService = IoC.Resolve<IShiftOffDayService>("ShiftOffDayService");
+            ILeaveService leaveService = IoC.Resolve<ILeaveService>("LeaveService");
+
+            #endregion Init
+            #region ReadData
+            string[] lines = System.IO.File.ReadAllLines(fullFilePath);
+            int i = 0;
+            foreach (string line in lines)
+            {
+                if (i == 0) { i++; continue; }
+                string[] parts = line.Split(',', '\t');
+                if (parts.Length < 4)
+                {
+                    //msg.Add("Invalid number of columns. Error on line " + (i + 1).ToString());
+                    //msg.Add("");
+                    continue;
+                }
+                BAttendance = new VMBrowseAttendance();
+                try
+                {
+                    //not read the value
+                    BAttendance.UserId = Convert.ToInt32(parts[(int)Colss.UserId]);
+                    BAttendance.AttendanceDate = Convert.ToDateTime(parts[(int)Colss.Date]);
+                    //BAttendance.TimeIn = String.IsNullOrWhiteSpace(parts[(int)Colss.DateTimeIn]) ? (DateTime?)null : Convert.ToDateTime(parts[(int)Colss.DateTimeIn]);
+                    //BAttendance.TimeOut = String.IsNullOrWhiteSpace(parts[(int)Colss.DateTimeOut]) ? (DateTime?)null : Convert.ToDateTime(parts[(int)Colss.DateTimeOut]);
+                    if (parts[(int)Colss.DateTimeIn] != "null")
+                    {
+                        BAttendance.TimeIn = BAttendance.AttendanceDate.ToShortDateString() + " " + Convert.ToString(parts[(int)Colss.DateTimeIn]);
+                    }
+                    else 
+                    {
+                        BAttendance.TimeIn = Convert.ToString(DateTime.MinValue);
+                    }
+                    if (parts[(int)Colss.DateTimeOut] != "null")
+                    {
+                        BAttendance.TimeOut = BAttendance.AttendanceDate.ToShortDateString() + " " + Convert.ToString(parts[(int)Colss.DateTimeOut]);
+                    }
+                    else 
+                    {
+                        BAttendance.TimeOut = Convert.ToString(DateTime.MinValue);
+
+                    }
+                    //if (BAttendance.TimeIn == null && BAttendance.TimeOut == null)
+                    //    throw null;
+                    //BAttendance.TimeIn = String.IsNullOrWhiteSpace(parts[(int)Colss.DateTimeIn]) ? (DateTime?)null : Convert.ToDateTime(parts[(int)Colss.DateTimeIn]);
+                    //BAttendance.TimeOut = String.IsNullOrWhiteSpace(parts[(int)Colss.DateTimeOut]) ? (DateTime?)null : Convert.ToDateTime(parts[(int)Colss.DateTimeOut]);
+                    BAttendanceList.Add(BAttendance);
+                }
+                catch
+                {
+                    //msg.Add("" + (i + 1).ToString());
+                    continue;
+                }
+            }
+            #endregion ReadData
+            #region FilterByUser
+            List<NewExcelUserDate> userDate = BAttendanceList.Select(x => new NewExcelUserDate() { UserId = x.UserId, AttendanceDate = x.AttendanceDate, DateTimeIn = Convert.ToDateTime(x.TimeIn), DateTimeOut = Convert.ToDateTime(x.TimeOut) }).Distinct().ToList();
+            foreach (NewExcelUserDate atUser in userDate)
+            {
+                //try
+                //{
+                    //#region Step1 - Check Attendance Already Exists
+                    List<Attendance> attendanceList = objAttendanceService.GetAttendanceByUserIDAndDate(atUser.UserId, atUser.AttendanceDate);
+                    Attendance attendance = null;
+                    #region  nulll DateTimeIn & DateTimeOut
+                    if(atUser.DateTimeIn == DateTime.MinValue)
+                    {
+                        atUser.DateTimeIn = null;
+                    }
+                    if (atUser.DateTimeOut == DateTime.MinValue)
+                    {
+                        atUser.DateTimeOut = null;
+                    }
+                    if (atUser.DateTimeIn == null && atUser.DateTimeOut == null)
+                    {
+                        int count = 0;
+                        List<UserShift> userShifts = objUserShiftService.GetUserShiftByUserId(atUser.UserId);
+                        userShifts = userShifts.Where(x => x.EffectiveDate <= atUser.AttendanceDate && (x.RetiredDate == null || x.RetiredDate >= atUser.AttendanceDate)).ToList();
+                        UserShift userShift = userShifts.FirstOrDefault();
+                        #endregion Step2
+                        #region Step3 - Get and Process Policy
+                        List<AttendancePolicy> attendancePolicies = objAttendancePolicyService.GetAttendancePolicyByShiftId(userShift.ShiftId);
+                        attendancePolicies = attendancePolicies.Where(x => x.EffectiveDate <= atUser.AttendanceDate && (x.RetiredDate == null || x.RetiredDate >= atUser.AttendanceDate)).ToList();
+                        Shift shift = objShiftService.GetShift(userShift.ShiftId.Value);
+
+                        //ShiftOffDays
+                        List<ShiftOffDay> shiftOffDays = objShiftOffDayService.GetShiftOffDayByShiftId(userShift.ShiftId);
+                        if (shiftOffDays != null)
+                        {
+                            shiftOffDays = shiftOffDays.Where(x => x.EffectiveDate <= atUser.AttendanceDate && (x.RetiredDate == null || x.RetiredDate >= atUser.AttendanceDate)).ToList();
+                            foreach (ShiftOffDay shiftOffDay in shiftOffDays)
+                            {
+                                var attendanceDate = Convert.ToDateTime(atUser.AttendanceDate.ToString("MM/dd/yyyy"));
+                                int dayNumberOfWeek = (int)attendanceDate.DayOfWeek;
+                                //condition
+                                if (shiftOffDay.OffDayOfWeek == dayNumberOfWeek)
+                                {
+                                    attendance = new Attendance()
+                                    {
+                                        UserId = atUser.UserId,
+                                        Date = atUser.AttendanceDate,
+                                        DateTimeIn = atUser.DateTimeIn,
+                                        DateTimeOut = atUser.DateTimeOut,
+                                        CreationDate = DateTime.Now,
+                                        IsActive = true,
+                                        UpdateBy = AuthBase.UserId
+                                    };
+                                    attendance = objAttendanceService.InsertAttendance(attendance);
+                                    count++;
+                                }
+                            }
+                        }
+                        //Holidays
+                        List<Holiday> holidays = objHolidayService.GetAllHoliday();
+                        if (holidays != null)
+                        {
+                            holidays = holidays.Where(x => x.Date == atUser.AttendanceDate).ToList();
+
+                            foreach (Holiday holiday in holidays)
+                            {
+                                if (holiday.Date == atUser.AttendanceDate)
+                                {
+
+                                    count++;
+
+                                }
+                            }
+                        }
+
+                        if (count == 0)
+                        {
+                            attendance = new Attendance()
+                            {
+                                UserId = atUser.UserId,
+                                Date = atUser.AttendanceDate,
+                                DateTimeIn = atUser.DateTimeIn,
+                                DateTimeOut = atUser.DateTimeOut,
+                                CreationDate = DateTime.Now,
+                                IsActive = true,
+                                UpdateBy = AuthBase.UserId
+                            };
+                            attendance = objAttendanceService.InsertAttendance(attendance);
+                        }
+                    }
+                    #endregion
+                    else
+                    {
+                        if (attendanceList == null || attendanceList.Count <= 0)
+                        {
+                            attendance = new Attendance()
+                            {
+                                UserId = atUser.UserId,
+                                Date = atUser.AttendanceDate,
+                                DateTimeIn = atUser.DateTimeIn,
+                                DateTimeOut = atUser.DateTimeOut,
+                                CreationDate = DateTime.Now,
+                                IsActive = true,
+                                UpdateBy = AuthBase.UserId
+                            };
+                            attendance = objAttendanceService.InsertAttendance(attendance);
+                        }
+                        else
+                        {
+                            attendance = attendanceList.FirstOrDefault();
+                        }
+                        AttendanceDetail attendanceDetail = new AttendanceDetail() { AttendanceId = attendance.Id, StartDate = atUser.DateTimeIn, EndDate = atUser.DateTimeOut, CreationDate = DateTime.Now, UpdateBy = AuthBase.UserId, IsActive = true };
+                        attendanceDetail = objAttendanceDetailService.InsertAttendanceDetail(attendanceDetail);
+
+                        List<AttendanceDetail> attendanceDetails = objAttendanceDetailService.GetAttendanceDetailByAttendanceId(attendance.Id);
+                        var DateTimeIn = attendance.DateTimeIn = attendanceDetails.Where(x => x.StartDate != null).Min(x => x.StartDate);
+                        var DateTimeOut = attendance.DateTimeOut = attendanceDetails.Where(x => x.EndDate != null).Max(x => x.EndDate);
+                        attendance = objAttendanceService.UpdateAttendance(attendance);
+
+                        #endregion Step1
+                        #region Step2 - Get Shift and Init AttendanceStatus
+                        List<AttendanceStatus> attendanceStatuses = objAttendanceStatusService.GetAttendanceStatusByAttendanceId(attendance.Id);
+                        AttendanceStatus attendanceStatus = null;
+                        if (attendanceStatuses == null || attendanceStatuses.Count <= 0)
+                        {
+                            attendanceStatus = new AttendanceStatus()
+                            {
+                                AttendanceId = attendance.Id,
+                                IsShiftOffDay = false,
+                                IsHoliday = false,
+                                IsLeaveDay = false,
+                                IsQuarterDay = false,
+                                IsHalfDay = false,
+                                IsFullDay = false,
+                                IsLate = false,
+                                IsEarly = false,
+                                LateMinutes = 0,
+                                EarlyMinutes = 0,
+                                WorkingMinutes = 0,
+                                TotalMinutes = 0,
+                                OverTimeMinutes = 0,
+                                CreationDate = DateTime.Now,
+                                IsActive = true,
+                                UpdateBy = AuthBase.UserId,
+                                UserIp = Request.UserHostAddress
+                            };
+                            attendanceStatus = objAttendanceStatusService.InsertAttendanceStatus(attendanceStatus);
+                        }
+                        else
+                        {
+                            attendanceStatus = attendanceStatuses.FirstOrDefault();
+                        }
+                        List<UserShift> userShifts = objUserShiftService.GetUserShiftByUserId(attendance.UserId);
+                        userShifts = userShifts.Where(x => x.EffectiveDate <= attendance.Date && (x.RetiredDate == null || x.RetiredDate >= attendance.Date)).ToList();
+                        UserShift userShift = userShifts.FirstOrDefault();
+
+                        #endregion Step2
+                        #region Step3 - Get and Process Policy
+                        List<AttendancePolicy> attendancePolicies = objAttendancePolicyService.GetAttendancePolicyByShiftId(userShift.ShiftId);
+                        attendancePolicies = attendancePolicies.Where(x => x.EffectiveDate <= attendance.Date && (x.RetiredDate == null || x.RetiredDate >= attendance.Date)).ToList();
+                        Shift shift = objShiftService.GetShift(userShift.ShiftId.Value);
+                        //ShiftOffDays
+                        List<ShiftOffDay> shiftOffDays = objShiftOffDayService.GetShiftOffDayByShiftId(userShift.ShiftId);
+                        if (shiftOffDays != null)
+                        {
+                            shiftOffDays = shiftOffDays.Where(x => x.EffectiveDate <= attendance.Date && (x.RetiredDate == null || x.RetiredDate >= attendance.Date)).ToList();
+                            foreach (ShiftOffDay shiftOffDay in shiftOffDays)
+                            {
+                                var attendanceDate = Convert.ToDateTime(atUser.AttendanceDate.ToString("MM/dd/yyyy"));
+
+                                int dayNumberOfWeek = (int)attendanceDate.DayOfWeek;
+
+                                //condition
+                                if (shiftOffDay.OffDayOfWeek == dayNumberOfWeek)
+                                {
+                                    attendanceStatus.IsShiftOffDay = true;
+                                    break;
+                                }
+                            }
+                        }
+                        //Holidays
+                        List<Holiday> holidays = objHolidayService.GetAllHoliday();
+                        if (holidays != null)
+                        {
+                            holidays = holidays.Where(x => x.Date == attendance.Date).ToList();
+
+                            foreach (Holiday holiday in holidays)
+                            {
+                                if (holiday.Date == attendance.Date)
+                                {
+                                    attendanceStatus.IsHoliday = true;
+                                    break;
+                                }
+                            }
+                        }
+                        //TotalMinutes
+
+                        if (atUser.DateTimeOut == null)
+                            attendanceStatus.TotalMinutes = 0;
+                        else
+                            attendanceStatus.TotalMinutes = Convert.ToInt32((Convert.ToDateTime(DateTimeOut) - Convert.ToDateTime(DateTimeIn)).TotalMinutes);
+
+
+                        //LateMinutes
+                        if (attendanceStatus.LateMinutes == 0)
+                        {
+                            if (atUser.DateTimeOut == null)
+                                attendanceStatus.LateMinutes = 0;
+                            else
+                            {
+                                double LateMinutes = (atUser.DateTimeIn.Value - Convert.ToDateTime(atUser.AttendanceDate.ToString("MM/dd/yyyy") + " " + shift.StartHour)).TotalMinutes;
+                                if (LateMinutes > 0)
+                                    attendanceStatus.LateMinutes = Convert.ToInt32(LateMinutes);
+                                else
+                                    attendanceStatus.LateMinutes = 0;
+                            }
+                            //EarlyMinutes &
+                            //OverTimeMinutes
+                        }
+                        double EarlyMinutes = 0;
+                        if (atUser.DateTimeOut == null)
+                        {
+                            EarlyMinutes = 0;
+                        }
+                        else
+                        {
+                            EarlyMinutes = (Convert.ToDateTime(atUser.AttendanceDate.ToString("MM/dd/yyyy") + " " + shift.EndHour) - atUser.DateTimeOut.Value).TotalMinutes;
+                            if (EarlyMinutes >= 0)
+                                attendanceStatus.EarlyMinutes = Convert.ToInt32(EarlyMinutes);
+                            else
+                            {
+                                attendanceStatus.EarlyMinutes = 0;
+                                attendanceStatus.OverTimeMinutes = Math.Abs(Convert.ToInt32(EarlyMinutes));
+                            }
+                        }
+
+
+
+                        //Working Minutes
+                        AttendanceDetail last = attendanceDetails.Last();
+                        foreach (AttendanceDetail wm in attendanceDetails)
+                        {
+
+                            if (wm.Equals(last))
+                            {
+                                if (atUser.DateTimeOut == null)
+                                {
+                                    attendanceStatus.WorkingMinutes = 0;
+                                    break;
+                                }
+                                else
+                                    attendanceStatus.WorkingMinutes += Convert.ToInt32((wm.EndDate.Value - wm.StartDate.Value).TotalMinutes);
+                            }
+
+                        }
+                        //List<Holiday> holidays = 
+                        foreach (AttendancePolicy attendancePolicy in attendancePolicies)
+                        {
+                            switch ((Core.Enum.AttendanceVariable)attendancePolicy.AttendanceVariableId)
+                            {
+
+                                case Core.Enum.AttendanceVariable.FullDay:
+                                    //condition full day
+                                    if (atUser.DateTimeOut == null)
+                                        attendanceStatus.IsFullDay = true;
+
+                                    else if ((attendanceStatus.LateMinutes >= attendancePolicy.Hours.Value * 60 || attendanceStatus.EarlyMinutes >= attendancePolicy.Hours.Value * 60))
+                                        attendanceStatus.IsFullDay = true;
+                                    else
+                                        attendanceStatus.IsFullDay = false;
+                                    break;
+
+                                case Core.Enum.AttendanceVariable.HalfDay:
+                                    //condition half day
+                                    if (atUser.DateTimeOut == null)
+                                        attendanceStatus.IsHalfDay = true;
+                                    else if (attendanceStatus.LateMinutes >= attendancePolicy.Hours.Value * 60 || attendanceStatus.EarlyMinutes >= attendancePolicy.Hours.Value * 60)
+                                        attendanceStatus.IsHalfDay = true;
+                                    else
+                                        attendanceStatus.IsHalfDay = false;
+                                    break;
+                                case Core.Enum.AttendanceVariable.Late:
+                                    //condition IsLate day
+                                    if (atUser.DateTimeOut == null)
+                                        attendanceStatus.IsLate = false;
+                                    else if ((decimal)attendanceStatus.LateMinutes >= attendancePolicy.Hours.Value * 60)
+                                        attendanceStatus.IsLate = true;
+                                    else
+                                        attendanceStatus.IsLate = false;
+                                    break;
+                                case Core.Enum.AttendanceVariable.Early:
+                                //condition IsEarly day
+                                if (atUser.DateTimeOut == null)
+                                    attendanceStatus.IsEarly = true;
+                                    else if ((decimal)attendanceStatus.EarlyMinutes >= attendancePolicy.Hours.Value * 60)
+                                        attendanceStatus.IsEarly = true;
+                                    else
+                                        attendanceStatus.IsEarly = false;
+                                    break;
+
+                                case Core.Enum.AttendanceVariable.QuarterDay:
+                                    //condition quarter day
+                                    if (atUser.DateTimeOut == null)
+                                        attendanceStatus.IsQuarterDay = true;
+                                    else if (attendanceStatus.LateMinutes >= attendancePolicy.Hours.Value * 60 || attendanceStatus.EarlyMinutes >= attendancePolicy.Hours.Value * 60)
+                                        attendanceStatus.IsQuarterDay = true;
+                                    else
+                                        attendanceStatus.IsQuarterDay = false;
+                                    break;
+                            }
+                        }
+                        #endregion Step3
+                        #region Step4 - Update Attendance Status
+                        attendanceStatus = objAttendanceStatusService.UpdateAttendanceStatus(attendanceStatus);
+                        #endregion Step4    
+                    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    ModelState.AddModelError("", ex.Message);
+                //}
+            }
+            #endregion FilterByUser
+            if (msg.Count <= 0)
+                ViewBag.Message = new string[] { "File processed successfully" };
+            else
+                ViewBag.Message = msg.ToArray();
+            return View();
+        }
+        [HttpGet]
+        [Authenticate]
+        public ActionResult Browse()
+        {
+            return View();
+        }
+        //[HttpPost]
+        //[Authenticate]
+        //public ActionResult Browse(string posted = null)
+        //{
+        //    HttpPostedFileBase file = null;
+        //    DateTime dtAttendance = DateTime.Now;
+        //    List<VMBrowseAttendance> BAttendanceList = new List<VMBrowseAttendance>();
+        //    List<VMBrowseAttendance> BTempAttendanceList = null;
+        //    List<VMBrowseAttendance> BUniqueAttendanceList = new List<VMBrowseAttendance>();
+        //    VMBrowseAttendance BAttendance = null;
+        //    List<string> msg = new List<string>();
+        //    ViewBag.Message = new string[] { "" };
+        //    #region Validate
+        //    if (Request.Files == null || Request.Files.Count <= 0 || Request.Files[0].ContentLength <= 0)
+        //    {
+        //        ViewBag.Message = new string[] { "Please browse file" };
+        //        return View();
+        //    }
+
+        //    #endregion Validate
+        //    #region File Upload
+        //    file = Request.Files[0];
+        //    if (!Directory.Exists(Server.MapPath("/Uploads")))
+        //        Directory.CreateDirectory(Server.MapPath("/Uploads"));
+        //    if (!Directory.Exists(Server.MapPath("/Uploads/AttendanceData")))
+        //        Directory.CreateDirectory(Server.MapPath("/Uploads/AttendanceData"));
+        //    if (!Directory.Exists(Server.MapPath("/Uploads/AttendanceData/" + dtAttendance.ToString("yyyyMM"))))
+        //        Directory.CreateDirectory(Server.MapPath("/Uploads/AttendanceData/" + dtAttendance.ToString("yyyyMM")));
+        //    string fileName = dtAttendance.ToString("ddhhmmss") + "-" + file.FileName;
+        //    string fullFilePath = Server.MapPath("/Uploads/AttendanceData/" + dtAttendance.ToString("yyyyMM") + "/" + fileName);
+        //    file.SaveAs(fullFilePath);
+        //    #endregion File Upload
+        //    #region Processing
+        //    #region Init
+
+        //    List<Attendance> _attendanceList = null;
+        //    Attendance _attendance = null;
+        //    List<AttendanceDetail> _attendanceDetailList = null;
+        //    AttendanceDetail _attendanceDetail = null;
+        //    List<AttendanceStatus> _attendanceStatusList = null;
+        //    AttendanceStatus _attendanceStatus = null;
+        //    List<VMAttendanceData> attendanceDataList = new List<VMAttendanceData>();
+
+        //    List<UserShift> _userShiftList = null;
+        //    List<AttendancePolicy> _attendancePolicyList = null;
+        //    List<AttendancePolicy> _attendancePolicyListTemp = null;
+        //    UserShift _userShift = null;
+        //    Shift _shift = null;
+        //    AttendancePolicy _attendancePolicy = null;
+
+        //    IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
+        //    IAttendanceDetailService objAttendanceDetailService = IoC.Resolve<IAttendanceDetailService>("AttendanceDetailService");
+        //    IAttendanceStatusService objAttendanceStatusService = IoC.Resolve<IAttendanceStatusService>("AttendanceStatusService");
+        //    IUserShiftService objUserShiftService = IoC.Resolve<IUserShiftService>("UserShiftService");
+        //    IShiftService objShiftService = IoC.Resolve<IShiftService>("ShiftService");
+        //    IAttendancePolicyService objAttendancePolicyService = IoC.Resolve<IAttendancePolicyService>("AttendancePolicyService");
+
+        //    #endregion Init
+        //    #region ReadData
+        //    string[] lines = System.IO.File.ReadAllLines(fullFilePath);
+        //    int i = 0;
+        //    foreach (string line in lines)
+        //    {
+        //        if (i == 0) { i++; continue; }
+        //        string[] parts = line.Split(',', '\t');
+        //        if (parts.Length != 4)
+        //        {
+        //            msg.Add("Invalid number of columns. Error on line " + (i + 1).ToString());
+        //            continue;
+        //        }
+        //        BAttendance = new VMBrowseAttendance();
+        //        try
+        //        {
+        //            BAttendance.UserId = Convert.ToInt32(parts[(int)Cols.EmpNo]);
+        //            BAttendance.AttendanceDate = Convert.ToDateTime(parts[(int)Cols.Date]);
+        //            BAttendance.TimeIn = String.IsNullOrWhiteSpace(parts[(int)Cols.TimeIn]) ? (DateTime?)null : Convert.ToDateTime(parts[(int)Cols.TimeIn]);
+        //            BAttendance.TimeOut = String.IsNullOrWhiteSpace(parts[(int)Cols.TimeOut]) ? (DateTime?)null : Convert.ToDateTime(parts[(int)Cols.TimeOut]);
+        //            if (BAttendance.TimeIn == null && BAttendance.TimeOut == null)
+        //                throw null;
+        //            BAttendanceList.Add(BAttendance);
+        //        }
+        //        catch
+        //        {
+        //            msg.Add("Invalid data. Error on line " + (i + 1).ToString());
+        //            continue;
+        //        }
+        //    }
+        //    #endregion ReadData
+        //    #region FilterByUser
+        //    List<UserDate> userDate = BAttendanceList.Select(x => new UserDate() { UserID = x.UserId, Date = x.AttendanceDate }).Distinct().ToList();
+        //    foreach (UserDate _userDate in userDate)
+        //    {
+        //        #region Minimum TimeIn and Maximum Timeout
+        //        BTempAttendanceList = BAttendanceList.Where(x => x.UserId == _userDate.UserID && x.AttendanceDate == _userDate.Date && x.TimeIn != null).ToList();
+        //        if (BTempAttendanceList == null || BTempAttendanceList.Count <= 0)
+        //            _userDate.TimeIn = null;
+        //        else
+        //            _userDate.TimeIn = BTempAttendanceList.OrderBy(x => x.TimeIn).Select(x => x.TimeIn).First();
+
+        //        BTempAttendanceList = BAttendanceList.Where(x => x.UserId == _userDate.UserID && x.AttendanceDate == _userDate.Date && x.TimeOut != null).ToList();
+        //        if (BTempAttendanceList == null || BTempAttendanceList.Count <= 0)
+        //            _userDate.TimeOut = null;
+        //        else
+        //            _userDate.TimeOut = BTempAttendanceList.OrderBy(x => x.TimeOut).Select(x => x.TimeOut).Last();
+        //        #endregion Minimum TimeIn and Maximum Timeout
+
+        //        #region Attendance
+        //        _attendanceList = objAttendanceService.GetAttendanceByUserIDAndDate(_userDate.UserID, _userDate.Date);
+        //        //Insert Attendance
+        //        if (_attendanceList == null || _attendanceList.Count <= 0)
+        //        {
+        //            _attendance = new Attendance() { UserId = _userDate.UserID, Date = _userDate.Date, IsActive = true, CreationDate = DateTime.Now, UserIp = Request.UserHostAddress };
+        //            _attendance = objAttendanceService.InsertAttendance(_attendance);
+        //        }
+        //        //Attendance Already marked, Get Attendance
+        //        else
+        //        {
+        //            _attendance = _attendanceList.FirstOrDefault();
+        //        }
+        //        #endregion Attendance
+        //        #region AttendanceDetail
+        //        //Timein Entry
+        //        if (_userDate.TimeIn != null)
+        //        {
+        //            _attendanceDetailList = objAttendanceDetailService.GetAttendanceDetailByAttendanceId(_attendance.Id);
+        //            //Already Timein Entry
+        //            if (_attendanceDetailList != null && _attendanceDetailList.Count > 0)
+        //            {
+        //                _attendanceDetailList = _attendanceDetailList.Where(x => x.AttendanceTypeId == (int)Core.Enum.AttendanceType.DailyAttendance).ToList();
+        //                if (_attendanceDetailList != null && _attendanceDetailList.Count > 0)
+        //                {
+        //                    _attendanceDetail = _attendanceDetailList.FirstOrDefault();
+        //                    if (_attendanceDetailList.FirstOrDefault().StartDate == null)
+        //                    {
+        //                        _attendanceDetail.StartDate = _userDate.TimeIn;
+        //                        _attendanceDetail = objAttendanceDetailService.UpdateAttendanceDetail(_attendanceDetail);
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    //Insert Timein
+        //                    _attendanceDetail = new AttendanceDetail()
+        //                    {
+        //                        AttendanceId = _attendance.Id,
+        //                        AttendanceTypeId = (int)Core.Enum.AttendanceType.DailyAttendance,
+        //                        StartDate = _userDate.TimeIn,
+        //                        IsActive = true,
+        //                        UserIp = Request.UserHostAddress,
+        //                        CreationDate = DateTime.Now
+        //                    };
+        //                    _attendanceDetail = objAttendanceDetailService.InsertAttendanceDetail(_attendanceDetail);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                //Insert Timein
+        //                _attendanceDetail = new AttendanceDetail()
+        //                {
+        //                    AttendanceId = _attendance.Id,
+        //                    AttendanceTypeId = (int)Core.Enum.AttendanceType.DailyAttendance,
+        //                    StartDate = _userDate.TimeIn,
+        //                    IsActive = true,
+        //                    UserIp = Request.UserHostAddress,
+        //                    CreationDate = DateTime.Now
+        //                };
+        //                _attendanceDetail = objAttendanceDetailService.InsertAttendanceDetail(_attendanceDetail);
+        //            }
+        //        }
+        //        //Timeout Entry
+        //        if (_userDate.TimeOut != null)
+        //        {
+        //            _attendanceDetailList = objAttendanceDetailService.GetAttendanceDetailByAttendanceId(_attendance.Id);
+        //            //Already Timeout Entry
+        //            if (_attendanceDetailList != null && _attendanceDetailList.Count > 0)
+        //            {
+        //                _attendanceDetailList = _attendanceDetailList.Where(x => x.AttendanceTypeId == (int)Core.Enum.AttendanceType.DailyAttendance).ToList();
+        //                if (_attendanceDetailList != null && _attendanceDetailList.Count > 0)
+        //                {
+        //                    if (_attendanceDetailList.FirstOrDefault().EndDate == null)
+        //                    {
+        //                        _attendanceDetail = _attendanceDetailList.FirstOrDefault();
+        //                        _attendanceDetail.EndDate = _userDate.TimeOut;
+        //                        _attendanceDetail = objAttendanceDetailService.UpdateAttendanceDetail(_attendanceDetail);
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        #endregion AttendanceDetail
+        //        #region AttendanceStatus
+        //        if (_attendanceDetail != null && _attendanceDetail.Id > 0)
+        //        {
+        //            _attendanceStatusList = objAttendanceStatusService.GetAttendanceStatusByAttendanceId(_attendance.Id);
+        //            if (_attendanceStatusList != null && _attendanceStatusList.Count > 0)
+        //            {
+        //                _attendanceStatus = _attendanceStatusList.FirstOrDefault();
+        //            }
+        //            else
+        //            {
+        //                _attendanceStatus = new AttendanceStatus()
+        //                {
+        //                    AttendanceId = _attendance.Id,
+        //                    IsShiftOffDay = false,
+        //                    IsLeaveDay = false,
+        //                    IsHoliday = false,
+        //                    IsFullDay = false,
+        //                    IsQuarterDay = false,
+        //                    IsHalfDay = false,
+        //                    IsLate = false,
+        //                    IsActive = true,
+        //                    CreationDate = DateTime.Now,
+        //                    UserIp = Request.UserHostAddress
+        //                };
+        //            }
+        //            _userShiftList = objUserShiftService.GetUserShiftByUserId(_attendance.UserId);
+        //            if (_userShiftList != null && _userShiftList.Count > 0)
+        //            {
+        //                _userShiftList = _userShiftList.Where(x => _userDate.Date >= x.EffectiveDate && _userDate.Date <= (x.RetiredDate == null ? _userDate.Date : x.RetiredDate)).ToList();
+        //                if (_userShiftList != null && _userShiftList.Count > 0)
+        //                {
+        //                    _userShift = _userShiftList.FirstOrDefault();
+        //                    _shift = objShiftService.GetShift(_userShift.ShiftId.Value);
+        //                    if (!_shift.StartHour.Contains(":"))
+        //                        _shift.StartHour += ":00";
+        //                    _attendancePolicyList = objAttendancePolicyService.GetAttendancePolicyByShiftId(_userShift.ShiftId.Value);
+        //                    if (_attendancePolicyList != null && _attendancePolicyList.Count > 0)
+        //                    {
+        //                        _attendancePolicyList = _attendancePolicyList.Where(x => _userDate.Date >= x.EffectiveDate && _userDate.Date <= (x.RetiredDate == null ? _userDate.Date : x.RetiredDate)).ToList();
+        //                        if (_attendancePolicyList != null && _attendancePolicyList.Count > 0)
+        //                        {
+        //                            //FULL Day
+        //                            _attendancePolicyListTemp = _attendancePolicyList.Where(x => x.AttendanceVariableId == (int)Core.Enum.AttendanceVariable.FullDay).ToList();
+        //                            if (_attendancePolicyListTemp != null && _attendancePolicyListTemp.Count > 0)
+        //                            {
+        //                                _attendancePolicy = _attendancePolicyListTemp.FirstOrDefault();
+        //                                if ((decimal)(_userDate.TimeIn.Value - Convert.ToDateTime(_userDate.Date.ToString("MM/dd/yyyy") + " " + _shift.StartHour)).TotalMinutes >= (decimal)_attendancePolicy.Hours.Value)
+        //                                    _attendanceStatus.IsFullDay = true;
+        //                                else
+        //                                    _attendanceStatus.IsFullDay = false;
+        //                            }
+        //                            else
+        //                            {
+        //                                _attendanceStatus.IsFullDay = false;
+        //                            }
+
+        //                            //Half Day
+        //                            _attendancePolicyListTemp = _attendancePolicyList.Where(x => x.AttendanceVariableId == (int)Core.Enum.AttendanceVariable.HalfDay).ToList();
+        //                            if (_attendancePolicyListTemp != null && _attendancePolicyListTemp.Count > 0 && !_attendanceStatus.IsFullDay.Value)
+        //                            {
+        //                                _attendancePolicy = _attendancePolicyListTemp.FirstOrDefault();
+        //                                if ((decimal)(_userDate.TimeIn.Value - Convert.ToDateTime(_userDate.Date.ToString("MM/dd/yyyy") + " " + _shift.StartHour)).TotalMinutes >= (decimal)_attendancePolicy.Hours.Value)
+        //                                    _attendanceStatus.IsHalfDay = true;
+        //                                else
+        //                                    _attendanceStatus.IsHalfDay = false;
+        //                            }
+        //                            else
+        //                            {
+        //                                _attendanceStatus.IsHalfDay = false;
+        //                            }
+
+        //                            //Quater Day
+        //                            _attendancePolicyListTemp = _attendancePolicyList.Where(x => x.AttendanceVariableId == (int)Core.Enum.AttendanceVariable.QuarterDay).ToList();
+        //                            if (_attendancePolicyListTemp != null && _attendancePolicyListTemp.Count > 0 && !_attendanceStatus.IsFullDay.Value && !_attendanceStatus.IsHalfDay.Value)
+        //                            {
+        //                                _attendancePolicy = _attendancePolicyListTemp.FirstOrDefault();
+        //                                if ((decimal)(_userDate.TimeIn.Value - Convert.ToDateTime(_userDate.Date.ToString("MM/dd/yyyy") + " " + _shift.StartHour)).TotalMinutes >= (decimal)_attendancePolicy.Hours.Value)
+        //                                    _attendanceStatus.IsQuarterDay = true;
+        //                                else
+        //                                    _attendanceStatus.IsQuarterDay = false;
+        //                            }
+        //                            else
+        //                            {
+        //                                _attendanceStatus.IsQuarterDay = false;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            //Late
+        //                            if (_userDate.TimeIn.Value > Convert.ToDateTime(_userDate.Date.ToString("MM/dd/yyyy") + " " + _shift.StartHour))
+        //                                _attendanceStatus.IsLate = true;
+        //                            else
+        //                                _attendanceStatus.IsLate = false;
+        //                        }
+        //                    }
+        //                    //Late
+        //                    if (_userDate.TimeIn.Value > Convert.ToDateTime(_userDate.Date.ToString("MM/dd/yyyy") + " " + _shift.StartHour))
+        //                        _attendanceStatus.IsLate = true;
+        //                    else
+        //                        _attendanceStatus.IsLate = false;
+        //                }
+        //            }
+        //            if (_attendanceStatus != null && _attendanceStatus.Id <= 0)
+        //                _attendanceStatus = objAttendanceStatusService.InsertAttendanceStatus(_attendanceStatus);
+        //            else
+        //            {
+        //                _attendanceStatus.UpdateDate = DateTime.Now;
+        //                _attendanceStatus = objAttendanceStatusService.UpdateAttendanceStatus(_attendanceStatus);
+        //            }
+        //        }
+        //        #endregion AttendanceStatus
+
+        //        _attendance = null;
+        //        _attendanceList = null;
+        //        _attendanceDetailList = null;
+        //        _attendanceDetail = null;
+        //        _attendanceList = null;
+        //        _attendanceStatus = null;
+        //        _attendanceStatusList = null;
+        //        _shift = null;
+        //        _userShift = null;
+        //        _userShiftList = null;
+        //    }
+        //    #endregion FilterByUser
+        //    #endregion Processing
+        //    if (msg.Count <= 0)
+        //        ViewBag.Message = new string[] { "File processed successfully" };
+        //    else
+        //        ViewBag.Message = msg.ToArray();
+        //    return View();
+        //}
         [HttpGet]
         [Authenticate]
         public ActionResult NewAddAttendance()
@@ -2268,15 +2986,14 @@ namespace HRM.WebAPI.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
+            GetAddAttendanceUsers(model.UserId);
             return View(model);
         }
-
-
-
         [HttpPost]
         [Authenticate]
         public ActionResult NewAddAttendance(VMAddAttendance model)
         {
+            try { 
             #region Step1 - Check Attendance Already Exists
             IAttendanceService objAttendanceService = IoC.Resolve<IAttendanceService>("AttendanceService");
             IAttendanceDetailService objAttendanceDetailService = IoC.Resolve<IAttendanceDetailService>("AttendanceDetailService");
@@ -2287,10 +3004,11 @@ namespace HRM.WebAPI.Controllers
 
             IHolidayService objHolidayService = IoC.Resolve<IHolidayService>("HolidayService");
             IShiftOffDayService objShiftOffDayService = IoC.Resolve<IShiftOffDayService>("ShiftOffDayService");
-            ILeaveService leaveService = IoC.Resolve<ILeaveService>("LeaveService");
+            ILeaveService objLeaveService = IoC.Resolve<ILeaveService>("LeaveService");
 
 
             List<Attendance> attendanceList = objAttendanceService.GetAttendanceByUserIDAndDate(model.UserId, model.AttendanceDate);
+            Leave leaveDay = objLeaveService.GetLeaveByUserId(model.UserId).Where(x=>x.Date == model.AttendanceDate && x.IsApproved == true && x.IsReject == false).FirstOrDefault();
             Attendance attendance = null;
             #region  nulll DateTimeIn & DateTimeOut
 
@@ -2301,15 +3019,10 @@ namespace HRM.WebAPI.Controllers
                 List<UserShift> userShifts = objUserShiftService.GetUserShiftByUserId(model.UserId);
                 userShifts = userShifts.Where(x => x.EffectiveDate <= model.AttendanceDate && (x.RetiredDate == null || x.RetiredDate >= model.AttendanceDate)).ToList();
                 UserShift userShift = userShifts.FirstOrDefault();
-
                 #endregion Step2
                 #region Step3 - Get and Process Policy
-
-
-
                 List<AttendancePolicy> attendancePolicies = objAttendancePolicyService.GetAttendancePolicyByShiftId(userShift.ShiftId);
                 attendancePolicies = attendancePolicies.Where(x => x.EffectiveDate <= model.AttendanceDate && (x.RetiredDate == null || x.RetiredDate >= model.AttendanceDate)).ToList();
-
                 Shift shift = objShiftService.GetShift(userShift.ShiftId.Value);
 
                 //ShiftOffDays
@@ -2320,9 +3033,7 @@ namespace HRM.WebAPI.Controllers
                     foreach (ShiftOffDay shiftOffDay in shiftOffDays)
                     {
                         var attendanceDate = Convert.ToDateTime(model.AttendanceDate.ToString("MM/dd/yyyy"));
-
                         int dayNumberOfWeek = (int)attendanceDate.DayOfWeek;
-
                         //condition
                         if (shiftOffDay.OffDayOfWeek == dayNumberOfWeek)
                         {
@@ -2394,6 +3105,7 @@ namespace HRM.WebAPI.Controllers
                 {
                     attendance = attendanceList.FirstOrDefault();
                 }
+                
                 AttendanceDetail attendanceDetail = new AttendanceDetail() { AttendanceId = attendance.Id, StartDate = model.DateTimeIn, EndDate = model.DateTimeOut, CreationDate = DateTime.Now, UpdateBy = AuthBase.UserId, IsActive = true };
                 attendanceDetail = objAttendanceDetailService.InsertAttendanceDetail(attendanceDetail);
 
@@ -2403,8 +3115,7 @@ namespace HRM.WebAPI.Controllers
                 attendance = objAttendanceService.UpdateAttendance(attendance);
 
                 #endregion Step1
-
-                #region Step2 - Get Shift and Init AttendanceStatus
+            #region Step2 - Get Shift and Init AttendanceStatus
                 List<AttendanceStatus> attendanceStatuses = objAttendanceStatusService.GetAttendanceStatusByAttendanceId(attendance.Id);
                 AttendanceStatus attendanceStatus = null;
                 if (attendanceStatuses == null || attendanceStatuses.Count <= 0)
@@ -2427,7 +3138,8 @@ namespace HRM.WebAPI.Controllers
                         OverTimeMinutes = 0,
                         CreationDate = DateTime.Now,
                         IsActive = true,
-                        UpdateBy = AuthBase.UserId
+                        UpdateBy = AuthBase.UserId,
+                        UserIp = Request.UserHostAddress
                     };
                     attendanceStatus = objAttendanceStatusService.InsertAttendanceStatus(attendanceStatus);
                 }
@@ -2440,15 +3152,10 @@ namespace HRM.WebAPI.Controllers
                 UserShift userShift = userShifts.FirstOrDefault();
 
                 #endregion Step2
-                #region Step3 - Get and Process Policy
-
-
-
+            #region Step3 - Get and Process Policy
                 List<AttendancePolicy> attendancePolicies = objAttendancePolicyService.GetAttendancePolicyByShiftId(userShift.ShiftId);
                 attendancePolicies = attendancePolicies.Where(x => x.EffectiveDate <= attendance.Date && (x.RetiredDate == null || x.RetiredDate >= attendance.Date)).ToList();
-
                 Shift shift = objShiftService.GetShift(userShift.ShiftId.Value);
-
                 //ShiftOffDays
                 List<ShiftOffDay> shiftOffDays = objShiftOffDayService.GetShiftOffDayByShiftId(userShift.ShiftId);
                 if (shiftOffDays != null)
@@ -2485,21 +3192,43 @@ namespace HRM.WebAPI.Controllers
                 }
                 //TotalMinutes
 
-                attendanceStatus.TotalMinutes = Convert.ToInt32((Convert.ToDateTime(DateTimeOut) - Convert.ToDateTime(DateTimeIn)).TotalMinutes);
+                    if(DateTimeOut==null)
+                        attendanceStatus.TotalMinutes = 0;
+                    else if(DateTimeIn == null && DateTimeOut!=null)
+                        attendanceStatus.TotalMinutes = 0;
+                    else
+                        attendanceStatus.TotalMinutes = Convert.ToInt32((Convert.ToDateTime(DateTimeOut) - Convert.ToDateTime(DateTimeIn)).TotalMinutes);
 
-
-                //LateMinutes
-                if (attendanceStatus.LateMinutes == 0)
+                    //LateMinutes
+                    if (attendanceStatus.LateMinutes == 0)
                 {
+                        if (model.DateTimeOut == null)
+                            attendanceStatus.LateMinutes = 0;
+                        else if (DateTimeIn == null && DateTimeOut != null)
+                            attendanceStatus.LateMinutes = 0;
+                        else
+                        { 
                     double LateMinutes = (model.DateTimeIn.Value - Convert.ToDateTime(model.AttendanceDate.ToString("MM/dd/yyyy") + " " + shift.StartHour)).TotalMinutes;
                     if (LateMinutes > 0)
                         attendanceStatus.LateMinutes = Convert.ToInt32(LateMinutes);
                     else
                         attendanceStatus.LateMinutes = 0;
-                    //EarlyMinutes &
-                    //OverTimeMinutes
-                }
-                double EarlyMinutes = (Convert.ToDateTime(model.AttendanceDate.ToString("MM/dd/yyyy") + " " + shift.EndHour) - model.DateTimeOut.Value).TotalMinutes;
+                        }
+                        //EarlyMinutes &
+                        //OverTimeMinutes
+                    }
+                    double EarlyMinutes = 0;
+                if (model.DateTimeOut == null)
+                    {
+                        EarlyMinutes = 0;
+                    }
+                    else if (model.DateTimeIn == null && model.DateTimeOut!=null)
+                    {
+                        EarlyMinutes = 0;
+                    }
+
+                    else { 
+                EarlyMinutes= (Convert.ToDateTime(model.AttendanceDate.ToString("MM/dd/yyyy") + " " + shift.EndHour) - model.DateTimeOut.Value).TotalMinutes;
                 if (EarlyMinutes >= 0)
                     attendanceStatus.EarlyMinutes = Convert.ToInt32(EarlyMinutes);
                 else
@@ -2507,16 +3236,28 @@ namespace HRM.WebAPI.Controllers
                     attendanceStatus.EarlyMinutes = 0;
                     attendanceStatus.OverTimeMinutes = Math.Abs(Convert.ToInt32(EarlyMinutes));
                 }
+                    }
 
 
 
-                //Working Minutes
-                AttendanceDetail last = attendanceDetails.Last();
+                    //Working Minutes
+                    AttendanceDetail last = attendanceDetails.Last();
                 foreach (AttendanceDetail wm in attendanceDetails)
                 {
 
                     if (wm.Equals(last))
                     {
+                            if(model.DateTimeOut == null)
+                            {
+                                attendanceStatus.WorkingMinutes = 0;
+                                break;
+                            }
+                            else if(model.DateTimeIn == null && model.DateTimeOut != null)
+                            {
+                                attendanceStatus.WorkingMinutes = 0;
+                                break;
+                            }
+                            else
                         attendanceStatus.WorkingMinutes += Convert.ToInt32((wm.EndDate.Value - wm.StartDate.Value).TotalMinutes);
                     }
 
@@ -2526,57 +3267,85 @@ namespace HRM.WebAPI.Controllers
                 {
                     switch ((Core.Enum.AttendanceVariable)attendancePolicy.AttendanceVariableId)
                     {
+                        
                         case Core.Enum.AttendanceVariable.FullDay:
-                            //condition full day
-                            if (attendanceStatus.LateMinutes / 60 >= attendancePolicy.Hours.Value || attendanceStatus.EarlyMinutes / 60 <= attendancePolicy.Hours.Value)
+                                //condition full day
+
+                                if(model.DateTimeOut == null && leaveDay ==null)
+                                    attendanceStatus.IsFullDay = true;
+                                else if (model.DateTimeIn == null && leaveDay == null && model.DateTimeOut!=null)
+                                    attendanceStatus.IsFullDay = true;
+
+                                else if ((attendanceStatus.LateMinutes  >= attendancePolicy.Hours.Value * 60 || attendanceStatus.EarlyMinutes  >= attendancePolicy.Hours.Value * 60) && leaveDay == null)
                                 attendanceStatus.IsFullDay = true;
                             else
                                 attendanceStatus.IsFullDay = false;
                             break;
 
                         case Core.Enum.AttendanceVariable.HalfDay:
-                            //condition half day
-                            if (attendanceStatus.LateMinutes / 60 >= attendancePolicy.Hours.Value || attendanceStatus.EarlyMinutes / 60 >= attendancePolicy.Hours.Value)
+                                //condition half day
+                                if (model.DateTimeOut == null && leaveDay == null)
+                                    attendanceStatus.IsHalfDay = true;
+                                else if (model.DateTimeIn == null && leaveDay == null && model.DateTimeOut != null)
+                                    attendanceStatus.IsHalfDay = true;
+                                else if (attendanceStatus.LateMinutes  >= attendancePolicy.Hours.Value * 60 || attendanceStatus.EarlyMinutes  >= attendancePolicy.Hours.Value * 60 && leaveDay == null)
                                 attendanceStatus.IsHalfDay = true;
                             else
                                 attendanceStatus.IsHalfDay = false;
                             break;
-
-                        case Core.Enum.AttendanceVariable.QuarterDay:
-                            //condition quarter day
-                            if (attendanceStatus.LateMinutes / 60 >= attendancePolicy.Hours.Value || attendanceStatus.EarlyMinutes / 60 >= attendancePolicy.Hours.Value)
-                                attendanceStatus.IsQuarterDay = true;
-                            else
-                                attendanceStatus.IsQuarterDay = false;
-                            break;
-
                         case Core.Enum.AttendanceVariable.Late:
-                            //condition IsLate day
-
-                            if ((decimal)attendanceStatus.LateMinutes / 60 >= (decimal)attendancePolicy.Hours.Value)
+                                //condition IsLate day
+                                if (model.DateTimeOut == null && leaveDay == null)
+                                    attendanceStatus.IsLate = false;
+                                else if (model.DateTimeIn == null && leaveDay == null && model.DateTimeOut != null)
+                                    attendanceStatus.IsLate = true;
+                                else if ((decimal)attendanceStatus.LateMinutes  >= attendancePolicy.Hours.Value * 60 && leaveDay == null)
                                 attendanceStatus.IsLate = true;
                             else
                                 attendanceStatus.IsLate = false;
                             break;
-
                         case Core.Enum.AttendanceVariable.Early:
-                            //condition IsEarly day
-                            if ((decimal)attendanceStatus.EarlyMinutes / 60 >= (decimal)attendancePolicy.Hours.Value)
+                                //condition IsEarly day
+                                if (model.DateTimeOut == null && leaveDay == null)
+                                    attendanceStatus.IsEarly = true;
+                                else if (model.DateTimeIn == null && leaveDay == null && model.DateTimeOut != null)
+                                {
+                                     if ((decimal)attendanceStatus.EarlyMinutes >= attendancePolicy.Hours.Value * 60 && leaveDay == null)
+                                        attendanceStatus.IsEarly = true;
+                                }
+                                else if ((decimal)attendanceStatus.EarlyMinutes  >= attendancePolicy.Hours.Value * 60 && leaveDay == null)
                                 attendanceStatus.IsEarly = true;
                             else
                                 attendanceStatus.IsEarly = false;
                             break;
 
-                    }
+                            case Core.Enum.AttendanceVariable.QuarterDay:
+                                //condition quarter day
+                                if (model.DateTimeOut == null && leaveDay == null)
+                                    attendanceStatus.IsQuarterDay = true;
+                                else if (model.DateTimeIn == null && leaveDay == null && model.DateTimeOut != null)
+                                    attendanceStatus.IsQuarterDay = true;
+                                else if (attendanceStatus.LateMinutes >= attendancePolicy.Hours.Value * 60 || attendanceStatus.EarlyMinutes >= attendancePolicy.Hours.Value * 60 && leaveDay == null)
+                                    attendanceStatus.IsQuarterDay = true;
+                                else
+                                    attendanceStatus.IsQuarterDay = false;
+                                break;
+                        }
                 }
                 #endregion Step3
-                #region Step4 - Update Attendance Status
+            #region Step4 - Update Attendance Status
                 attendanceStatus = objAttendanceStatusService.UpdateAttendanceStatus(attendanceStatus);
-                #endregion Step4
+                    #endregion Step4    
+                }
             }
+            catch(Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+            GetAddAttendanceUsers(model.UserId);
             return View(model);
         }
-
+       
         [HttpGet]
         [Authenticate]
         public ActionResult AddAttendance()
@@ -2891,11 +3660,6 @@ namespace HRM.WebAPI.Controllers
 
             ViewBag.BreakTypeList = new SelectList(BreakTypeList, "Value", "Text", "");
         }
-
-
-
-
-
         //[HttpPost]
         //[Authenticate]
         //public ActionResult Browse(string posted = null)
@@ -3210,12 +3974,26 @@ namespace HRM.WebAPI.Controllers
         TimeIn = 2,
         TimeOut = 3
     }
+    public enum Colss
+    {
+        UserId = 0,
+        Date = 1,
+        DateTimeIn = 2,
+        DateTimeOut = 3
+    }
     public class UserDate
     {
         public int UserID { get; set; }
         public DateTime Date { get; set; }
         public DateTime? TimeIn { get; set; }
         public DateTime? TimeOut { get; set; }
+    }
+    public class NewExcelUserDate
+    {
+        public int UserId { get; set; }
+        public DateTime AttendanceDate { get; set; }
+        public DateTime? DateTimeIn { get; set; }
+        public DateTime? DateTimeOut { get; set; }
     }
 }
 

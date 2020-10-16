@@ -48,8 +48,15 @@ namespace HRM.Core.DataTransfer.AttendanceStatus
 		[FieldTypeValidation(DataType=DataTypes.Boolean)]
 		[DataMember (EmitDefaultValue=false)]
 		public string IsApproved{ get; set; }
+        [FieldLength(MaxLength = 2000)]
+        [DataMember(EmitDefaultValue = false)]
+        public string AdminReason { get; set; }
 
-		[FieldLength(MaxLength = 2000)]
+        [FieldTypeValidation(DataType = DataTypes.Boolean)]
+        [DataMember(EmitDefaultValue = false)]
+        public string IsReject { get; set; }
+
+        [FieldLength(MaxLength = 2000)]
 		[DataMember (EmitDefaultValue=false)]
 		public string Remarks{ get; set; }
 

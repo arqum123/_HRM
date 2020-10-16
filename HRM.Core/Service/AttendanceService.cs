@@ -365,6 +365,38 @@ namespace HRM.Core.Service
             }
             return _attendanceList;
         }
+        public List<VMPayslipAbsentInformation> GetAbsentReportEmployee(DateTime? StartDate, DateTime? EndDate, Int32? UserId, Int32? DepartmentId)
+        {
+            List<VMPayslipAbsentInformation> payslipAbsentSummary = new List<VMPayslipAbsentInformation>();
+            DataSet dsAttendance = _iAttendanceRepository.GetAbsentReportByDateUserAndDepartment(StartDate, EndDate, UserId, DepartmentId);
+            if (dsAttendance != null && dsAttendance.Tables.Count > 0 && dsAttendance.Tables[0] != null)
+            {
+                foreach (DataRow dr in dsAttendance.Tables[0].Rows)
+                {
+                    VMPayslipAbsentInformation objAbsent = new VMPayslipAbsentInformation();
+                    objAbsent.AttendanceId = IntNull(dr["AttendanceId"]);
+                    objAbsent.UserId = IntNull(dr["UserId"]);
+                    if (DateNull(dr["AttendanceDate"]) != null)
+                    {
+                        objAbsent.Date = DateNull(dr["AttendanceDate"]).Value;
+                    }
+                    else
+                    {
+                        objAbsent.Date = DateTime.MinValue;
+                    }
+                    if (DateNull(dr["LeaveAttendanceDate"]) != null)
+                    {
+                        objAbsent.LeaveAttendanceDate = DateNull(dr["LeaveAttendanceDate"]).Value;
+                    }
+                    else
+                    {
+                        objAbsent.LeaveAttendanceDate = DateTime.MinValue;
+                    }
+                    payslipAbsentSummary.Add(objAbsent);
+                }
+            }
+            return payslipAbsentSummary;
+        }
         public List<VMAbsentReport> GetAbsentReport(DateTime? StartDate, DateTime? EndDate, Int32? UserId, Int32? DepartmentId)
         {
             List<VMAbsentReport> attendanceSummary = new List<VMAbsentReport>();
@@ -413,13 +445,24 @@ namespace HRM.Core.Service
                     };
                     foreach (DataRow drDetail in dsAttendance.Tables[0].Select("AttendanceId=" + objAttendance.AttendanceId.ToString()))
                     {
-                        VMDailyAttendanceUpdateTime objAttendanceDetail = new VMDailyAttendanceUpdateTime()
-                        {
-                            AttendanceDetailId = IntNull(drDetail["AttendanceDetailId"]),
-                            DateTimeIn = DateNull(drDetail["StartDate"]).Value,
-                            DateTimeOut = DateNull(drDetail["EndDate"]).Value,
-                            IsUpdate = false
-                        };
+                        VMDailyAttendanceUpdateTime objAttendanceDetail = new VMDailyAttendanceUpdateTime();
+                        objAttendanceDetail.AttendanceDetailId = IntNull(drDetail["AttendanceDetailId"]);
+                        if (DateNull(drDetail["StartDate"]) != null)
+                        { 
+                            objAttendanceDetail.DateTimeIn = DateNull(drDetail["StartDate"]).Value;
+                        }
+                        else
+                        { 
+                            objAttendanceDetail.DateTimeIn = DateTime.MinValue;
+                        }
+                        if (DateNull(drDetail["EndDate"])!=null)
+                        { 
+                             objAttendanceDetail.DateTimeOut = DateNull(drDetail["EndDate"]).Value;
+                        }
+                        else { 
+                            objAttendanceDetail.DateTimeOut = DateTime.MinValue;
+                        }
+                        objAttendanceDetail.IsUpdate = false;
                         objAttendance.VMDailyAttendanceUpdateTimeList.Add(objAttendanceDetail);
                     }
                     attendanceSummary.Add(objAttendance);
@@ -626,7 +669,129 @@ namespace HRM.Core.Service
             };
             return attendanceSummary;
         }
+        //New GetEmpDailyAttendance
+        public List<EmpDailyDetailAttendance> GetEmpDailyAttendance(string StartDate, string EndDate, Int32? UserId, Int32? DepartmentId)
+        {
+            List<EmpDailyDetailAttendance> attendanceSummary = new List<EmpDailyDetailAttendance>();
+            DataSet dsAttendance = _iAttendanceRepository.GetMonthlyAttendanceDetailByDateUserAndDepartment(Convert.ToDateTime(StartDate), Convert.ToDateTime(EndDate), UserId, DepartmentId);
+            if (dsAttendance != null && dsAttendance.Tables.Count > 0 && dsAttendance.Tables[0] != null)
+            {
+                //dsAttendance.Tables[0] // Attendance and AttendanceStatus
+                //dsAttendance.Tables[1] // AttendanceDetail  
+                foreach (DataRow dr in dsAttendance.Tables[0].Rows)
+                {
+                    EmpDailyDetailAttendance objAttendance = new EmpDailyDetailAttendance()
+                    {
+                        AttendanceId = Convert.ToInt32(dr["AttendanceId"]),
+                        EmpId = Convert.ToInt32(dr["UserId"]),
+                        AttendanceDate = DateNull(dr["Date"]).Value,
+                        EmpName = dr["FirstName"].ToString(),
+                        DepartmentName = dr["DepartmentName"].ToString(),
+                        IsEarly = Convert.ToBoolean(dr["IsEarly"]),
+                        IsLate = Convert.ToBoolean(dr["IsLate"]),
+                        IsShiftOffDay = Convert.ToBoolean(dr["IsShiftOffDay"]),
+                        IsFullDay = Convert.ToBoolean(dr["IsFullDay"]),
+                        IsHalfDay = Convert.ToBoolean(dr["IsHalfDay"]),
+                        IsQuarterDay = Convert.ToBoolean(dr["IsQuarterDay"]),
+                        EarlyMin = Convert.ToInt32(dr["EarlyMinutes"]),
+                        LateMin = Convert.ToInt32(dr["LateMinutes"]),
+                        WorkingMin = Convert.ToInt32(dr["WorkingMinutes"]),
+                        TotalMin = Convert.ToInt32(dr["TotalMinutes"]),
+                        AtStartDate = DateNull(dr["AtStartDate"]).Value,
+                        ATEndDate = DateNull(dr["ATEndDate"]).Value,
+                        EmpDailyDetailAttendanceDurationList = new List<EmpDailyDetailAttendanceDuration>()
+                    };
+                    foreach (DataRow drDetail in dsAttendance.Tables[0].Select("AttendanceId=" + objAttendance.AttendanceId.ToString()))
+                    {
+                        EmpDailyDetailAttendanceDuration objAttendanceDetail = new EmpDailyDetailAttendanceDuration()
+                        {
+                            AttendanceDetailId = IntNull(drDetail["AttendanceDetailId"]),
+                            ADStartDate = DateNull(drDetail["ADStartDate"]).Value,
+                            ADEndDate = DateNull(drDetail["ADEndDate"]).Value
+                        };
+                        objAttendance.EmpDailyDetailAttendanceDurationList.Add(objAttendanceDetail);
+                    }
+                    attendanceSummary.Add(objAttendance);
+                }
+            };
+            return attendanceSummary;
+        }
+        //New GetEmpMonthlyAttendance
+        public List<EmpMonthlyDetailAttendance> GetEmpMonthlyAttendance(string StartDate, string EndDate, Int32? UserId, Int32? DepartmentId)
+        {
+            List<EmpMonthlyDetailAttendance> attendanceSummary = new List<EmpMonthlyDetailAttendance>();
+            DataSet dsAttendance = _iAttendanceRepository.GetMonthlyAttendanceDetailByDateUserAndDepartment(Convert.ToDateTime(StartDate), Convert.ToDateTime(EndDate), UserId, DepartmentId);
+            if (dsAttendance != null && dsAttendance.Tables.Count > 0 && dsAttendance.Tables[0] != null)
+            {
+                //dsAttendance.Tables[0] // Attendance and AttendanceStatus
+                //dsAttendance.Tables[1] // AttendanceDetail  
+                foreach (DataRow dr in dsAttendance.Tables[0].Rows)
+                {
+                    EmpMonthlyDetailAttendance objAttendance = new EmpMonthlyDetailAttendance();
+                    
+                        objAttendance.AttendanceId = IntNull(dr["AttendanceId"]);
+                        objAttendance.EmpId = IntNull(dr["UserId"]);
+                        objAttendance.AttendanceDate = DateNull(dr["Date"]).Value;
+                        objAttendance.EmpName = dr["FirstName"].ToString();
+                        objAttendance.DepartmentName = dr["DepartmentName"].ToString();
+                        objAttendance.IsEarly = BooleanNull(dr["IsEarly"]);
+                        objAttendance.IsLate = BooleanNull(dr["IsLate"]);
+                        objAttendance.IsShiftOffDay = BooleanNull(dr["IsShiftOffDay"]);
+                        objAttendance.IsFullDay = BooleanNull(dr["IsFullDay"]);
+                        objAttendance.IsHalfDay = BooleanNull(dr["IsHalfDay"]);
+                        objAttendance.IsQuarterDay = BooleanNull(dr["IsQuarterDay"]);
+                        objAttendance.EarlyMin = IntNull(dr["EarlyMinutes"]);
+                        objAttendance.LateMin = IntNull(dr["LateMinutes"]);
+                        objAttendance.WorkingMin = IntNull(dr["WorkingMinutes"]);
+                        objAttendance.TotalMin = IntNull(dr["TotalMinutes"]);
+                    if (DateNull(dr["AtStartDate"]) != null)
+                    {
+                        objAttendance.AtStartDate = DateNull(dr["AtStartDate"]).Value;
+                    }
+                    else
+                    {
+                        objAttendance.AtStartDate = DateTime.MinValue;
+                    }
+                    if (DateNull(dr["ATEndDate"]) != null)
+                    {
+                        objAttendance.ATEndDate = DateNull(dr["ATEndDate"]).Value;
+                    }
+                    else
+                    {
+                        objAttendance.ATEndDate = DateTime.MinValue;
+                    }
 
+                    objAttendance.EmpMonthlyDetailAttendanceDurationList = new List<EmpMonthlyDetailAttendanceDuration>();
+                
+                foreach (DataRow drDetail in dsAttendance.Tables[0].Select("AttendanceId=" + objAttendance.AttendanceId.ToString()))
+                    {
+                        EmpMonthlyDetailAttendanceDuration objAttendanceDetail = new EmpMonthlyDetailAttendanceDuration();
+
+                        objAttendanceDetail.AttendanceDetailId = IntNull(drDetail["AttendanceDetailId"]);
+                        if (DateNull(drDetail["ADStartDate"]) != null)
+                        {
+                            objAttendanceDetail.ADStartDate = DateNull(drDetail["ADStartDate"]).Value;
+                        }
+                        else
+                        {
+                            objAttendanceDetail.ADStartDate = DateTime.MinValue;
+                        }
+                        if (DateNull(drDetail["ADEndDate"]) != null)
+                        {
+                            objAttendanceDetail.ADEndDate = DateNull(drDetail["ADEndDate"]).Value;
+                        }
+                        else
+                        {
+                            objAttendanceDetail.ADEndDate = DateTime.MinValue;
+                        }
+                      
+                        objAttendance.EmpMonthlyDetailAttendanceDurationList.Add(objAttendanceDetail);
+                    }
+                    attendanceSummary.Add(objAttendance);
+                }
+            };
+            return attendanceSummary;
+        }
         //NewForMonthly
         //New GetMonthlyAttendanceReportPractice
         public List<PracticeVMReport> GetMonthlyAttendanceReportPractice(string StartDate, string EndDate, Int32? UserId, Int32? DepartmentId)
@@ -643,36 +808,46 @@ namespace HRM.Core.Service
                 foreach (DataRow dr in dsAttendance.Tables[0].Rows)
                 {
                     PracticeVMReport objAttendance = new PracticeVMReport();
-
                     objAttendance.AttendanceId = IntNull(dr["AttendanceId"]);
                     objAttendance.AttendanceStatudId = IntNull(dr["AttendanceStatudId"]);
                     objAttendance.UserId = IntNull(dr["UserId"]);
                     objAttendance.DepartmentId = IntNull(dr["DepartmentId"]);
-
                     objAttendance.FirstName = Convert.ToString(dr["FirstName"]);
-                    objAttendance.MiddleName = Convert.ToString(dr["MiddleName"]);
-                    objAttendance.LastName = Convert.ToString(dr["LastName"]);
                     objAttendance.DepartmentName = Convert.ToString(dr["DepartmentName"]);
-
                     objAttendance.EarlyMinutes = IntNull(dr["EarlyMinutes"]);
                     objAttendance.OverTimeMinutes = IntNull(dr["OverTimeMinutes"]);
                     objAttendance.LateMinutes = IntNull(dr["LateMinutes"]);
                     objAttendance.WorkingMinutes = IntNull(dr["WorkingMinutes"]);
                     objAttendance.TotalMinutes = IntNull(dr["TotalMinutes"]);
-                    objAttendance.IsShiftOffDay = Convert.ToBoolean(dr["IsShiftOffDay"]);
-                    objAttendance.IsHalfDay = Convert.ToBoolean(dr["IsHalfDay"]);
-                    objAttendance.IsQuarterDay = Convert.ToBoolean(dr["IsQuarterDay"]);
-                    objAttendance.IsFullDay = Convert.ToBoolean(dr["IsFullDay"]);
-                    objAttendance.IsEarly = Convert.ToBoolean(dr["IsEarly"]);
-                    objAttendance.IsLate = Convert.ToBoolean(dr["IsLate"]);
+                    objAttendance.IsShiftOffDay = BooleanNull(dr["IsShiftOffDay"]);
+                    objAttendance.IsHalfDay = BooleanNull(dr["IsHalfDay"]);
+                    objAttendance.IsQuarterDay = BooleanNull(dr["IsQuarterDay"]);
+                    objAttendance.IsFullDay = BooleanNull(dr["IsFullDay"]);
+                    objAttendance.IsEarly = BooleanNull(dr["IsEarly"]);
+                    objAttendance.IsLate = BooleanNull(dr["IsLate"]);
+                    objAttendance.Date = DateNull(dr["Date"]).Value; //AttendanceDate
+                  /*  objAttendance.ATStartDate = DateNull(dr["ATStartDate"]).Value;*/ //AT->Attendance Table
+                    if (DateNull(dr["ATStartDate"]).HasValue)
+                    {
+                        objAttendance.ATStartDate = DateNull(dr["ATStartDate"]).Value;
+                    } //AT->Attendance Table }
 
-                    objAttendance.Date = Convert.ToDateTime(dr["Date"]); //AttendanceDate
-                    objAttendance.ATStartDate = Convert.ToDateTime(dr["ATStartDate"]); //AT->Attendance Table
-                    objAttendance.ATEndDate = Convert.ToDateTime(dr["ATEndDate"]); //AT->Attendance Table
+                    else
+                    {
+                        objAttendance.ATStartDate = DateTime.MinValue;
+                    }
+                    if (DateNull(dr["ATEndDate"]).HasValue)
+                    {
+                        objAttendance.ATEndDate = DateNull(dr["ATEndDate"]).Value;
+                    } //AT->Attendance Table }
 
-                    objAttendance.Designation = Convert.ToString(dr["Designation"]);
+                    else
+                    {
+                        objAttendance.ATEndDate = DateTime.MinValue;
+                    }
+
+                        objAttendance.Designation = Convert.ToString(dr["Designation"]);
                     objAttendance.NICNo = Convert.ToString(dr["NICNo"]);
-
                     attendanceSummary.Add(objAttendance);
                 }
             }
@@ -695,22 +870,26 @@ namespace HRM.Core.Service
                         AttendanceId = Convert.ToInt32(dr["AttendanceId"]),
                         Date = Convert.ToDateTime(dr["Date"]),
                         FirstName = dr["FirstName"].ToString(),
-                        MiddleName = dr["MiddleName"].ToString(),
-                        LastName = dr["LastName"].ToString(),
                         IsEarly = Convert.ToBoolean(dr["IsEarly"]),
+                        IsFullDay = Convert.ToBoolean(dr["IsFullDay"]),
+                        IsHalfDay = Convert.ToBoolean(dr["IsHalfDay"]),
+                        IsQuarterDay = Convert.ToBoolean(dr["IsQuarterDay"]),
                         IsLate = Convert.ToBoolean(dr["IsLate"]),
                         EarlyMinutes = Convert.ToInt32(dr["EarlyMinutes"]),
                         LateMinutes = Convert.ToInt32(dr["LateMinutes"]),
+                        WorkingMinutes = Convert.ToInt32(dr["WorkingMinutes"]),
+                        TotalMinutes = Convert.ToInt32(dr["TotalMinutes"]),
                         PracticeVMDetailReportList = new List<PracticeVMDetailReport>()
                     };
                     foreach (DataRow drDetail in dsAttendance.Tables[0].Select("AttendanceId=" + objAttendance.AttendanceId.ToString()))
                     {
-                        PracticeVMDetailReport objAttendanceDetail = new PracticeVMDetailReport()
-                        {
-                            AttendanceDetailId = IntNull(drDetail["AttendanceDetailId"]),
-                            ADStartDate = DateNull(drDetail["ADStartDate"]).Value,
-                            ADEndDate = DateNull(drDetail["ADEndDate"]).Value
-                        };
+                        PracticeVMDetailReport objAttendanceDetail = new PracticeVMDetailReport();
+                        objAttendanceDetail.AttendanceDetailId = IntNull(drDetail["AttendanceDetailId"]);
+                        objAttendanceDetail.ADStartDate = DateNull(drDetail["ADStartDate"]).Value;
+                        if (DateNull(drDetail["ADEndDate"]).HasValue)
+                            objAttendanceDetail.ADEndDate = DateNull(drDetail["ADEndDate"]).Value;
+                        else
+                            objAttendanceDetail.ADEndDate = DateTime.MinValue;
                         objAttendance.PracticeVMDetailReportList.Add(objAttendanceDetail);
                     }
                     attendanceSummary.Add(objAttendance);
@@ -781,8 +960,36 @@ namespace HRM.Core.Service
         //    return monthlySummary;
         //}
 
-        
-        public List<User> GetMonthlyAttendanceSummary(DateTime dtStart, DateTime dtEnd, Int32? UserID, string UserName, Int32? BranchID, string DepartmentName, Int32? ShiftID, Int32? SalaryTypeId)
+        public List<AttendanceAndAttendanceStatusViewList> GetAttendanceAndAttendanceStatusByUserIdAndDateRangeList(DateTime StartDate, DateTime EndDate, Int32? UID)
+        {
+           List<AttendanceAndAttendanceStatusViewList> attendanceSummary = new List<AttendanceAndAttendanceStatusViewList>();
+            DataSet dsAttendance = _iAttendanceRepository.GetAttendanceAndAttendanceStatusByUserIdAndDateRange(Convert.ToDateTime(StartDate), Convert.ToDateTime(EndDate), UID);
+            if (dsAttendance != null && dsAttendance.Tables.Count > 0 && dsAttendance.Tables[0] != null)
+            {
+                //dsAttendance.Tables[0] // Attendance and AttendanceStatus
+                //dsAttendance.Tables[1] // AttendanceDetail  
+                foreach (DataRow dr in dsAttendance.Tables[0].Rows)
+                {
+                    AttendanceAndAttendanceStatusViewList objAttendance = new AttendanceAndAttendanceStatusViewList()
+                    {
+                        AttendanceID = Convert.ToInt32(dr["AttendanceId"]),
+                        UserID = Convert.ToInt32(dr["UserId"]),
+                        AttendanceDate = Convert.ToDateTime(dr["AttendanceDate"]),
+                        IsShiftOffDay = BooleanNull(dr["IsShiftOffDay"]),
+                        IsEarly = BooleanNull(dr["IsEarly"]),
+                        IsQuarterDay = BooleanNull(dr["IsQuarterDay"]),
+                        IsLate = BooleanNull(dr["IsLate"]),
+                        IsFullDay = BooleanNull(dr["IsFullDay"]),
+                        IsHalfDay = BooleanNull(dr["IsHalfDay"]),
+                        IsLeaveDay = BooleanNull(dr["IsLeaveDay"]),
+                        IsHoliday = BooleanNull(dr["IsHoliday"]),
+                    };
+                    attendanceSummary.Add(objAttendance);
+                }
+            };
+            return attendanceSummary;
+        }
+    public List<User> GetMonthlyAttendanceSummary(DateTime dtStart, DateTime dtEnd, Int32? UserID, string UserName, Int32? BranchID, string DepartmentName, Int32? ShiftID, Int32? SalaryTypeId)
         {
             List<User> monthlySummary = new List<User>();
             DataSet dsUser = _iAttendanceRepository.GetMonthlyAttendanceSummary(dtStart,dtEnd, UserID,UserName,BranchID, DepartmentName, ShiftID, SalaryTypeId);
@@ -834,6 +1041,10 @@ namespace HRM.Core.Service
         public List<Attendance> GetAttendanceByDateRange(DateTime dtStart, DateTime dtEnd, string SelectClause = null)
         {
             return _iAttendanceRepository.GetAttendanceByDateRange(dtStart, dtEnd, SelectClause);
+        }
+        public List<Attendance> GetAttendanceByUserIdAndDateRange(DateTime dtStart, DateTime dtEnd, Int32? UserID,string SelectClause = null)
+        {
+            return _iAttendanceRepository.GetAttendanceByUserIdAndDateRange(dtStart, dtEnd, UserID,SelectClause);
         }
 
         //NewAttendanceStatus
@@ -1193,6 +1404,7 @@ namespace HRM.Core.Service
         {
             return _iAttendanceRepository.GetAttendanceByDateRange(dtStart, dtEnd, BranchID, SelectClause);
         }
+
         //New AttendanceStatus
         //public List<Attendance> GetAttendanceStatusByDateRange(DateTime dtStart, DateTime dtEnd,string SelectClause = null)
         //{

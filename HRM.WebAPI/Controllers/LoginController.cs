@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using HRM.Core.Helper;
+using System.Web.Security;
 
 namespace HRM.WebAPI.Controllers
 {
@@ -48,8 +49,8 @@ namespace HRM.WebAPI.Controllers
                 {
                     IUserService objUserService = IoC.Resolve<IUserService>("UserService");
                     User _User = objUserService.GetUserWithDepartment(model.LoginID);
-
                     //if (_User != null && HashData.VerifyHash(model.Password, "MD5", _User.Password))
+
                     if (_User != null && model.Password == _User.Password)
                     {
                         AuthBase.UserId = _User.Id;
@@ -85,7 +86,10 @@ namespace HRM.WebAPI.Controllers
                         if (!string.IsNullOrEmpty(returnUrl))
                             return Redirect(returnUrl);
                         if (key == null)
+                        {
+                            FormsAuthentication.SetAuthCookie(_User.FirstName,model.RememberMe,_User.Id.ToString());
                             return RedirectToAction("index", "home");
+                        }
                     }
                 }
                 catch (Exception ex)

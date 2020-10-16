@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using HRM.Core.Entities;
 using HRM.Core.DataTransfer;
 using HRM.Core.DataTransfer.Attendance;
+using HRM.Core.Model;
 
 namespace HRM.Core.IService
 {
@@ -24,6 +25,7 @@ namespace HRM.Core.IService
         List<Attendance> GetAllAttendance();
         List<Attendance> GetAllAttendanceWithAttendanceDetail(string StartDate, string EndDate);
         List<Attendance> GetAllAttendanceByDateUserWithDetail(string StartDate, string EndDate, Int32? UID);
+        List<AttendanceAndAttendanceStatusViewList> GetAttendanceAndAttendanceStatusByUserIdAndDateRangeList(DateTime StartDate, DateTime EndDate, Int32? UID);
         List<Attendance> GetAllAttendanceByDateUserWithDetail(string StartDate, string EndDate, Int32? UID,Int32? BranchId);
         List<Attendance> GetDailyAttendanceUpdateByDateUserWithDetail(string StartDate, string EndDate, Int32? UID, Int32? BranchId);
         List<HRM.Core.Model.VMAttendanceSummary> GetDailyAttendanceSummary(string StartDate, string EndDate, Int32? UserId, Int32? BranchId, string DepartmentName, Int32? ShiftID, Int32? SalaryTypeId);
@@ -44,10 +46,14 @@ namespace HRM.Core.IService
 
         //New PracticeMonthlyReportDetailPractice
         List<HRM.Core.Model.PracticeVMReport> GetMonthlyDetailAttendanceReportPractice(string StartDate, string EndDate, Int32? UserId, Int32? DepartmentId);
+        List<HRM.Core.Model.EmpDailyDetailAttendance> GetEmpDailyAttendance(string StartDate, string EndDate, Int32? UserId, Int32? DepartmentId);
+        List<HRM.Core.Model.EmpMonthlyDetailAttendance> GetEmpMonthlyAttendance(string StartDate, string EndDate, Int32? UserId, Int32? DepartmentId);
         List<HRM.Core.Model.VMDailyAttendanceUpdateStatus> GetDailyAttendanceUpdateSummary(DateTime StartDate, DateTime EndDate, Int32? UserId);
 
         //New For AbsentReport
         List<HRM.Core.Model.VMAbsentReport> GetAbsentReport(DateTime? StartDate, DateTime? EndDate, Int32? UserId, Int32? DepartmentId);
+
+        List<HRM.Core.Model.VMPayslipAbsentInformation> GetAbsentReportEmployee(DateTime? StartDate, DateTime? EndDate, Int32? UserId, Int32? DepartmentId);
         Attendance InsertAttendance(Attendance entity);
 
         DataTransfer<GetOutput> Get(string id);
@@ -58,6 +64,7 @@ namespace HRM.Core.IService
         
         List<Attendance> GetAttendanceByDate(DateTime dtAttendance, string SelectClause = null);
         List<Attendance> GetAttendanceByDateRange(DateTime dtStart, DateTime dtEnd, string SelectClause = null);
+        List<Attendance> GetAttendanceByUserIdAndDateRange(DateTime dtStart, DateTime dtEnd,Int32? UserID, string SelectClause = null);
         List<Attendance> GetAttendanceByUserIDAndDate(int userId, DateTime dtAttendance, string SelectClause = null);
 
         List<Attendance> GetAttendanceByDate(DateTime dtAttendance, int BranchID, string SelectClause = null);

@@ -19,6 +19,7 @@ namespace HRM.Core.DataInterfaces
 		PayrollCycle UpdatePayrollCycle(PayrollCycle entity);
 		PayrollCycle UpdatePayrollCycleByKeyValue (Dictionary<string, string> UpdateKeyValue, System.Int32 Id);
 		bool DeletePayrollCycle(System.Int32 Id);
+
 		PayrollCycle DeletePayrollCycle(PayrollCycle entity);
 		List<PayrollCycle> GetPagedPayrollCycle(string orderByClause, int pageSize, int startIndex,out int count, List<SearchColumn> searchColumns,string SelectClause=null);
 		List<PayrollCycle> GetAllPayrollCycle(string SelectClause=null);

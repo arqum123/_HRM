@@ -11,6 +11,7 @@ using HRM.Core.Helper;
 
 namespace HRM.WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin,Employee")]
     public class HomeController : Controller
     {
         [Authenticate]
@@ -196,6 +197,7 @@ namespace HRM.WebAPI.Controllers
 
         [HttpGet]
         [Authenticate]
+
         public ActionResult PartialBranch()
         {
             List<Branch> lstBranch = IoC.Resolve<IBranchService>("BranchService").GetAllBranch();

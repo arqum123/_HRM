@@ -11,6 +11,7 @@ namespace HRM.Core.Model
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int? UserId { get; set; }
+        public string UserName { get; set; }
         public List<User> UserList { get; set; }
         public List<VMDailyAttendanceUpdateStatus> VMDailyAttendanceUpdateStatusList { get; set; }
         public List<VMDailyAttendanceUpdateTime> VMDailyAttendanceUpdateTimeList { get; set; }

@@ -82,8 +82,8 @@ namespace HRM.Core.Entities
 
         public virtual bool Equals(PayrollCycleBase other)
         {
-			if(this.Id==other.Id  && this.Name==other.Name  && this.Month==other.Month  && this.Year==other.Year  && this.IsActive==other.IsActive  && this.CreationDate==other.CreationDate  && this.UpdateDate==other.UpdateDate  && this.UpdateBy==other.UpdateBy  && this.UserIp==other.UserIp )
-			{
+			if(this.Id==other.Id  && this.Name==other.Name  && this.Month==other.Month  && this.Year==other.Year  && this.IsActive==other.IsActive  && this.CreationDate==other.CreationDate  && this.UpdateDate==other.UpdateDate  && this.UpdateBy==other.UpdateBy  && this.UserIp==other.UserIp && this.IsFinal == other.IsFinal)
+            {
 				return true;
 			}
 			else

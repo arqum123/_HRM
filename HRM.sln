@@ -99,6 +99,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB 4Mar20", "DB 4Mar20", "{
 		Rigelonic HR DB.sql = Rigelonic HR DB.sql
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Truncate DB", "Truncate DB", "{B2D91DC6-9069-44C3-8A27-10DDBE10346F}"
+	ProjectSection(SolutionItems) = preProject
+		truncateDB.txt = truncateDB.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -192,32 +197,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BC5C40E7-9C17-4126-9DDB-71B758809CE9}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 8
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://deeraf.visualstudio.com/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = HRM.ADO.Core\\HRM.ADO.Core.csproj
-		SccProjectName1 = HRM.ADO.Core
-		SccLocalPath1 = HRM.ADO.Core
-		SccProjectUniqueName2 = HRM.Core\\HRM.Core.csproj
-		SccProjectName2 = HRM.Core
-		SccLocalPath2 = HRM.Core
-		SccProjectUniqueName3 = HRM.Repository\\HRM.Repository.csproj
-		SccProjectName3 = HRM.Repository
-		SccLocalPath3 = HRM.Repository
-		SccProjectUniqueName4 = HRM.WebAPI\\HRM.WebAPI.csproj
-		SccProjectName4 = HRM.WebAPI
-		SccLocalPath4 = HRM.WebAPI
-		SccProjectUniqueName5 = HRM.WinService\\HRM.WinService.csproj
-		SccProjectName5 = HRM.WinService
-		SccLocalPath5 = HRM.WinService
-		SccProjectUniqueName6 = HRM.WinServiceLibrary\\HRM.WinServiceLibrary.csproj
-		SccProjectName6 = HRM.WinServiceLibrary
-		SccLocalPath6 = HRM.WinServiceLibrary
-		SccProjectUniqueName7 = HRM.WinServiceTest\\HRM.WinServiceTest.csproj
-		SccProjectName7 = HRM.WinServiceTest
-		SccLocalPath7 = HRM.WinServiceTest
 	EndGlobalSection
 EndGlobal

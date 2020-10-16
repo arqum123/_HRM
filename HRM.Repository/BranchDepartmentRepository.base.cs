@@ -269,7 +269,6 @@ namespace HRM.Repository
 		[MOLog(AuditOperations.Update,typeof(BranchDepartment))]
 		public virtual BranchDepartment UpdateBranchDepartment(BranchDepartment entity)
 		{
-
 			if (entity.IsTransient()) return entity;
 			BranchDepartment other = GetBranchDepartment(entity.Id);
 			if (entity.Equals(other)) return entity;

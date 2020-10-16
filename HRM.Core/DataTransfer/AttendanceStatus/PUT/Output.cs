@@ -37,8 +37,13 @@ namespace HRM.Core.DataTransfer.AttendanceStatus
 
 		[DataMember (EmitDefaultValue=false)]
 		public System.Boolean? IsApproved{ get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public System.String AdminReason { get; set; }
 
-		[DataMember (EmitDefaultValue=false)]
+        [DataMember(EmitDefaultValue = false)]
+        public System.Boolean? IsReject { get; set; }
+
+        [DataMember (EmitDefaultValue=false)]
 		public System.String Remarks{ get; set; }
 
 		[DataMember (EmitDefaultValue=false)]

@@ -11,6 +11,7 @@ namespace HRM.Core.DataInterfaces
 	{
         List<Attendance> GetAttendanceByDate(DateTime dtAttendance, string SelectClause = null);
         List<Attendance> GetAttendanceByDateRange(DateTime dtStart, DateTime dtEnd, string SelectClause = null);
+        List<Attendance> GetAttendanceByUserIdAndDateRange(DateTime dtStart, DateTime dtEnd,Int32? UserID, string SelectClause = null);
         List<Attendance> GetAttendanceByUserIDAndDate(int userId, DateTime dtAttendance, string SelectClause = null);
 
         List<Attendance> GetAttendanceByDate(DateTime dtAttendance, int BranchID, string SelectClause = null);
@@ -18,6 +19,7 @@ namespace HRM.Core.DataInterfaces
 
         void InsertPreAttendance();
         System.Data.DataSet GetAttendanceByDateAndUser(DateTime dtStart, DateTime dtEnd, Int32? UserID);
+        System.Data.DataSet GetAttendanceAndAttendanceStatusByUserIdAndDateRange(DateTime StartDate, DateTime EndDate, Int32? UserID);
         System.Data.DataSet GetAttendanceByDateAndUser(DateTime dtStart, DateTime dtEnd, Int32? UserID, Int32? BranchID);
         System.Data.DataSet GetAttendanceByDateAndUserUpdate(DateTime StartDate, DateTime EndDate, Int32? UserID);
         System.Data.DataSet GetDailyAttendanceByDateTypeShiftBranch(DateTime dtStart, DateTime dtEnd, Int32? BranchId, string DepartmentName, Int32? ShiftID, Int32? SalaryTypeId);

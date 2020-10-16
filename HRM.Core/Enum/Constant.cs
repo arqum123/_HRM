@@ -32,12 +32,12 @@ namespace HRM.Core.Enum
     {
         FullDay = 1,
         HalfDay = 2,
-        QuarterDay = 3,
         OverTime = 4,
         CompensatoryHours = 5,
         StandardHours = 6,
         Early=7,
-        Late=8
+        Late=8,
+        QuarterDay = 9
     }
     public enum DeviceConnectionType
     {
@@ -70,15 +70,24 @@ namespace HRM.Core.Enum
 
     public enum PayrollVariable
     {
-        QuarterDay = 1,
-        HalfDay = 2,
-        FullDay = 3,
-        Absent = 4,
-        IncomeTax = 5,
-        CompensatoryLeave = 6,
-        Bonus = 7,
-        OverTime = 8,
-        Early = 9,
-        Late = 10
+        //QuarterDay = 1,
+        //HalfDay = 2,
+        //FullDay = 3,
+        //Absent = 4,
+        //IncomeTax = 5,
+        //CompensatoryLeave = 6,
+        //Bonus = 7,
+        //OverTime = 8,
+        //Early = 9,
+        //Late = 10
+        FullDay = 1,
+        HalfDay = 3,
+        QuarterDay= 4,
+        Early = 5,
+        Late = 6,
+        Absent = 7,
+        Transport = 8
+
+
     }
 }

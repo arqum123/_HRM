@@ -22,8 +22,10 @@ namespace HRM.Core.DataTransfer.PayrollCycle
 
 		[DataMember (EmitDefaultValue=false)]
 		public System.Boolean? IsActive{ get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public System.Boolean? IsFinal { get; set; }
 
-		[IgnoreDataMember]
+        [IgnoreDataMember]
 		public System.DateTime? CreationDate{ get; set;}
 
 

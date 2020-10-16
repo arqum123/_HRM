@@ -1,0 +1,209 @@
+﻿@model HRM.Core.Model.VMApprovedLeaves
+@{
+    ViewBag.Title = "HRMS - Employees Approved Leaves History";
+}
+<style>
+    th {
+        text-align: left;
+    }
+</style>
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B">
+        <i class="glyph-icon icon-table"></i>Approved Leaves
+        <div class="col-sm-3" style="float: right;">
+            <a href="javascript:;" onclick="Print(1);" style="float: right">
+                <img src="/assets/images/printer.png" style="width: 20px" />&nbsp;Print
+            </a>
+        </div>
+    </h3>
+    @using (Html.BeginForm("ApprovedLeaves", "Leave", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "DailyAttendanceListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+        <div class="form-group">
+            <label for="UserName" class="col-sm-4 control-label lblforinput">Employee</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.UserName, new { maxlength = "200", @class = "form-control", placeholder = "User Name" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                <label for="UserID" class="col-sm-4 control-label lblforinput">Employee: </label>
+                <div class="col-sm-6">
+                    @Html.DropDownListFor(m => m.UserID, ViewBag.User as SelectList, "All Employee", new { @class = "form-control" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Department: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.DepartmentID, ViewBag.Department as SelectList, "All Department", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="StartDate" class="col-sm-4 control-label lblforinput">From: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.StartDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control startdate" })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                @*<a href="javascript:void();" class="floatright settoday">Set Day</a>*@
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="StartDate" class="col-sm-4 control-label lblforinput">To: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.EndDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control startdate" })
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                @*<a href="javascript:void();" class="floatright settoday">Set Day</a>*@
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Search</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+
+
+
+    @if (Model != null && Model.VMApprovedAllLeavesList != null)
+    {
+        if (Model.VMApprovedAllLeavesList.Count > 0)
+        {
+            <table class="table table-hover dataTable table-striped width-full" id="myTable">
+                <thead>
+                    <tr>
+                        <th>SNO</th>
+                        <th>@Html.ActionLink("Date", "ApprovedLeaves", new { UserName = Model.UserName, DepartmentName = Model.DepartmentName, StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "Date", PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</th>
+                        <th>Employee</th>
+                        <th>Department</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Comments</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int sno = 0;
+                    }
+                    @for (int i = 0; i < Model.VMApprovedAllLeavesList.Count; i++)
+                    {
+                        { sno++; }
+                        <tr>
+                            <td>@sno</td>
+                            <td>@Model.VMApprovedAllLeavesList[i].Date.ToString("dd-MMM-yyyy")</td>
+                            <td>@Model.VMApprovedAllLeavesList[i].EmpName</td>
+                            <td>@Model.VMApprovedAllLeavesList[i].DepartmentName</td>
+                            <td>@Model.VMApprovedAllLeavesList[i].Reason</td>
+                            @if (@Model.VMApprovedAllLeavesList[i].IsApproved == true)
+                            {
+                                <td>Approved</td>
+                            }
+                            @if (@Model.VMApprovedAllLeavesList[i].AdminReason == null || @Model.VMApprovedAllLeavesList[i].AdminReason == "")
+                            {
+                                <td>N/A</td>
+                            }
+                            else
+                            {
+                                <td>@Model.VMApprovedAllLeavesList[i].AdminReason</td>
+                            }
+
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+                        if (ViewBag.TotalPages != null)
+                        {
+                            double TotalPages = ViewBag.TotalPages;
+                            if (TotalPages > 1)
+                            {
+                <ul class="pagination">
+                    <li>@Html.ActionLink("First", "ApprovedLeaves", new { UserName = Model.UserName, DepartmentName = Model.DepartmentName, StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = 1 })</li>
+
+                    @if (ViewBag.PageNumber == 1)
+                    {
+                        <li>@Html.ActionLink("Previous", "ApprovedLeaves", new { UserName = Model.UserName, DepartmentName = Model.DepartmentName, StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Previous", "ApprovedLeaves", new { UserName = Model.UserName, DepartmentName = Model.DepartmentName, StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber - 1 })</li>
+                    }
+
+                    @for (int i = 1; i <= TotalPages; i++)
+                    {
+
+
+                        if (i == ViewBag.PageNumber)
+                        {
+                            <li class="active">@Html.ActionLink(i.ToString(), "ApprovedLeaves", new { UserName = Model.UserName, DepartmentName = Model.DepartmentName, StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</li>
+                        }
+                        else
+                        {
+                            <li>@Html.ActionLink(i.ToString(), "ApprovedLeaves", new { UserName = Model.UserName, DepartmentName = Model.DepartmentName, StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = i.ToString() })</li>
+                            @*<li><a href="/Attendance/MonthlyAttendanceReport?SortOrder=Asc&SortBy=Date&StartDate=@Model.StartDate&EndDate=@Model.EndDate&PageNumber?=@i">@i</a></li>*@
+                        }
+
+
+                    }
+                    @if (ViewBag.PageNumber == TotalPages)
+                    {
+                        <li>@Html.ActionLink("Next", "ApprovedLeaves", new { UserName = Model.UserName, DepartmentName = Model.DepartmentName, StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Next", "ApprovedLeaves", new { UserName = Model.UserName, DepartmentName = Model.DepartmentName, StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber + 1 })</li>
+                    }
+                    <li>@Html.ActionLink("Last", "ApprovedLeaves", new { UserName = Model.UserName, DepartmentName = Model.DepartmentName, StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = TotalPages })</li>
+                </ul>
+                                }
+                            }
+                        }
+
+        @*else
+            {
+                <div class="form-group">
+                    <div class="row row-lg">
+                        <div class="col-sm-12">
+                            <h4 style="text-align:center" class="alert-danger">No Records were found</h4>
+                            <br />
+                        </div>
+
+                        <div class="col-sm-5"></div>
+                    </div>
+                </div>
+            }*@
+    }
+
+</div>
+        </div>
+<div class="form-group">
+    <div class="col-sm-12">&nbsp;</div>
+</div>
+<div class="form-group row control-label">
+    <div class="col-sm-4">
+        @*<h3>Leave History Of Previous Months</h3>*@
+        @*@DateTime.Now.AddDays(-30).ToString("MMMM yyyy")*@
+    </div>
+</div>
+
+<div class="row row-lg">
+    <div class="col-sm-12">
+
+
+
+    </div>
+</div>
+
+    </div>
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
+</script>

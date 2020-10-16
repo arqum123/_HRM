@@ -1,0 +1,308 @@
+﻿@model HRM.Core.Model.VMViewPendingLeaves
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "HRMS - Manage Leaves";
+    WebGrid grid = new WebGrid(Model.VMPendingViewAllLeavesList, canSort: true, canPage: true, rowsPerPage: 10);//whenever rowsperpage will be changed, change it in script as well
+}
+<style>
+    th {
+        text-align: left;
+    }
+</style>
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B">
+        <i class="glyph-icon icon-table"></i>Manage Leaves
+        <div class="col-sm-3" style="float: right;">
+            <a href="javascript:;" onclick="Print(1);" style="float: right">
+                <img src="/assets/images/printer.png" style="width: 20px" />&nbsp;Print
+            </a>
+        </div>
+    </h3>
+    @using (Html.BeginForm("ManageLeaves", "Leave", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "DailyAttendanceListForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+        <div class="form-group">
+            <label for="UserName" class="col-sm-4 control-label lblforinput">Employee</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.UserName, new { maxlength = "200", @class = "form-control", placeholder = "User Name" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Department: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.DepartmentID, ViewBag.Department as SelectList, "All Department", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="StartDate" class="col-sm-4 control-label lblforinput">From: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.StartDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control startdate" })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                @*<a href="javascript:void();" class="floatright settoday">Set Day</a>*@
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="StartDate" class="col-sm-4 control-label lblforinput">To: </label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.EndDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control startdate" })
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                @*<a href="javascript:void();" class="floatright settoday">Set Day</a>*@
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Search</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+
+    @if (Model != null && Model.VMPendingViewAllLeavesList != null && Model.VMPendingViewAllLeavesList.Count > 0)
+    {
+
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" name="SaveAll" class="btn btn-block btn-success SaveAll">Save All</button>
+                <br />
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+
+        <table class="table table-hover dataTable table-striped width-full" id="TableEditTbody">
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>@Html.ActionLink("Date", "ManageLeaves", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "Date", PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</th>
+                    <th>Reason</th>
+                    <th>Employee</th>
+                    <th>Department</th>
+                    <th>Pending Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int sno = 0;
+                }
+                @for (int i = 0; i < Model.VMPendingViewAllLeavesList.Count; i++)
+                {
+                    sno++;
+                    <tr id="@sno">
+                        <input type="hidden" name="UserID" class="UserID" value="@Model.VMPendingViewAllLeavesList[i].UserID" />
+                        <input type="hidden" name="DepartmentID" class="DepartmentID" value="@Model.VMPendingViewAllLeavesList[i].DepartmentID" />
+                        <input type="hidden" name="LeaveID" class="LeaveID" value="@Model.VMPendingViewAllLeavesList[i].LeaveID" />
+                        <td class="sno">@sno</td>
+                        <td class="Date">@Model.VMPendingViewAllLeavesList[i].Date.ToString("dd-MMM-yyyy")</td>
+                        <td class="Reason">@Model.VMPendingViewAllLeavesList[i].Reason</td>
+                        <td>@Model.VMPendingViewAllLeavesList[i].EmpName</td>
+                        <td>@Model.VMPendingViewAllLeavesList[i].DepartmentName</td>
+                        <td>
+                            <table class="table table-striped table-hover datatable SecondTable">
+                                @*<thead>
+                                    </thead>*@
+                                <tbody>
+                                    <tr class="SubTR @sno">
+                                        <td style="display:none"><input type="hidden" name="sno" value="@sno" />@sno</td>
+                                        <td>
+                                            <input type="checkbox" class="checkbox" name="checkbox" value="checkbox">
+                                        </td>
+                                        <td>
+                                            <input type="submit" class="btn btn-block btn-success LeaveAccept" id="" name="IsAccept" disabled="disabled" value="Accept" />
+                                            <input type="hidden" name="IsApproved" class="IsApproved" value="false" />
+                                        </td>
+                                        <td>
+                                            <input type="submit" name="IsReject" class="btn btn-block btn-danger LeaveReject" id="" disabled="disabled" value="Reject" />
+                                            <input type="hidden" name="IsReject" class="IsReject" value="false" />
+                                        </td>
+                                        <td>
+                                            @*<textarea type="text" name="AdminComments" class="AdminComments" value="" disabled="disabled" />*@
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+                    if (ViewBag.TotalPages != null)
+                    {
+                        double TotalPages = ViewBag.TotalPages;
+                        if (TotalPages > 1)
+                        {
+            <ul class="pagination">
+                <li>@Html.ActionLink("First", "ManageLeaves", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = 1 })</li>
+
+                @if (ViewBag.PageNumber == 1)
+                {
+                    <li>@Html.ActionLink("Previous", "ManageLeaves", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Previous", "ManageLeaves", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = ViewBag.PageNumber - 1 })</li>
+                }
+
+                @for (int i = 1; i <= TotalPages; i++)
+                {
+
+
+                    if (i == ViewBag.PageNumber)
+                    {
+                        <li class="active">@Html.ActionLink(i.ToString(), "ManageLeaves", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink(i.ToString(), "ManageLeaves", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = i.ToString() })</li>
+                        @*<li><a href="/Attendance/MonthlyAttendanceReport?SortOrder=Asc&SortBy=Date&StartDate=@Model.StartDate&EndDate=@Model.EndDate&PageNumber?=@i">@i</a></li>*@
+                    }
+
+
+                }
+                @if (ViewBag.PageNumber == TotalPages)
+                {
+                    <li>@Html.ActionLink("Next", "ManageLeaves", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Next", "ManageLeaves", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = ViewBag.PageNumber + 1 })</li>
+                }
+                <li>@Html.ActionLink("Last", "ManageLeaves", new { StartDate = Model.StartDate, EndDate = Model.EndDate, SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder), SortBy = "Date", PageNumber = TotalPages })</li>
+            </ul>
+                            }
+                        }
+
+                    }
+                    else
+                    {
+        <div class="form-group">
+            <div class="row row-lg">
+                <div class="col-sm-12 error">
+                    <h4 style="text-align:center" class="alert-danger">No Records were found</h4>
+                    <br />
+                </div>
+
+                <div class="col-sm-5"></div>
+            </div>
+        </div>
+    }
+</div>
+<div class="form-group">
+    <div class="col-sm-12">&nbsp;</div>
+</div>
+<div class="form-group row control-label">
+    <div class="col-sm-4">
+        @*<h3>Leave History Of Previous Months</h3>*@
+        @*@DateTime.Now.AddDays(-30).ToString("MMMM yyyy")*@
+    </div>
+</div>
+<div class="row row-lg">
+    <div class="col-sm-12">
+    </div>
+</div>
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>*@
+<script>
+    //Checkbox Edit
+    $(function () {
+        $('.error').fadeOut(500);
+        $('.checkbox').click(function () {
+            if ($(this).prop("checked") == true) {
+                //If checked -> enable Accept,Leave and Comment box
+                $(this).closest('tr').find('.LeaveAccept').prop("disabled", false);
+                $(this).closest('tr').find('.LeaveReject').prop("disabled", false);
+                $(this).closest('tr').find('.AdminComments').prop("disabled", false);
+                $(this).closest('tr').find('.LeaveAccept').click(function () {
+                     //If Accept-> change Accept text to Accepted
+                    $(this).closest('tr').find('.IsApproved').val("true");
+                    $(this).closest('tr').find('.LeaveAccept').prop("value", "Accepted");
+                    $(this).closest('tr').find('.LeaveAccept').prop("disabled", true);
+                    $(this).closest('tr').find('.LeaveReject').prop("disabled", false);
+                    $(this).closest('tr').find('.IsReject').val("false");
+                    $(this).closest('tr').find('.LeaveReject').prop("value", "Reject");
+                });
+                    //If Reject-> change Reject text to Rejected
+                $(this).closest('tr').find('.LeaveReject').click(function () {
+                    $(this).closest('tr').find('.IsReject').val("true");
+                    $(this).closest('tr').find('.LeaveReject').prop("value", "Rejected");
+                    $(this).closest('tr').find('.LeaveReject').prop("disabled", true);
+                    $(this).closest('tr').find('.LeaveAccept').prop("disabled", false);
+                    $(this).closest('tr').find('.IsApproved').val("false");
+                    $(this).closest('tr').find('.LeaveAccept').prop("value", "Accept");
+                });
+            }
+            else if ($(this).prop("checked") == false) {
+                //If Unchecked-> disable Leave,Reject and Comment Box
+                $(this).closest('tr').find('.LeaveAccept').prop("disabled", true);
+                $(this).closest('tr').find('.LeaveReject').prop("disabled", true);
+                $(this).closest('tr').find('.AdminComments').prop("disabled", true);
+            }
+        });
+    });
+    var ItemArray = [];
+    $(".SaveAll").click(function (e) {
+        //Pick Last Sno from the table
+        var postSno = $('#TableEditTbody tr:last').find('td:first').text();
+        e.preventDefault();
+        for (var sno = 1; sno <= postSno; sno++) {
+            //Pick all field values from  table
+            $('#' + sno).each(function () {
+                var Date = $(this).closest('#' + sno).children('td.Date').text();
+                var Reason = $(this).closest('#' + sno).children('td.Reason').text();
+                var UserID = $(this).closest('#' + sno).find('.UserID').val();
+                var DepartmentID = $(this).closest('#' + sno).find('.DepartmentID').val();
+                var LeaveID = $(this).closest('#' + sno).find('.LeaveID').val();
+                var IsApproved = $(this).closest('#' + sno).find('.IsApproved').val();
+                var IsReject = $(this).closest('#' + sno).find('.IsReject').val();
+                var AdminComments = $(this).closest('#' + sno).find('.AdminComments').val();
+                    ItemArray.push({
+                        Date: Date,
+                        Reason: Reason,
+                        UserId: UserID,
+                        DepartmentID: DepartmentID,
+                        LeaveID: LeaveID,
+                        IsApproved: IsApproved,
+                        IsReject: IsReject,
+                        AdminReason: AdminComments,
+                });
+            });
+        }
+        //Ajax Post in json format
+            $.ajax({
+                type: 'POST',
+                url: "/Leave/ManageLeavesUpdation",
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify(ItemArray),
+                success: function (response) {
+                    swal.fire(
+                        'Success!',
+                        'Leaves Accepted',
+                        'success'
+                        )
+                },
+                failure: function (err) {
+                    swal.fire({
+                        icon: 'error',
+                        title: 'Something went wrong!',
+                        text: 'Try again later'
+                        })
+                    }
+            });
+    });
+
+</script>
+
+<script>
+            $(document).ready(function () {
+                $('#TableEditTbody').DataTable();
+            });
+</script>

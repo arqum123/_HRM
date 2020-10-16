@@ -23,8 +23,12 @@ namespace HRM.Core.DataTransfer.Leave
 		[FieldNullable(IsNullable = true)]
 		[DataMember (EmitDefaultValue=false)]
 		public string Reason{ get; set; }
+        [FieldLength(MaxLength = 500)]
+        [FieldNullable(IsNullable = true)]
+        [DataMember(EmitDefaultValue = false)]
+        public string AdminReason { get; set; }
 
-		[FieldTypeValidation(DataType=DataTypes.Integer)]
+        [FieldTypeValidation(DataType=DataTypes.Integer)]
 		[FieldNullable(IsNullable = true)]
 		[DataMember (EmitDefaultValue=false)]
 		public string LeaveTypeId{ get; set; }
@@ -33,8 +37,16 @@ namespace HRM.Core.DataTransfer.Leave
 		[FieldNullable(IsNullable = true)]
 		[DataMember (EmitDefaultValue=false)]
 		public string IsActive{ get; set; }
+        [FieldTypeValidation(DataType = DataTypes.Boolean)]
+        [FieldNullable(IsNullable = true)]
+        [DataMember(EmitDefaultValue = false)]
+        public string IsApproved { get; set; }
+        [FieldTypeValidation(DataType = DataTypes.Boolean)]
+        [FieldNullable(IsNullable = true)]
+        [DataMember(EmitDefaultValue = false)]
+        public string IsReject { get; set; }
 
-		[DataMember (EmitDefaultValue=false)]
+        [DataMember (EmitDefaultValue=false)]
 		public string UpdateDate{ get; set; }
 
 		[FieldTypeValidation(DataType=DataTypes.Integer)]
@@ -50,5 +62,8 @@ namespace HRM.Core.DataTransfer.Leave
 		[DataMember (EmitDefaultValue=false)]
 		public string CreationDate{ get; set; }
 
-	}	
+        [DataMember(EmitDefaultValue = false)]
+        public string LeaveDateEnd { get; set; }
+
+    }	
 }

@@ -18,7 +18,6 @@ namespace HRM.Repository
         public DeviceModalRepositoryBase()
         {   
             this.SearchColumns=new Dictionary<string, SearchColumn>();
-
 			this.SearchColumns.Add("ID",new SearchColumn(){Name="ID",Title="ID",SelectClause="ID",WhereClause="AllRecords.ID",DataType="System.Int32",IsForeignColumn=false,PropertyName="Id",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
 			this.SearchColumns.Add("DeviceModal",new SearchColumn(){Name="DeviceModal",Title="DeviceModal",SelectClause="DeviceModal",WhereClause="AllRecords.DeviceModal",DataType="System.String",IsForeignColumn=false,PropertyName="DeviceModal",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
 			this.SearchColumns.Add("CreatedDate",new SearchColumn(){Name="CreatedDate",Title="CreatedDate",SelectClause="CreatedDate",WhereClause="AllRecords.CreatedDate",DataType="System.DateTime?",IsForeignColumn=false,PropertyName="CreatedDate",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
@@ -26,8 +25,7 @@ namespace HRM.Repository
 			this.SearchColumns.Add("UpdatedBy",new SearchColumn(){Name="UpdatedBy",Title="UpdatedBy",SelectClause="UpdatedBy",WhereClause="AllRecords.UpdatedBy",DataType="System.Int32?",IsForeignColumn=false,PropertyName="UpdatedBy",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
 			this.SearchColumns.Add("UserIP",new SearchColumn(){Name="UserIP",Title="UserIP",SelectClause="UserIP",WhereClause="AllRecords.UserIP",DataType="System.String",IsForeignColumn=false,PropertyName="UserIp",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
 			this.SearchColumns.Add("IsActive",new SearchColumn(){Name="IsActive",Title="IsActive",SelectClause="IsActive",WhereClause="AllRecords.IsActive",DataType="System.Boolean?",IsForeignColumn=false,PropertyName="IsActive",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});        
-        }
-        
+        }   
 		public virtual List<SearchColumn> GetDeviceModalSearchColumns()
         {
             List<SearchColumn> searchColumns = new List<SearchColumn>();
@@ -36,10 +34,7 @@ namespace HRM.Repository
                 searchColumns.Add(keyValuePair.Value);
             }
             return searchColumns;
-        }
-		
-		
-		
+        }	
         public virtual Dictionary<string, string> GetDeviceModalBasicSearchColumns()
         {
 			Dictionary<string, string> columnList = new Dictionary<string, string>();

@@ -47,7 +47,8 @@ namespace HRM.Repository
 			this.SearchColumns.Add("UserIP",new SearchColumn(){Name="UserIP",Title="UserIP",SelectClause="UserIP",WhereClause="AllRecords.UserIP",DataType="System.String",IsForeignColumn=false,PropertyName="UserIp",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
 			this.SearchColumns.Add("SalaryTypeID",new SearchColumn(){Name="SalaryTypeID",Title="SalaryTypeID",SelectClause="SalaryTypeID",WhereClause="AllRecords.SalaryTypeID",DataType="System.Int32?",IsForeignColumn=false,PropertyName="SalaryTypeId",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
 			this.SearchColumns.Add("FatherName",new SearchColumn(){Name="FatherName",Title="FatherName",SelectClause="FatherName",WhereClause="AllRecords.FatherName",DataType="System.String",IsForeignColumn=false,PropertyName="FatherName",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
-			this.SearchColumns.Add("AccountNumber",new SearchColumn(){Name="AccountNumber",Title="AccountNumber",SelectClause="AccountNumber",WhereClause="AllRecords.AccountNumber",DataType="System.String",IsForeignColumn=false,PropertyName="AccountNumber",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});        
+			this.SearchColumns.Add("AccountNumber",new SearchColumn(){Name="AccountNumber",Title="AccountNumber",SelectClause="AccountNumber",WhereClause="AllRecords.AccountNumber",DataType="System.String",IsForeignColumn=false,PropertyName="AccountNumber",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
+            this.SearchColumns.Add("JoiningDate", new SearchColumn() { Name = "JoiningDate", Title = "JoiningDate", SelectClause = "JoiningDate", WhereClause = "AllRecords.JoiningDate", DataType = "System.DateTime?", IsForeignColumn = false, PropertyName = "JoiningDate", IsAdvanceSearchColumn = false, IsBasicSearchColumm = false });
         }
         
 		public virtual List<SearchColumn> GetUserSearchColumns()
@@ -321,7 +322,7 @@ namespace HRM.Repository
 			other = entity;
 			if(entity.IsTransient())
 			{
-				string sql=@"Insert into [User] ( [FirstName]
+				string sql= @"Insert into [User] ( [FirstName]
 				,[MiddleName]
 				,[LastName]
 				,[UserTypeID]
@@ -348,7 +349,8 @@ namespace HRM.Repository
 				,[UserIP]
 				,[SalaryTypeID]
 				,[FatherName]
-				,[AccountNumber] )
+				,[AccountNumber] 
+,[JoiningDate])
 				Values
 				( @FirstName
 				, @MiddleName
@@ -377,7 +379,8 @@ namespace HRM.Repository
 				, @UserIP
 				, @SalaryTypeID
 				, @FatherName
-				, @AccountNumber );
+				, @AccountNumber
+, @JoiningDate);
 				Select scope_identity()";
 				SqlParameter[] parameterArray=new SqlParameter[]{
 					 new SqlParameter("@FirstName",entity.FirstName ?? (object)DBNull.Value)
@@ -407,7 +410,8 @@ namespace HRM.Repository
 					, new SqlParameter("@UserIP",entity.UserIp ?? (object)DBNull.Value)
 					, new SqlParameter("@SalaryTypeID",entity.SalaryTypeId ?? (object)DBNull.Value)
 					, new SqlParameter("@FatherName",entity.FatherName ?? (object)DBNull.Value)
-					, new SqlParameter("@AccountNumber",entity.AccountNumber ?? (object)DBNull.Value)};
+					, new SqlParameter("@AccountNumber",entity.AccountNumber ?? (object)DBNull.Value)
+                , new SqlParameter("@JoiningDate",entity.JoiningDate ?? (object)DBNull.Value)};
 				var identity=SqlHelper.ExecuteScalar(this.ConnectionString,CommandType.Text,sql,parameterArray);
 				if(identity==DBNull.Value) throw new DataException("Identity column was null as a result of the insert operation.");
 				return GetUser(Convert.ToInt32(identity));
@@ -422,7 +426,7 @@ namespace HRM.Repository
 			if (entity.IsTransient()) return entity;
 			User other = GetUser(entity.Id);
 			if (entity.Equals(other)) return entity;
-			string sql=@"Update [User] set  [FirstName]=@FirstName
+			string sql= @"Update [User] set  [FirstName]=@FirstName
 							, [MiddleName]=@MiddleName
 							, [LastName]=@LastName
 							, [UserTypeID]=@UserTypeID
@@ -450,6 +454,7 @@ namespace HRM.Repository
 							, [SalaryTypeID]=@SalaryTypeID
 							, [FatherName]=@FatherName
 							, [AccountNumber]=@AccountNumber 
+, [JoiningDate]=@JoiningDate
 							 where ID=@ID";
 			SqlParameter[] parameterArray=new SqlParameter[]{
 					 new SqlParameter("@FirstName",entity.FirstName ?? (object)DBNull.Value)
@@ -480,7 +485,8 @@ namespace HRM.Repository
 					, new SqlParameter("@SalaryTypeID",entity.SalaryTypeId ?? (object)DBNull.Value)
 					, new SqlParameter("@FatherName",entity.FatherName ?? (object)DBNull.Value)
 					, new SqlParameter("@AccountNumber",entity.AccountNumber ?? (object)DBNull.Value)
-					, new SqlParameter("@ID",entity.Id)};
+                    , new SqlParameter("@JoiningDate",entity.JoiningDate ?? (object)DBNull.Value)
+                    , new SqlParameter("@ID",entity.Id)};
 			SqlHelper.ExecuteNonQuery(this.ConnectionString,CommandType.Text,sql,parameterArray);
 			return GetUser(entity.Id);
 		}
@@ -554,7 +560,8 @@ namespace HRM.Repository
 			{
 			entity.DateOfBirth = dr["DateOfBirth"]==DBNull.Value?(System.DateTime?)null:(System.DateTime?)dr["DateOfBirth"];
 			}
-			if (dr.Table.Columns.Contains("NICNo"))
+           
+            if (dr.Table.Columns.Contains("NICNo"))
 			{
 			entity.NicNo = dr["NICNo"].ToString();
 			}
@@ -642,7 +649,13 @@ namespace HRM.Repository
 			{
 			entity.AccountNumber = dr["AccountNumber"].ToString();
 			}
-			return entity;
+
+            if (dr.Table.Columns.Contains("JoiningDate"))
+            {
+                entity.JoiningDate = dr["JoiningDate"] == DBNull.Value ? (System.DateTime?)null : (System.DateTime?)dr["JoiningDate"];
+            }
+
+            return entity;
 		}
 
 	}

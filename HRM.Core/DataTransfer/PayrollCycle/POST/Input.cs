@@ -47,5 +47,11 @@ namespace HRM.Core.DataTransfer.PayrollCycle
 		[DataMember (EmitDefaultValue=false)]
 		public string UserIp{ get; set; }
 
-	}	
+
+        [FieldTypeValidation(DataType = DataTypes.Boolean)]
+        [FieldNullable(IsNullable = true)]
+        [DataMember(EmitDefaultValue = false)]
+        public string IsFinal { get; set; }
+
+    }	
 }

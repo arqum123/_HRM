@@ -369,7 +369,15 @@ namespace HRM.Repository
 			{
 			entity.UserIp = dr["UserIP"].ToString();
 			}
-			return entity;
+            if (dr.Table.Columns.Contains("DateTimeOut"))
+            {
+                entity.DateTimeOut = dr["DateTimeOut"] == DBNull.Value ? (System.DateTime?)null : (System.DateTime?)dr["DateTimeOut"];
+            }
+            if (dr.Table.Columns.Contains("DateTimeIn"))
+            {
+                entity.DateTimeIn = dr["DateTimeIn"] == DBNull.Value ? (System.DateTime?)null : (System.DateTime?)dr["DateTimeIn"];
+            }
+            return entity;
 		}
 
 	}

@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace HRM.WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class HolidayController : Controller
     {
         //

@@ -1,0 +1,160 @@
+﻿@using System.Data;
+@{
+    ViewBag.Title = "ImportExcel";
+}
+
+<h2>ImportExcel</h2>
+<!--[if !IE]><!-->
+<style type="text/css">
+
+
+    /* Generic Styling, for Desktops/Laptops */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    /* Zebra striping */
+    tr:nth-of-type(odd) {
+        background: #eee;
+    }
+
+    th {
+        background: #333;
+        color: white;
+        font-weight: bold;
+    }
+
+    td, th {
+        padding: 6px;
+        border: 1px solid #ccc;
+        text-align: left;
+    }
+    /*
+    Max width before this PARTICULAR table gets nasty
+    This query will take effect for any screen smaller than 760px
+    and also iPads specifically.
+    */
+    @@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+        /* Force table to not be like tables anymore */
+        table, thead, tbody, th, td, tr {
+            display: block;
+        }
+            /* Hide table headers (but not display: none;, for accessibility) */
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+        tr {
+            border: 1px solid #ccc;
+        }
+
+        td {
+            /* Behave  like a "row" */
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 50%;
+        }
+
+            td:before {
+                /* Now like a table header */
+                position: absolute;
+                /* Top/left values mimic padding */
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+            }
+            /*
+     Label the data
+     */
+            td:before {
+                content: attr(data-title);
+            }
+    }
+</style>
+
+<!--<![endif]-->
+@using (Html.BeginForm("UploadAttendanceViaExcel", "Attendance", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+{
+    <table>
+        <tr><td>Excel file</td><td><input type="file" id="excelfile" name="excelfile" /></td></tr>
+        <tr><td></td><td><input type="submit" id="Submit" name="Submit" value="Submit" /></td></tr>
+    </table>
+}
+
+<div>
+    <table id="">
+
+        @if (ViewBag.Data != null)
+        {
+            <thead>
+
+                @foreach (DataColumn column in (ViewBag.Data as System.Data.DataTable).Columns)
+                {
+                <th>@column.ColumnName.ToUpper()</th>
+
+
+            }
+                </thead>
+                if ((ViewBag.Data as System.Data.DataTable).Rows.Count > 0)
+                {
+                    foreach (DataRow dr in (ViewBag.Data as System.Data.DataTable).Rows)
+                    {
+
+                        <tr>
+
+                            @foreach (DataColumn column in (ViewBag.Data as System.Data.DataTable).Columns)
+                            {
+                                <td data-title='@column.ColumnName'>
+
+                                    @dr[column].ToString()
+                                </td>
+                            }
+
+
+
+
+                        </tr>
+
+                    }
+
+                }
+                else
+                {
+                    int count = (ViewBag.Data as System.Data.DataTable).Columns.Count;
+                    <tr>
+
+                        <td colspan='@count' style="color:red;">
+
+                            No Data Found.
+                        </td>
+
+
+
+                    </tr>
+
+                }
+
+            }
+            else
+            {
+                if (ViewBag.Error != null)
+                {
+                    <tr>
+                        <td style="color:red;">
+
+                            @(ViewBag.Error != null ? ViewBag.Error.ToString() : "")
+                        </td>
+
+
+
+                    </tr>
+                }
+            }
+    </table>
+</div>

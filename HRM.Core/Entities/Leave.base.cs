@@ -76,9 +76,25 @@ namespace HRM.Core.Entities
 			 get {if(CreationDate.HasValue) return CreationDate.Value.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); else return string.Empty;}
 			 set  {  DateTime date = new DateTime(); if (DateTime.TryParse(value, out date)) { CreationDate = date.ToUniversalTime();  }  } 
 		}
-
-		
-		public virtual bool IsTransient()
+        //[FieldNameAttribute("LeaveDateEnd", true, false, 8)]
+        //[IgnoreDataMember]
+        //public virtual System.DateTime? LeaveDateEnd { get; set; }
+        //[DataMember(EmitDefaultValue = false)]
+        //public virtual string LeaveDateEndStr
+        //{
+        //    get { if (LeaveDateEnd.HasValue) return LeaveDateEnd.Value.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); else return string.Empty; }
+        //    set { DateTime date = new DateTime(); if (DateTime.TryParse(value, out date)) { LeaveDateEnd = date.ToUniversalTime(); } }
+        //}
+        [FieldNameAttribute("IsApproved", true, false, 1)]
+        [DataMember(EmitDefaultValue = false)]
+        public virtual System.Boolean? IsApproved { get; set; }
+        [FieldNameAttribute("IsReject", true, false, 1)]
+        [DataMember(EmitDefaultValue = false)]
+        public virtual System.Boolean? IsReject { get; set; }
+        [FieldNameAttribute("AdminReason", true, false, 500)]
+        [DataMember(EmitDefaultValue = false)]
+        public virtual System.String AdminReason { get; set; }
+        public virtual bool IsTransient()
         {
 
             return EntityHelper.IsTransient(this);
@@ -88,7 +104,7 @@ namespace HRM.Core.Entities
 
         public virtual bool Equals(LeaveBase other)
         {
-			if(this.Id==other.Id  && this.UserId==other.UserId  && this.Date==other.Date  && this.Reason==other.Reason  && this.LeaveTypeId==other.LeaveTypeId  && this.IsActive==other.IsActive  && this.UpdateDate==other.UpdateDate  && this.UpdatedBy==other.UpdatedBy  && this.UserIp==other.UserIp  && this.CreationDate==other.CreationDate )
+			if(this.Id==other.Id  && this.UserId==other.UserId  && this.Date==other.Date  && this.Reason==other.Reason  && this.LeaveTypeId==other.LeaveTypeId  && this.IsActive==other.IsActive  && this.UpdateDate==other.UpdateDate  && this.UpdatedBy==other.UpdatedBy  && this.UserIp==other.UserIp  && this.CreationDate==other.CreationDate && this.AdminReason == other.AdminReason && this.IsApproved == other.IsApproved && this.IsReject == other.IsReject)
 			{
 				return true;
 			}
@@ -113,7 +129,10 @@ namespace HRM.Core.Entities
 				this.UpdatedBy=other.UpdatedBy;
 				this.UserIp=other.UserIp;
 				this.CreationDate=other.CreationDate;
-			}
+                this.IsApproved = other.IsApproved;
+                this.IsReject = other.IsReject;
+                this.AdminReason = other.AdminReason;
+            }
 			
 		
 		}

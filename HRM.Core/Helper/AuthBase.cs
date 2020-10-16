@@ -160,6 +160,8 @@ namespace HRM.Core.Helper
                 HttpContext.Current.Session["branchId"] = value;
             }
         }
+
+       
         #endregion User
     }
 }

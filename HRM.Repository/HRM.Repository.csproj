@@ -36,6 +36,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Transactions" />
@@ -100,6 +106,8 @@
     <Compile Include="CountryRepository.base.cs">
       <DependentUpon>CountryRepository.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomPayrollDetailRepository.base.cs" />
+    <Compile Include="CustomPayrollDetailRepository.cs" />
     <Compile Include="DepartmentRepository.cs" />
     <Compile Include="DepartmentRepository.base.cs">
       <DependentUpon>DepartmentRepository.cs</DependentUpon>
@@ -150,6 +158,8 @@
     <Compile Include="StateRepository.base.cs">
       <DependentUpon>StateRepository.cs</DependentUpon>
     </Compile>
+    <Compile Include="TicektRepository.cs" />
+    <Compile Include="TicketRepositoryBase.cs" />
     <Compile Include="UserRepository.cs" />
     <Compile Include="UserRepository.base.cs">
       <DependentUpon>UserRepository.cs</DependentUpon>
@@ -179,6 +189,12 @@
       <Project>{561DD54E-542C-4B07-86F0-6B41364975EB}</Project>
       <Name>HRM.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\PagedList.css" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,225 @@
+﻿@model HRM.Core.Model.VMPayslip
+@{
+    ViewBag.Title = "HRMS - Payslips";
+    WebGrid grid = new WebGrid(Model.PayrollList, canSort: true, canPage: false, rowsPerPage: 10);
+}
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B screenheading"><i class="glyph-icon icon-table"></i>Payslip List</h3>
+    @using (Html.BeginForm("NewPayslip", "Payroll", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "PayslipForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            <label for="DepartmentID" class="col-sm-4 control-label lblforinput">Department: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.DepartmentId, ViewBag.Department as SelectList, "All Department", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="UserName" class="col-sm-4 control-label lblforinput">User Name</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.UserName, new { maxlength = "200", @class = "form-control", placeholder = "User Name" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="PayrollMonth" class="col-sm-4 control-label lblforinput">Payroll Cycle</label>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(m => m.PayrollCycleMonth, ViewBag.MonthList as SelectList, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(m => m.PayrollCycleYear, ViewBag.Year as SelectList, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Search</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+
+    @if (Model.PayrollList != null && Model.PayrollList.Count > 0)
+    {
+        <div class="col-sm-11"></div><div class="col-sm-1" style="float: right;"><a class="printlink" href="javascript:;" onclick="Print();"><img src="/assets/images/printer.png" style="width: 20px;" />&nbsp;Print</a></div>
+        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+        tableStyle: "table table-striped table-hover attendancereport datatable",
+        headerStyle: "header",
+        alternatingRowStyle: "alternating-row",
+        rowStyle: "row-style",
+        columns:
+            grid.Columns(
+                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                grid.Column("Emp ID", format: item => item.User.Id),
+                grid.Column("User.FirstName", "Name", format: @<text><img width="36" src="@(item.User.ImagePath == "" ? "/assets/image  s/anonymoususer.jpg": item.User.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a title="Click here to view Payslip Details" target="_blank" href="/Payroll/NewPayslipDetail?UserId=@item.User.Id&DepartmentId=@item.Department.Id&PayrollCycleId=@item.PayrollCycle.Id">@item.User.FirstName</a><input type="hidden" class="hdnUserId" value="@item.id" /></text>),
+                                  grid.Column("User.Department.Name", header: "Department", format: (item) => item.User.Department != null ? item.User.Department.Name : Html.Raw("N/A")),
+                                  grid.Column("PayrollCycle.Name", header: "Payroll Cycle", format: (item) => item.PayrollCycle.Name != null ? (@Model.PayrollCycleIsActive == false ? Html.Raw("Test - ") + item.PayrollCycle.Name : item.PayrollCycle.Name) : Html.Raw("N/A")),
+                                  grid.Column("Salary", header: "Salary", format: (item) => item.Salary != null ? item.Salary : Html.Raw("N/A"), style: "nmbr sal"),
+                                  grid.Column("Addition", header: "Addition", format: (item) => item.Addition != null ? item.Addition : Html.Raw("N/A"), style: "nmbr add"),
+                                  grid.Column("Deduction", header: "Deduction", format: (item) => item.Deduction != null ? item.Deduction : Html.Raw("N/A"), style: "nmbr ded"),
+                                  grid.Column("NetSalary", header: "Net Salary", format: (item) => item.NetSalary != null ? item.NetSalary : Html.Raw("N/A"), style: "nmbr netsal"),
+                                  grid.Column("User.AccountNumber", "Account No", format: (item) => (item.User.AccountNumber != null && item.User.AccountNumber != "") ? item.User.AccountNumber : Html.Raw("N/A"))
+                                  )
+                          )
+    }
+
+</div>
+<iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
+<script>
+    var links = $('a[href*=page], a[href*=sort]'), form = $('form');
+    links.click(function () {
+        form.attr("action", this.href);
+        $(this).attr("href", "javascript:");
+        form.submit();
+    });
+
+    function addCommas(nStr) {
+        nStr += '';
+        x = nStr.split('.');
+        x1 = x[0];
+        x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        }
+        return x1 + x2;
+    }
+
+    $(document).ready(function () {
+        //$("option[value='-1']").remove();
+        //$('#Month').val(new Date().getMonth() + 1);
+        //$('#Year').val(new Date().getFullYear());
+
+        var totalsalary = 0.00, totaladdition = 0.00, totaldeduction = 0.00, totalnetsalary = 0.00;
+        $('.sal').each(function () {
+            //alert(parseFloat($(this).text()));
+            totalsalary += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+        });
+        $('.add').each(function () {
+            totaladdition += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+        });
+        $('.ded').each(function () {
+            totaldeduction += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+        });
+        $('.netsal').each(function () {
+            totalnetsalary += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+        });
+
+        var tfoot = '<tfoot><tr><td colspan="5">Total</td>';
+        tfoot += '<td class="nmbr">' + totalsalary + '</td>';
+        tfoot += '<td class="nmbr">' + totaladdition + '</td>';
+        tfoot += '<td class="nmbr">' + totaldeduction + '</td>';
+        tfoot += '<td class="nmbr">' + totalnetsalary + '</td>';
+        tfoot += '<td>&nbsp;</td>';
+        $('#gridtbl').append(tfoot);
+
+        $('.nmbr').each(function () {
+            $(this).html(addCommas(parseFloat($(this).html()).toFixed(2)));
+        });
+    });
+
+    $("#UserName").blur(function () {
+        var keyEvent = $.Event("keydown");
+        keyEvent.keyCode = $.ui.keyCode.ENTER;
+        $(this).trigger(keyEvent);
+    }).autocomplete({
+        minLength: 3,
+        autoFocus: true,
+        open: function () { $(this).removeClass("ui-autocomplete-loading"); },
+        source: function (request, response) {
+            $(".ErrorMessage").text("");
+            $(".ViewBagErrorMessage").text("");
+            $.ajax({
+                url: '@Url.Action("SearchUserList", "User")',
+                type: 'POST',
+                dataType: 'json',
+                data: { ShiftID: "", DepartmentId: $("#DepartmentID").val(), UserName: request.term, recCount: 5 },
+                success: function (data) {
+                    if (data != null) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.FirstName + " <" + (item.UserContactEmail.Detail != "" ? item.UserContactEmail.Detail : "No Email Address") + ">",
+                                value: item.FirstName,
+                                encryptedID: item.EncryptedID,
+                                id: item.ID
+                            };
+                        }))
+                    }
+                    else {
+                        $("#UserName").removeClass("ui-autocomplete-loading");
+                        $(".ErrorMessage").text("No Users Found");
+                        $(".ViewBagErrorMessage").text("");
+                    }
+                }
+            })
+        },
+        select: function (event, ui) {
+            var label = ui.item.label;
+            label = label.substring(0, label.indexOf(' <'));
+            var value = ui.item.encryptedID;
+            var id = ui.item.id;
+
+            this.value = "";
+            this.focus();
+            $("#UserName").val(label);
+            //$("#UserName").attr('readonly', true);
+            //window.location = "ViewDetail?key=" + value;
+            return false;
+        },
+        change: function (event, ui) {
+            var referenceValue = $(this).val();
+            var matches = false;
+
+            $(".ui-autocomplete li").each(function () {
+                if ($(this).text() == referenceValue) {
+                    matches = true;
+                    return false;
+                }
+            });
+
+            //if (!matches) {
+            //    this.value = "";
+            //    this.focus();
+            //    this.style.border = "solid 1px red";
+            //    $(this).removeClass("ui-autocomplete-loading");
+            //    $(".ErrorMessage").text("No Customer Found");
+            //    $(".ViewBagErrorMessage").text("");
+            //}
+            //else {
+            //    this.style.border = "";
+            //}
+        },
+        messages: {
+            noResults: "", results: ""
+        }
+    });
+
+    function Print() {
+        var printElement = $(".page-box").clone();
+        //printElement.find("h3").hide();
+        printElement.find(".form-group").hide();
+        printElement.find(".printlink").hide();
+        printElement.find("a").each(function (e) { $(this).attr("href", "#"); });
+        printElement.find("img").hide();
+
+        printDivCSS = new String('<link rel="stylesheet" type="text/css" href="/assets/helpers/helpers-all.css">');
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/elements/elements-all.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/fontawesome/fontawesome.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/icons/linecons/linecons.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/snippets/snippets-all.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/applications/mailbox.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/layout.css">';
+        printDivCSS += '<link id="layout-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/layout-color.css">';
+        printDivCSS += '<link id="framework-color" rel="stylesheet" type="text/css" href="/assets/themes/supina/default/framework-color.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/border-radius.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/helpers/colors.css">';
+        printDivCSS += '<link rel="stylesheet" type="text/css" href="/assets/themes/supina/custom.css">';
+
+        window.frames["print_frame"].document.body.innerHTML = printDivCSS + ' ' + printElement.html();
+        window.frames["print_frame"].window.focus();
+        setTimeout(function () {
+            window.frames["print_frame"].window.print();
+        }, 1000);
+    }
+</script>

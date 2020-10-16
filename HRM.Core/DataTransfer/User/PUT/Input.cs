@@ -121,6 +121,8 @@ namespace HRM.Core.DataTransfer.User
 		[FieldLength(MaxLength = 50)]
 		[DataMember (EmitDefaultValue=false)]
 		public string AccountNumber{ get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public string JoiningDate { get; set; }
 
-	}	
+    }	
 }

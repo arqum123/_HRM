@@ -10,6 +10,12 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/images/icons/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/assets/images/icons/apple-touch-icon-57-precomposed.png">
     <link rel="shortcut icon" href="/assets/images/icons/favicon.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <style>
         .disabledsidebar {
@@ -66,8 +72,7 @@
     <title>@ViewBag.Title</title>
 
     @*@Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")*@
-
+      @Scripts.Render("~/bundles/modernizr")*@
 </head>
 <body>
     <div id="loading">
@@ -99,7 +104,7 @@
     </script>
     <script type="text/javascript" src="/assets/widgets/datepicker/datepicker.js"></script>
     <script type="text/javascript" src="/assets/widgets/multi-select/multiselect.js"></script>
-    <script type="text/javascript">        /* Datepicker bootstrap */
+    <script type="text/javascript">        /*Datepicker bootstrap*/
         $(function () {
             $('.bootstrap-datepicker').bsdatepicker({
                 format: 'mm/dd/yyyy',

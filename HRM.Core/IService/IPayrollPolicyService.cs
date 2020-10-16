@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using HRM.Core.Entities;
 using HRM.Core.DataTransfer;
 using HRM.Core.DataTransfer.PayrollPolicy;
+using HRM.Core.Model;
 
 namespace HRM.Core.IService
 {
@@ -23,6 +24,8 @@ namespace HRM.Core.IService
 		bool DeletePayrollPolicy(System.Int32 Id);
 		List<PayrollPolicy> GetAllPayrollPolicy();
 		PayrollPolicy InsertPayrollPolicy(PayrollPolicy entity);
+        List<VMPayslipVariableInformation> GetPayrollPolicyInformation(System.Int32? UserId,  System.Boolean? IsEarly, System.Boolean? IsLate, System.String StartDate, System.String EndDate); //Declare
+        System.Data.DataSet GetPayrollPolicyInformationSP(System.Int32? UserId,System.Boolean? IsEarly, System.Boolean? IsLate, System.String StartDate, System.String EndDate);
 
         DataTransfer<GetOutput> Get(string id);
         DataTransfer<PostOutput> Insert(PostInput Input);

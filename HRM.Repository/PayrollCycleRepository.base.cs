@@ -27,7 +27,8 @@ namespace HRM.Repository
 			this.SearchColumns.Add("CreationDate",new SearchColumn(){Name="CreationDate",Title="CreationDate",SelectClause="CreationDate",WhereClause="AllRecords.CreationDate",DataType="System.DateTime?",IsForeignColumn=false,PropertyName="CreationDate",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
 			this.SearchColumns.Add("UpdateDate",new SearchColumn(){Name="UpdateDate",Title="UpdateDate",SelectClause="UpdateDate",WhereClause="AllRecords.UpdateDate",DataType="System.DateTime?",IsForeignColumn=false,PropertyName="UpdateDate",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
 			this.SearchColumns.Add("UpdateBy",new SearchColumn(){Name="UpdateBy",Title="UpdateBy",SelectClause="UpdateBy",WhereClause="AllRecords.UpdateBy",DataType="System.Int32?",IsForeignColumn=false,PropertyName="UpdateBy",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
-			this.SearchColumns.Add("UserIP",new SearchColumn(){Name="UserIP",Title="UserIP",SelectClause="UserIP",WhereClause="AllRecords.UserIP",DataType="System.String",IsForeignColumn=false,PropertyName="UserIp",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});        
+			this.SearchColumns.Add("UserIP",new SearchColumn(){Name="UserIP",Title="UserIP",SelectClause="UserIP",WhereClause="AllRecords.UserIP",DataType="System.String",IsForeignColumn=false,PropertyName="UserIp",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
+            this.SearchColumns.Add("IsFinal", new SearchColumn() { Name = "IsFinal", Title = "IsFinal", SelectClause = "IsFinal", WhereClause = "AllRecords.IsFinal", DataType = "System.Boolean?", IsForeignColumn = false, PropertyName = "IsFinal", IsAdvanceSearchColumn = false, IsBasicSearchColumm = false });
         }
         
 		public virtual List<SearchColumn> GetPayrollCycleSearchColumns()
@@ -132,7 +133,7 @@ namespace HRM.Repository
 		{
 
 			string sql=string.IsNullOrEmpty(SelectClause)?GetPayrollCycleSelectClause():(string.Format("Select {0} ",SelectClause));
-			sql+="from [PayrollCycle] with (nolock)  ";
+			sql+="from [PayrollCycle] with (nolock)";
 			DataSet ds=SqlHelper.ExecuteDataset(this.ConnectionString,CommandType.Text,sql,null);
 			if (ds == null || ds.Tables.Count != 1 || ds.Tables[0].Rows.Count == 0) return null;
 			return CollectionFromDataSet<PayrollCycle>(ds, PayrollCycleFromDataRow);
@@ -214,14 +215,15 @@ namespace HRM.Repository
 			other = entity;
 			if(entity.IsTransient())
 			{
-				string sql=@"Insert into [PayrollCycle] ( [Name]
+				string sql= @"Insert into [PayrollCycle] ( [Name]
 				,[Month]
 				,[Year]
 				,[IsActive]
 				,[CreationDate]
 				,[UpdateDate]
 				,[UpdateBy]
-				,[UserIP] )
+				,[UserIP]
+,[IsFinal])
 				Values
 				( @Name
 				, @Month
@@ -230,7 +232,8 @@ namespace HRM.Repository
 				, @CreationDate
 				, @UpdateDate
 				, @UpdateBy
-				, @UserIP );
+				, @UserIP
+, @IsFinal);
 				Select scope_identity()";
 				SqlParameter[] parameterArray=new SqlParameter[]{
 					 new SqlParameter("@Name",entity.Name ?? (object)DBNull.Value)
@@ -240,7 +243,8 @@ namespace HRM.Repository
 					, new SqlParameter("@CreationDate",entity.CreationDate ?? (object)DBNull.Value)
 					, new SqlParameter("@UpdateDate",entity.UpdateDate ?? (object)DBNull.Value)
 					, new SqlParameter("@UpdateBy",entity.UpdateBy ?? (object)DBNull.Value)
-					, new SqlParameter("@UserIP",entity.UserIp ?? (object)DBNull.Value)};
+					, new SqlParameter("@UserIP",entity.UserIp ?? (object)DBNull.Value)
+                , new SqlParameter("@IsFinal",entity.IsFinal ?? (object)DBNull.Value)};
 				var identity=SqlHelper.ExecuteScalar(this.ConnectionString,CommandType.Text,sql,parameterArray);
 				if(identity==DBNull.Value) throw new DataException("Identity column was null as a result of the insert operation.");
 				return GetPayrollCycle(Convert.ToInt32(identity));
@@ -255,7 +259,7 @@ namespace HRM.Repository
 			if (entity.IsTransient()) return entity;
 			PayrollCycle other = GetPayrollCycle(entity.Id);
 			if (entity.Equals(other)) return entity;
-			string sql=@"Update [PayrollCycle] set  [Name]=@Name
+			string sql= @"Update [PayrollCycle] set  [Name]=@Name
 							, [Month]=@Month
 							, [Year]=@Year
 							, [IsActive]=@IsActive
@@ -263,18 +267,21 @@ namespace HRM.Repository
 							, [UpdateDate]=@UpdateDate
 							, [UpdateBy]=@UpdateBy
 							, [UserIP]=@UserIP 
+	, [IsFinal]=@IsFinal 
 							 where ID=@ID";
-			SqlParameter[] parameterArray=new SqlParameter[]{
-					 new SqlParameter("@Name",entity.Name ?? (object)DBNull.Value)
-					, new SqlParameter("@Month",entity.Month ?? (object)DBNull.Value)
-					, new SqlParameter("@Year",entity.Year ?? (object)DBNull.Value)
-					, new SqlParameter("@IsActive",entity.IsActive ?? (object)DBNull.Value)
-					, new SqlParameter("@CreationDate",entity.CreationDate ?? (object)DBNull.Value)
-					, new SqlParameter("@UpdateDate",entity.UpdateDate ?? (object)DBNull.Value)
-					, new SqlParameter("@UpdateBy",entity.UpdateBy ?? (object)DBNull.Value)
-					, new SqlParameter("@UserIP",entity.UserIp ?? (object)DBNull.Value)
-					, new SqlParameter("@ID",entity.Id)};
-			SqlHelper.ExecuteNonQuery(this.ConnectionString,CommandType.Text,sql,parameterArray);
+            SqlParameter[] parameterArray = new SqlParameter[]{
+                     new SqlParameter("@Name",entity.Name ?? (object)DBNull.Value)
+                    , new SqlParameter("@Month",entity.Month ?? (object)DBNull.Value)
+                    , new SqlParameter("@Year",entity.Year ?? (object)DBNull.Value)
+                    , new SqlParameter("@IsActive",entity.IsActive ?? (object)DBNull.Value)
+                    , new SqlParameter("@CreationDate",entity.CreationDate ?? (object)DBNull.Value)
+                    , new SqlParameter("@UpdateDate",entity.UpdateDate ?? (object)DBNull.Value)
+                    , new SqlParameter("@UpdateBy",entity.UpdateBy ?? (object)DBNull.Value)
+                    , new SqlParameter("@UserIP",entity.UserIp ?? (object)DBNull.Value)
+                    , new SqlParameter("@IsFinal", entity.IsFinal ?? (object)DBNull.Value)
+                    , new SqlParameter("@ID",entity.Id)};
+
+            SqlHelper.ExecuteNonQuery(this.ConnectionString,CommandType.Text,sql,parameterArray);
 			return GetPayrollCycle(entity.Id);
 		}
 
@@ -339,7 +346,8 @@ namespace HRM.Repository
 			{
 			entity.IsActive = dr["IsActive"]==DBNull.Value?(System.Boolean?)null:(System.Boolean?)dr["IsActive"];
 			}
-			if (dr.Table.Columns.Contains("CreationDate"))
+            
+            if (dr.Table.Columns.Contains("CreationDate"))
 			{
 			entity.CreationDate = dr["CreationDate"]==DBNull.Value?(System.DateTime?)null:(System.DateTime?)dr["CreationDate"];
 			}
@@ -355,7 +363,11 @@ namespace HRM.Repository
 			{
 			entity.UserIp = dr["UserIP"].ToString();
 			}
-			return entity;
+            if (dr.Table.Columns.Contains("IsFinal"))
+            {
+                entity.IsFinal = dr["IsFinal"] == DBNull.Value ? (System.Boolean?)null : (System.Boolean?)dr["IsFinal"];
+            }
+            return entity;
 		}
 
 	}

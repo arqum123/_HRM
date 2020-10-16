@@ -28,7 +28,11 @@ namespace HRM.Repository
 			this.SearchColumns.Add("UpdateDate",new SearchColumn(){Name="UpdateDate",Title="UpdateDate",SelectClause="UpdateDate",WhereClause="AllRecords.UpdateDate",DataType="System.DateTime?",IsForeignColumn=false,PropertyName="UpdateDate",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
 			this.SearchColumns.Add("UpdatedBy",new SearchColumn(){Name="UpdatedBy",Title="UpdatedBy",SelectClause="UpdatedBy",WhereClause="AllRecords.UpdatedBy",DataType="System.Int32?",IsForeignColumn=false,PropertyName="UpdatedBy",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
 			this.SearchColumns.Add("UserIP",new SearchColumn(){Name="UserIP",Title="UserIP",SelectClause="UserIP",WhereClause="AllRecords.UserIP",DataType="System.String",IsForeignColumn=false,PropertyName="UserIp",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
-			this.SearchColumns.Add("CreationDate",new SearchColumn(){Name="CreationDate",Title="CreationDate",SelectClause="CreationDate",WhereClause="AllRecords.CreationDate",DataType="System.DateTime?",IsForeignColumn=false,PropertyName="CreationDate",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});        
+			this.SearchColumns.Add("CreationDate",new SearchColumn(){Name="CreationDate",Title="CreationDate",SelectClause="CreationDate",WhereClause="AllRecords.CreationDate",DataType="System.DateTime?",IsForeignColumn=false,PropertyName="CreationDate",IsAdvanceSearchColumn = false,IsBasicSearchColumm = false});
+            this.SearchColumns.Add("IsApproved", new SearchColumn() { Name = "IsApproved", Title = "IsApproved", SelectClause = "IsApproved", WhereClause = "AllRecords.IsApproved", DataType = "System.Boolean?", IsForeignColumn = false, PropertyName = "IsApproved", IsAdvanceSearchColumn = false, IsBasicSearchColumm = false });
+            this.SearchColumns.Add("IsReject", new SearchColumn() { Name = "IsReject", Title = "IsReject", SelectClause = "IsReject", WhereClause = "AllRecords.IsReject", DataType = "System.Boolean?", IsForeignColumn = false, PropertyName = "IsReject", IsAdvanceSearchColumn = false, IsBasicSearchColumm = false });
+            this.SearchColumns.Add("AdminReason", new SearchColumn() { Name = "AdminReason", Title = "AdminReason", SelectClause = "AdminReason", WhereClause = "AllRecords.AdminReason", DataType = "System.String", IsForeignColumn = false, PropertyName = "AdminReason", IsAdvanceSearchColumn = false, IsBasicSearchColumm = false });
+
         }
         
 		public virtual List<SearchColumn> GetLeaveSearchColumns()
@@ -118,6 +122,7 @@ namespace HRM.Repository
 			if (ds == null || ds.Tables.Count != 1 || ds.Tables[0].Rows.Count == 0) return null;
 			return CollectionFromDataSet<Leave>(ds,LeaveFromDataRow);
 		}
+
 
 		public virtual List<Leave> GetLeaveByLeaveTypeId(System.Int32? LeaveTypeId,string SelectClause=null)
 		{
@@ -237,7 +242,7 @@ namespace HRM.Repository
 			other = entity;
 			if(entity.IsTransient())
 			{
-				string sql=@"Insert into [Leave] ( [UserID]
+				string sql= @"Insert into [Leave] ( [UserID]
 				,[Date]
 				,[Reason]
 				,[LeaveTypeID]
@@ -245,7 +250,10 @@ namespace HRM.Repository
 				,[UpdateDate]
 				,[UpdatedBy]
 				,[UserIP]
-				,[CreationDate] )
+				,[CreationDate] 
+	,[IsReject] 
+	,[AdminReason] 
+,[IsApproved])
 				Values
 				( @UserID
 				, @Date
@@ -255,7 +263,11 @@ namespace HRM.Repository
 				, @UpdateDate
 				, @UpdatedBy
 				, @UserIP
-				, @CreationDate );
+				, @CreationDate
+, @IsReject
+, @AdminReason
+
+, @IsApproved);
 				Select scope_identity()";
 				SqlParameter[] parameterArray=new SqlParameter[]{
 					 new SqlParameter("@UserID",entity.UserId ?? (object)DBNull.Value)
@@ -266,7 +278,11 @@ namespace HRM.Repository
 					, new SqlParameter("@UpdateDate",entity.UpdateDate ?? (object)DBNull.Value)
 					, new SqlParameter("@UpdatedBy",entity.UpdatedBy ?? (object)DBNull.Value)
 					, new SqlParameter("@UserIP",entity.UserIp ?? (object)DBNull.Value)
-					, new SqlParameter("@CreationDate",entity.CreationDate ?? (object)DBNull.Value)};
+					, new SqlParameter("@CreationDate",entity.CreationDate ?? (object)DBNull.Value)
+                    , new SqlParameter("@IsReject",entity.IsReject ?? (object)DBNull.Value)
+                    , new SqlParameter("@AdminReason",entity.AdminReason ?? (object)DBNull.Value)
+                , new SqlParameter("@IsApproved",entity.IsApproved ?? (object)DBNull.Value)
+                };
 				var identity=SqlHelper.ExecuteScalar(this.ConnectionString,CommandType.Text,sql,parameterArray);
 				if(identity==DBNull.Value) throw new DataException("Identity column was null as a result of the insert operation.");
 				return GetLeave(Convert.ToInt32(identity));
@@ -281,7 +297,7 @@ namespace HRM.Repository
 			if (entity.IsTransient()) return entity;
 			Leave other = GetLeave(entity.Id);
 			if (entity.Equals(other)) return entity;
-			string sql=@"Update [Leave] set  [UserID]=@UserID
+			string sql= @"Update [Leave] set  [UserID]=@UserID
 							, [Date]=@Date
 							, [Reason]=@Reason
 							, [LeaveTypeID]=@LeaveTypeID
@@ -290,6 +306,9 @@ namespace HRM.Repository
 							, [UpdatedBy]=@UpdatedBy
 							, [UserIP]=@UserIP
 							, [CreationDate]=@CreationDate 
+, [IsReject]=@IsReject 
+, [AdminReason]=@AdminReason 
+, [IsApproved]=@IsApproved
 							 where ID=@ID";
 			SqlParameter[] parameterArray=new SqlParameter[]{
 					 new SqlParameter("@UserID",entity.UserId ?? (object)DBNull.Value)
@@ -301,7 +320,10 @@ namespace HRM.Repository
 					, new SqlParameter("@UpdatedBy",entity.UpdatedBy ?? (object)DBNull.Value)
 					, new SqlParameter("@UserIP",entity.UserIp ?? (object)DBNull.Value)
 					, new SqlParameter("@CreationDate",entity.CreationDate ?? (object)DBNull.Value)
-					, new SqlParameter("@ID",entity.Id)};
+                        , new SqlParameter("@IsReject",entity.IsReject ?? (object)DBNull.Value)
+                            , new SqlParameter("@AdminReason",entity.AdminReason ?? (object)DBNull.Value)
+                    , new SqlParameter("@IsApproved",entity.IsApproved ?? (object)DBNull.Value)
+                    , new SqlParameter("@ID",entity.Id)};
 			SqlHelper.ExecuteNonQuery(this.ConnectionString,CommandType.Text,sql,parameterArray);
 			return GetLeave(entity.Id);
 		}
@@ -387,7 +409,19 @@ namespace HRM.Repository
 			{
 			entity.CreationDate = dr["CreationDate"]==DBNull.Value?(System.DateTime?)null:(System.DateTime?)dr["CreationDate"];
 			}
-			return entity;
+            if (dr.Table.Columns.Contains("IsApproved"))
+            {
+                entity.IsApproved = dr["IsApproved"] == DBNull.Value ? (System.Boolean?)null : (System.Boolean?)dr["IsApproved"];
+            }
+            if (dr.Table.Columns.Contains("IsReject"))
+            {
+                entity.IsReject = dr["IsReject"] == DBNull.Value ? (System.Boolean?)null : (System.Boolean?)dr["IsReject"];
+            }
+            if (dr.Table.Columns.Contains("AdminReason"))
+            {
+                entity.AdminReason = dr["AdminReason"].ToString();
+            }
+            return entity;
 		}
 
 	}

@@ -1,4 +1,4 @@
-﻿@model HRM.Core.Model.VMAttendanceModel
+﻿@model HRM.Core.Model.VMUserModel
 @{
     ViewBag.Title = "HRMS - View Users List";
     WebGrid grid = new WebGrid(Model.UserList, canSort: true, canPage: true, rowsPerPage: 10);//whenever rowsperpage will be changed, change it in script as well
@@ -32,25 +32,147 @@
     }
     @if (Model.UserList != null && Model.UserList.Count > 0)
     {
-    <div class="col-sm-11"></div><div class="col-sm-1" style="float: right;"><a href="PrintUserList?departmentId=@Model.DepartmentID&userName=@Model.UserName&branchId=@HRM.Core.Helper.AuthBase.BranchId" target="_blank"><img src="/assets/images/printer.png" style="width: 20px;" />&nbsp;Print</a></div>
-        @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
-        tableStyle: "table table-striped table-hover datatable",
-        headerStyle: "header",
-        alternatingRowStyle: "alternating-row",
-        rowStyle: "row-style",
-        columns:
-            grid.Columns(
-                grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
-                grid.Column("ID", "Emp ID"),
-                grid.Column("FirstName", "Name", format: @<text><img width="36" src="@(item.ImagePath == "" ? "/assets/images/anonymoususer.jpg": item.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a title="Click here to Edit User" href="/User?id=@item.Id">@item.FirstName</a></text>),
-                grid.Column("Department.Name", header: "Department", format: (item) => item.Department != null ? Html.Raw(string.Format("<text><a target='_blank' title='Click here to view User Departments History' href='/Department/DepartmentHistory?id=" + @item.Id + "'>" + @item.Department.Name + "</a></text>")) : Html.Raw("N/A")),
-                grid.Column("UserContactEmail.Detail", header: "Email Address", format: (item) => (item.UserContactEmail!=null && item.UserContactEmail.Detail != null && item.UserContactEmail.Detail != "") ? item.UserContactEmail.Detail : Html.Raw("N/A")),
-                grid.Column("UserContactMobile.Detail", header: "Mobile Number", format: (item) => (item.UserContactMobile!=null && item.UserContactMobile.Detail != null && item.UserContactMobile.Detail != "") ? item.UserContactMobile.Detail : Html.Raw("N/A")),
-                grid.Column("Designation", header: "Designation", format: (item) => (item.Designation != null && item.Designation != "") ? item.Designation : Html.Raw("N/A")),
-                grid.Column("Salary", header: "Salary", format: (item) => item.Salary != null ? item.Salary : Html.Raw("N/A")),
-                grid.Column("", header: "Action", format: @<text><a id="Delete_@item.Id" href="javascript:;" onclick="javascript:return DeleteUser(this);">Delete</a></text>)
-                )
-        )
+        int j = 0;
+        <table class="table table-striped table-hover datatable">
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>Emp ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Email Address</th>
+                    <th>Mobile Number</th>
+                    <th>Designation</th>
+                    <th>Salary</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.UserList.Count; i++)
+                {
+                    j = i + 1;
+                <tr>
+                    <td>@j</td>
+                    <td>@Model.UserList[i].Id</td>
+                    <td><img width="36" src="@(Model.UserList[i].ImagePath == "" ? "/assets/images/anonymoususer.jpg": Model.UserList[i].ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a title="Click here to Edit User" href="/User?id=@Model.UserList[i].Id">@Model.UserList[i].FirstName</a></td>
+                    <td><a target='_blank' title='Click here to view User Departments History' href='/Department/DepartmentHistory?id=@Model.UserList[i].Id'>@Model.UserList[i].Department.Name</a></td>
+                    @if (@Model.UserList[i].UserContactEmail == null)
+                    {
+                        <td>N/A</td>
+                    }
+                    else if (@Model.UserList[i].UserContactEmail != null)
+                    {
+                        if (@Model.UserList[i].UserContactEmail.Detail == null)
+                        {
+                            <td>N/A</td>
+                        }
+                        else
+                        {
+                            <td>@Model.UserList[i].UserContactEmail.Detail</td>
+                        }
+                    }
+                    @if (@Model.UserList[i].UserContactMobile == null)
+                    {
+                        <td>N/A</td>
+                    }
+
+                    else if (@Model.UserList[i].UserContactMobile != null)
+                    {
+                        if (@Model.UserList[i].UserContactMobile.Detail == null)
+                        {
+                            <td>N/A</td>
+                        }
+                        else
+                        {
+                            <td>@Model.UserList[i].UserContactMobile.Detail</td>
+                        }
+                    }
+                    @if (@Model.UserList[i].Designation == null)
+                    {
+                        <td>N/A</td>
+                    }
+                    else
+                    {
+                        <td>@Model.UserList[i].Designation</td>
+                    }
+                    @if (@Model.UserList[i].Salary == null)
+                    {
+                        <td>N/A</td>
+                    }
+                    else
+                    {
+                        <td>@Model.UserList[i].Salary</td>
+                    }
+
+                    <td><a id="Delete_@Model.UserList[i].Id" href="javascript:;" onclick="javascript:return DeleteUser(this);">Delete</a></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        if (ViewBag.TotalPages != null)
+        {
+            double TotalPages = ViewBag.TotalPages;
+            if (TotalPages > 1)
+            {
+            <ul class="pagination">
+                <li>@Html.ActionLink("First", "UserList", new { DepartmentId = ViewBag.DepartmentID, UserName = ViewBag.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = 1 })</li>
+
+                @if (ViewBag.PageNumber == 1)
+                {
+                    <li>@Html.ActionLink("Previous", "UserList", new { DepartmentId = ViewBag.DepartmentID, UserName = ViewBag.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Previous", "UserList", new { DepartmentId = ViewBag.DepartmentID, UserName = ViewBag.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber - 1 })</li>
+                }
+
+                @for (int i = 1; i <= TotalPages; i++)
+                {
+
+
+                    if (i == ViewBag.PageNumber)
+                    {
+                        <li class="active">@Html.ActionLink(i.ToString(), "UserList", new { DepartmentId = ViewBag.DepartmentID, UserName = ViewBag.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink(i.ToString(), "UserList", new { DepartmentId = ViewBag.DepartmentID, UserName = ViewBag.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = i.ToString() })</li>
+
+                    }
+
+
+                }
+                @if (ViewBag.PageNumber == TotalPages)
+                {
+                    <li>@Html.ActionLink("Next", "UserList", new { DepartmentId = ViewBag.DepartmentID, UserName = ViewBag.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Next", "UserList", new { DepartmentId = ViewBag.DepartmentID, UserName = ViewBag.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = ViewBag.PageNumber + 1 })</li>
+                }
+                <li>@Html.ActionLink("Last", "UserList", new { DepartmentId = ViewBag.DepartmentID, UserName = ViewBag.UserName, SortOrder = ViewBag.SortOrder, SortBy = "Date", PageNumber = TotalPages })</li>
+            </ul>
+            }
+        }
+        @*<div class="col-sm-11"></div><div class="col-sm-1" style="float: right;"><a href="PrintUserList?departmentId=@Model.DepartmentID&userName=@Model.UserName&branchId=@HRM.Core.Helper.AuthBase.BranchId" target="_blank"><img src="/assets/images/printer.png" style="width: 20px;" />&nbsp;Print</a></div>
+            @grid.GetHtml(htmlAttributes: new { id = "gridtbl" },
+            tableStyle: "table table-striped table-hover datatable",
+            headerStyle: "header",
+            alternatingRowStyle: "alternating-row",
+            rowStyle: "row-style",
+            columns:
+                grid.Columns(
+                    grid.Column("SNo", format: item => item.WebGrid.Rows.IndexOf(item) + 1),
+                    grid.Column("ID", "Emp ID"),
+                    grid.Column("FirstName", "Name", format: @<text><img width="36" src="@(item.ImagePath == "" ? "/assets/images/anonymoususer.jpg": item.ImagePath)" onerror="$(this).attr('src','/assets/images/anonymoususer.jpg')" style="height: 40px; vertical-align: middle;" alt="">&nbsp;<a title="Click here to Edit User" href="/User?id=@item.Id">@item.FirstName</a></text>),
+                    grid.Column("Department.Name", header: "Department", format: (item) => item.Department != null ? Html.Raw(string.Format("<text><a target='_blank' title='Click here to view User Departments History' href='/Department/DepartmentHistory?id=" + @item.Id + "'>" + @item.Department.Name + "</a></text>")) : Html.Raw("N/A")),
+                    grid.Column("UserContactEmail.Detail", header: "Email Address", format: (item) => (item.UserContactEmail!=null && item.UserContactEmail.Detail != null && item.UserContactEmail.Detail != "") ? item.UserContactEmail.Detail : Html.Raw("N/A")),
+                    grid.Column("UserContactMobile.Detail", header: "Mobile Number", format: (item) => (item.UserContactMobile!=null && item.UserContactMobile.Detail != null && item.UserContactMobile.Detail != "") ? item.UserContactMobile.Detail : Html.Raw("N/A")),
+                    grid.Column("Designation", header: "Designation", format: (item) => (item.Designation != null && item.Designation != "") ? item.Designation : Html.Raw("N/A")),
+                    grid.Column("Salary", header: "Salary", format: (item) => item.Salary != null ? item.Salary : Html.Raw("N/A")),
+                    grid.Column("", header: "Action", format: @<text><a id="Delete_@item.Id" href="javascript:;" onclick="javascript:return DeleteUser(this);">Delete</a></text>)
+                    )
+            )*@
     }
 </div>
 <script>

@@ -55,8 +55,16 @@ namespace HRM.Core.DataTransfer.AttendanceStatus
 		[FieldNullable(IsNullable = true)]
 		[DataMember (EmitDefaultValue=false)]
 		public string IsApproved{ get; set; }
+        [FieldTypeValidation(DataType = DataTypes.Boolean)]
+        [FieldNullable(IsNullable = true)]
+        [DataMember(EmitDefaultValue = false)]
+        public string IsReject { get; set; }
+        [FieldLength(MaxLength = 2000)]
+        [FieldNullable(IsNullable = true)]
+        [DataMember(EmitDefaultValue = false)]
+        public string AdminReason { get; set; }
 
-		[FieldLength(MaxLength = 2000)]
+        [FieldLength(MaxLength = 2000)]
 		[FieldNullable(IsNullable = true)]
 		[DataMember (EmitDefaultValue=false)]
 		public string Remarks{ get; set; }

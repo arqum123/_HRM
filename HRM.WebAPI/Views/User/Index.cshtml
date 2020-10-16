@@ -10,14 +10,14 @@
         @Html.ValidationSummary(true)
         if (Request.QueryString["Id"] != null)
         {
-        @Html.HiddenFor(m => m.User.Id)
-        @Html.HiddenFor(m => m.User.ImagePath)
-        @Html.HiddenFor(m => m.User.IsActive)
-        @Html.HiddenFor(m => m.User.CreationDate)
-        @Html.HiddenFor(m => m.UserDepartment.Id)
-        @Html.HiddenFor(m => m.UserContactEmail.Id)
-        @Html.HiddenFor(m => m.UserContactMobile.Id)
-        @Html.HiddenFor(m => m.UserContactAlternateMobile.Id)
+            @Html.HiddenFor(m => m.User.Id)
+            @Html.HiddenFor(m => m.User.ImagePath)
+            @Html.HiddenFor(m => m.User.IsActive)
+            @Html.HiddenFor(m => m.User.CreationDate)
+            @Html.HiddenFor(m => m.UserDepartment.Id)
+            @Html.HiddenFor(m => m.UserContactEmail.Id)
+            @Html.HiddenFor(m => m.UserContactMobile.Id)
+            @Html.HiddenFor(m => m.UserContactAlternateMobile.Id)
         }
 
         <h3 class="page-title transparent notopmargin aligncenter">Basic Information</h3>
@@ -52,6 +52,12 @@
             </div>
         </div>
         <link rel="stylesheet" type="text/css" href="/assets/widgets/datepicker/datepicker.css">
+        <div class="form-group">
+            <label for="JoiningDate" class="col-sm-4 control-label lblforinput">Joining Date</label>
+            <div class="col-sm-6">
+                @Html.TextBoxFor(m => m.User.JoiningDate, new { maxlength = "20", @class = "bootstrap-datepicker form-control" })
+            </div>
+        </div>
         <div class="form-group">
             <label for="DateOfBirth" class="col-sm-4 control-label lblforinput">Date of Birth</label>
             <div class="col-sm-6">

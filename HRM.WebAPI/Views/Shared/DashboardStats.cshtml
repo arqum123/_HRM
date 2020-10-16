@@ -1,44 +1,95 @@
-<div class="row">
-    <div class="col-md-4">
-        <div class="tile-box tile-box-alt bg-blue">
-            <div class="tile-header">Present Staff</div>
-            <div class="tile-content-wrapper">
-                <i class="glyph-icon icon-group"></i>
-                <div class="tile-content"><i class="glyph-icon icon-arrow-up"></i>
-                    <label id="labelPresentCount"></label>
+@if (User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-4">
+            <div class="tile-box tile-box-alt bg-blue">
+                <div class="tile-header">Present Staff</div>
+                <div class="tile-content-wrapper">
+                    <i class="glyph-icon icon-group"></i>
+                    <div class="tile-content">
+                        <i class="glyph-icon icon-arrow-up"></i>
+                        <label id="labelPresentCount"></label>
+                    </div>
+                    <small><i class="glyph-icon icon-caret-up"></i>&nbsp;<label id="labelPresentPercent"></label>% arrived</small>
                 </div>
-                <small><i class="glyph-icon icon-caret-up"></i>&nbsp;<label id="labelPresentPercent"></label>% arrived</small>
+                <a href="/Attendance/Daily" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
             </div>
-            <a href="/Attendance/Daily" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
+        </div>
+        <div class="col-md-4">
+            <div class="tile-box tile-box-alt bg-green">
+                <div class="tile-header">On Time Arrived</div>
+                <div class="tile-content-wrapper">
+                    <i class="glyph-icon icon-user"></i>
+                    <div class="tile-content">
+                        <i class="glyph-icon icon-arrow-up"></i>
+                        <label id="labelOnTimeCount"></label>
+                    </div>
+                    <small><i class="glyph-icon icon-caret-up"></i>&nbsp;<label id="labelOnTimePercent"></label>% arrived on time</small>
+                </div>
+                <a href="/Attendance/Daily" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="tile-box tile-box-alt bg-red" title="">
+                <div class="tile-header">Late Arrived</div>
+                <div class="tile-content-wrapper">
+                    <i class="glyph-icon icon-exclamation"></i>
+                    <div class="tile-content">
+                        <label id="labelLateCount"></label>
+                    </div>
+                    <small><i class="glyph-icon icon-caret-down"></i>&nbsp;<label id="labelLatePercent"></label>% arrived late</small>
+                </div>
+                <a href="/Attendance/Daily" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
+            </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="tile-box tile-box-alt bg-green">
-            <div class="tile-header">On Time Arrived</div>
-            <div class="tile-content-wrapper">
-                <i class="glyph-icon icon-user"></i>
-                <div class="tile-content"><i class="glyph-icon icon-arrow-up"></i>
-                    <label id="labelOnTimeCount"></label>
+}
+@if (User.IsInRole("Employee"))
+{
+    <div class="row">
+        <div class="col-md-4">
+            <div class="tile-box tile-box-alt bg-blue">
+                <div class="tile-header">Present Staff</div>
+                <div class="tile-content-wrapper">
+                    <i class="glyph-icon icon-group"></i>
+                    <div class="tile-content">
+                        <i class="glyph-icon icon-arrow-up"></i>
+                        <label id="labelPresentCount"></label>
+                    </div>
+                    <small><i class="glyph-icon icon-caret-up"></i>&nbsp;<label id="labelPresentPercent"></label>% arrived</small>
                 </div>
-                <small><i class="glyph-icon icon-caret-up"></i>&nbsp;<label id="labelOnTimePercent"></label>% arrived on time</small>
+                <a href="/Employee/DailyAttendance" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
             </div>
-            <a href="/Attendance/Daily" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
+        </div>
+        <div class="col-md-4">
+            <div class="tile-box tile-box-alt bg-green">
+                <div class="tile-header">On Time Arrived</div>
+                <div class="tile-content-wrapper">
+                    <i class="glyph-icon icon-user"></i>
+                    <div class="tile-content">
+                        <i class="glyph-icon icon-arrow-up"></i>
+                        <label id="labelOnTimeCount"></label>
+                    </div>
+                    <small><i class="glyph-icon icon-caret-up"></i>&nbsp;<label id="labelOnTimePercent"></label>% arrived on time</small>
+                </div>
+                <a href="/Employee/DailyAttendance" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="tile-box tile-box-alt bg-red" title="">
+                <div class="tile-header">Late Arrived</div>
+                <div class="tile-content-wrapper">
+                    <i class="glyph-icon icon-exclamation"></i>
+                    <div class="tile-content">
+                        <label id="labelLateCount"></label>
+                    </div>
+                    <small><i class="glyph-icon icon-caret-down"></i>&nbsp;<label id="labelLatePercent"></label>% arrived late</small>
+                </div>
+                <a href="/Employee/DailyAttendance" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
+            </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="tile-box tile-box-alt bg-red" title="">
-            <div class="tile-header">Late Arrived</div>
-            <div class="tile-content-wrapper">
-                <i class="glyph-icon icon-exclamation"></i>
-                <div class="tile-content">
-                    <label id="labelLateCount"></label>
-                </div>
-                <small><i class="glyph-icon icon-caret-down"></i>&nbsp;<label id="labelLatePercent"></label>% arrived late</small>
-            </div>
-            <a href="/Attendance/Daily" title="" class="tile-footer">view details <i class="glyph-icon icon-arrow-right"></i></a>
-        </div>
-    </div>
-</div>
+}
 <script type="text/javascript">
     $(function () {
         $("#labelPresentCount").text("0");

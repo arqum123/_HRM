@@ -1,15 +1,12 @@
-﻿
-@model HRM.Core.Model.PracticeVMMonthlyReport
+﻿@model HRM.Core.Model.EmpDailyAttendance
 @{
-    ViewBag.Title = "MonthlyAttendanceReport";
+    ViewBag.Title = "DailyDetailAttendace";
 }
-
 @{
     Layout = "/Views/Shared/_LayoutWOSidebar.cshtml";
-    ViewBag.Title = "HRMS - Monthly Detail Report";
+    ViewBag.Title = "HRMS - Daily Detail Report";
 
 }
-
 <style>
     table {
         font-size: 12px !important;
@@ -39,7 +36,7 @@
     </div>
     @*@if (Model.AttendanceList != null && Model.AttendanceList.Count > 0)
         {*@
-    @if (Model.PracticeVMReportList != null && Model.PracticeVMReportList.Count > 0)
+    @if (Model.EmpDailyDetailAttendanceList != null && Model.EmpDailyDetailAttendanceList.Count > 0)
     {
         @*@if (Model.AttendanceList != null && Model.AttendanceList.Count > 0)
             {*@
@@ -72,155 +69,146 @@
             }
 
             <tbody>
-                @for (int i = 0; i < Model.PracticeVMReportList.Count; i++)
+                @for (int i = 0; i < Model.EmpDailyDetailAttendanceList.Count; i++)
                 {
-                    <tr>
+                <tr>
+                    <td>
+
+                        @{ sno++; }
+                        @sno
+                    </td>
+                    <td>
+
+                        @Model.EmpDailyDetailAttendanceList[i].AttendanceDate.ToString("MMM dd , yyyy")
+                    </td>
+                    <td>
+                        @Model.EmpDailyDetailAttendanceList[i].EmpName
+
+
+                    <td>
+
+                        @Model.EmpDailyDetailAttendanceList[i].LateMin
+                    </td>
+                    <td>
+
+                        @Model.EmpDailyDetailAttendanceList[i].EarlyMin
+                    </td>
+
+                    <td>
+
+                        @Model.EmpDailyDetailAttendanceList[i].WorkingMin
+                    </td>
+                    <td>
+
+                        @Model.EmpDailyDetailAttendanceList[i].TotalMin
+                    </td>
+
+
+                    @*@if (@Model.PracticeVMReportList[i].IsHoliday == true)
+        {
+
+            <td>
+
+                Holiday
+            </td>
+        }*@
+                    @if (@Model.EmpDailyDetailAttendanceList[i].IsShiftOffDay == true)
+                    {
+
                         <td>
 
-                            @{ sno++; }
-                            @sno
+                            Off Day
                         </td>
+                    }
+
+                    @if (@Model.EmpDailyDetailAttendanceList[i].IsShiftOffDay == false)
+                    {
+
                         <td>
 
-                            @Model.PracticeVMReportList[i].Date.ToString("MMM dd , yyyy")
+                            NO
                         </td>
+                    }
+                    @if (@Model.EmpDailyDetailAttendanceList[i].IsFullDay == true)
+                    {
+
                         <td>
-                            @Model.PracticeVMReportList[i].FirstName
 
-
-                        <td>
-
-                            @Model.PracticeVMReportList[i].LateMinutes
+                            Full Day
                         </td>
+                    }
+
+                    else if (@Model.EmpDailyDetailAttendanceList[i].IsHalfDay == true && @Model.EmpDailyDetailAttendanceList[i].IsFullDay == false)
+                    {
                         <td>
 
-                            @Model.PracticeVMReportList[i].EarlyMinutes
+                            Half Day
                         </td>
+                    }
 
+                    else if (@Model.EmpDailyDetailAttendanceList[i].IsQuarterDay == true && @Model.EmpDailyDetailAttendanceList[i].IsHalfDay == false && @Model.EmpDailyDetailAttendanceList[i].IsFullDay == false)
+                    {
                         <td>
 
-                            @Model.PracticeVMReportList[i].WorkingMinutes
+                            Quarter Day
                         </td>
+                    }
+
+                    else if (@Model.EmpDailyDetailAttendanceList[i].IsLate == true || @Model.EmpDailyDetailAttendanceList[i].IsEarly == true)
+                    {
+                        <td>Yes</td>
+                    }
+                    else if (@Model.EmpDailyDetailAttendanceList[i].IsQuarterDay == false && @Model.EmpDailyDetailAttendanceList[i].IsFullDay == false && @Model.EmpDailyDetailAttendanceList[i].IsHalfDay == false && @Model.EmpDailyDetailAttendanceList[i].IsLate == false && @Model.EmpDailyDetailAttendanceList[i].IsEarly == false)
+                    {
+
                         <td>
 
-                            @Model.PracticeVMReportList[i].TotalMinutes
+                            No
                         </td>
+                    }
+                    <td>
+                        <table class="table table-striped table-hover datatable">
 
 
-                        @if (@Model.PracticeVMReportList[i].IsHoliday == true)
-                        {
-
-                            <td>
-
-                                Holiday
-                            </td>
-                        }
-                        @if (@Model.PracticeVMReportList[i].IsShiftOffDay == true)
-                        {
-
-                            <td>
-
-                                Off Day
-                            </td>
-                        }
-
-                        @if (@Model.PracticeVMReportList[i].IsShiftOffDay == false && @Model.PracticeVMReportList[i].IsShiftOffDay == false)
-                        {
-
-                            <td>
-
-                                NO
-                            </td>
-                        }
-
-
-
-                        @if (@Model.PracticeVMReportList[i].IsFullDay == true)
-                        {
-
-                            <td>
-
-                                Full Day
-                            </td>
-                        }
-
-                        @if (@Model.PracticeVMReportList[i].IsHalfDay == true)
-                        {
-
-                            if (@Model.PracticeVMReportList[i].IsFullDay == false)
-                            {
-
-                                <td>
-
-                                    Half Day
-                                </td>
-                            }
-                        }
-
-                        @if (@Model.PracticeVMReportList[i].IsQuarterDay == true)
-                        {
-                            if (@Model.PracticeVMReportList[i].IsHalfDay == false)
-                            {
-
-                                <td>
-
-                                    Quarter Day
-                                </td>
-                            }
-                        }
-
-                        @if (@Model.PracticeVMReportList[i].IsQuarterDay == false && @Model.PracticeVMReportList[i].IsFullDay == false && @Model.PracticeVMReportList[i].IsHalfDay == false)
-                        {
-
-                            <td>
-
-                                No
-                            </td>
-                        }
-
-
-                        <td>
-                            <table class="table table-striped table-hover datatable">
-
-
-                                <thead>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Time In
+                                    </th>
+                                    <th>
+                                        Time Out
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int j = 0; j < Model.EmpDailyDetailAttendanceList[i].EmpDailyDetailAttendanceDurationList.Count; ++j)
+                                {
                                     <tr>
-                                        <th>
-                                            Time In
-                                        </th>
-                                        <th>
-                                            Time Out
-                                        </th>
+                                        <td>
+
+                                            @Model.EmpDailyDetailAttendanceList[i].EmpDailyDetailAttendanceDurationList[j].ADStartDate.ToString("hh:mm ttt")
+                                        </td>
+                                        <td>
+                                            @Model.EmpDailyDetailAttendanceList[i].EmpDailyDetailAttendanceDurationList[j].ADEndDate.ToString("hh:mm ttt")
+                                        </td>
+
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @for (int j = 0; j < Model.PracticeVMReportList[i].PracticeVMDetailReportList.Count; ++j)
-                                    {
-                                        <tr>
-                                            <td>
 
-                                                @Model.PracticeVMReportList[i].PracticeVMDetailReportList[j].ADStartDate.ToString("hh:mm ttt")
-                                            </td>
-                                            <td>
-                                                @Model.PracticeVMReportList[i].PracticeVMDetailReportList[j].ADEndDate.ToString("hh:mm ttt")
-                                            </td>
-
-                                        </tr>
-
-                                    }
-                                </tbody>
+                                }
+                            </tbody>
 
 
-                            </table>
-                        </td>
+                        </table>
+                    </td>
 
-                    </tr>
+                </tr>
                 }
             </tbody>
 
         </table>
         @*}*@
     }
+
 </div>
 <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
 <script type="text/javascript">

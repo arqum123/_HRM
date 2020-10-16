@@ -1,0 +1,224 @@
+UserId	Date	DateTimeIn	DateTimeOut	DAY						
+36	1-Jun-20	10:03 AM	null	Monday						
+30	1-Jun-20	10:07 AM	7:19 PM	Monday						
+35	1-Jun-20	10:12 AM	7:12 PM	Monday						
+29	1-Jun-20	10:14 AM	7:16 PM	Monday						
+33	2-Jun-20	9:57 AM	7:10 PM	Tuesday						
+36	2-Jun-20	10:00 AM	7:28 PM	Tuesday						
+29	2-Jun-20	10:04 AM	null	Tuesday						
+35	2-Jun-20	10:14 AM	7:48 PM	Tuesday						
+30	2-Jun-20	10:21 AM	7:24 PM	Tuesday						
+33	3-Jun-20	10:01 AM	7:10 PM	Wednesday						
+29	3-Jun-20	10:03 AM	7:54 PM	Wednesday						
+36	3-Jun-20	10:05 AM	7:34 PM	Wednesday						
+35	3-Jun-20	10:06 AM	7:12 PM	Wednesday						
+30	3-Jun-20	10:18 AM	7:24 PM	Wednesday						
+33	4-Jun-20	9:55 AM	7:16 PM	Thursday						
+36	4-Jun-20	9:59 AM	7:22 PM	Thursday						
+30	4-Jun-20	10:21 AM	7:23 PM	Thursday						
+35	4-Jun-20	10:28 AM	7:33 PM	Thursday						
+29	4-Jun-20	10:37 AM	7:24 PM	Thursday						
+36	5-Jun-20	10:05 AM	8:19 PM	Friday						
+29	5-Jun-20	10:09 AM	7:45 PM	Friday						
+33	5-Jun-20	10:14 AM	7:40 PM	Friday						
+35	5-Jun-20	10:17 AM	7:35 PM	Friday						
+30	5-Jun-20	10:17 AM	7:30 PM	Friday						
+36	6-Jun-20	10:02 AM	7:27 PM	Saturday						
+33	6-Jun-20	11:03 AM	6:00 PM	Saturday						
+35	6-Jun-20	11:06 AM	5:44 PM	Saturday						
+29	8-Jun-20	10:08 AM	7:32 PM	Monday						
+36	8-Jun-20	10:08 AM	7:35 PM	Monday						
+33	8-Jun-20	10:11 AM	8:10 PM	Monday						
+35	8-Jun-20	10:22 AM	8:07 PM	Monday						
+30	8-Jun-20	10:24 AM	10:18 PM	Monday						
+29	9-Jun-20	10:08 AM	7:32 PM	Tuesday						
+36	9-Jun-20	10:08 AM	7:35 PM	Tuesday						
+33	9-Jun-20	10:11 AM	8:10 PM	Tuesday						
+35	9-Jun-20	10:22 AM	8:07 PM	Tuesday						
+30	9-Jun-20	10:24 AM	7:10 PM	Tuesday						
+36	10-Jun-20	10:01 AM	7:46 PM	Wednesday						
+35	10-Jun-20	10:18 AM	7:44 PM	Wednesday						
+33	10-Jun-20	10:18 AM	7:40 PM	Wednesday						
+30	10-Jun-20	null	null	Wednesday						
+29	10-Jun-20	null	null	Wednesday						
+36	11-Jun-20	10:11 AM	8:10 PM	Thursday						
+35	11-Jun-20	10:23 AM	7:28 PM	Thursday						
+33	11-Jun-20	11:24 AM	8:30 PM	Thursday						
+29	11-Jun-20	9:57 AM	null	Thursday						
+30	11-Jun-20	null	null	Thursday						
+33	12-Jun-20	9:51 AM	7:50 PM	Friday						
+36	12-Jun-20	10:02 AM	7:50 PM	Friday						
+35	12-Jun-20	10:05 AM	7:40 PM	Friday						
+29	12-Jun-20	null	null	Friday						
+30	12-Jun-20	null	null	Friday						
+33	13-Jun-20	10:23AM	6:20 PM	Saturday						
+36	15-Jun-20	10:12 AM	8:33 PM	Monday						
+33	15-Jun-20	10:33 AM	8:05 PM	Monday						
+35	15-Jun-20	10:55 AM	4:12 PM	Monday						
+29	15-Jun-20	null	null	Monday						
+30	15-Jun-20	null	null	Monday						
+36	16-Jun-20	10:11 AM	8:37 PM	Tuesday						
+29	16-Jun-20	10:18 AM	7:39 PM	Tuesday						
+33	16-Jun-20	10:19 AM	9:00 PM	Tuesday						
+35	16-Jun-20	10:56 AM	9:21 PM	Tuesday						
+30	16-Jun-20	null	null	Tuesday						
+29	17-Jun-20	10:30 AM	7:43 PM	Wednesday						
+33	17-Jun-20	9:51 AM	9:36 PM	Wednesday						
+36	17-Jun-20	10:16 AM	8:30 PM	Wednesday						
+35	17-Jun-20	10:32 AM	9:21 PM	Wednesday						
+30	17-Jun-20	null	null	Wednesday						
+36	18-Jun-20	10:01 AM	8:26 PM	Thursday						
+33	18-Jun-20	10:09 AM	8:45 PM	Thursday						
+29	18-Jun-20	10:10 AM	8:02 PM	Thursday						
+35	18-Jun-20	10:21 AM	8:45 PM	Thursday						
+30	18-Jun-20	null	null	Thursday						
+33	19-Jun-20	9:57 AM	6:00 PM	Friday						
+36	19-Jun-20	10:01 AM	8:34 PM	Friday						
+29	19-Jun-20	10:06 AM	9:53 PM	Friday						
+35	19-Jun-20	10:11 AM	8:44 PM	Friday						
+30	19-Jun-20	null	null	Friday						
+35	20-Jun-20	11:04 AM	8:32 PM	Saturday						
+33	20-Jun-20	12:12 PM	8:35 PM	Saturday						
+33	22-Jun-20	9:57 AM	8:20 PM	Monday						
+29	22-Jun-20	10:01 AM	null	Monday						
+36	22-Jun-20	10:10 AM	8:22 PM	Monday						
+35	22-Jun-20	11:12 AM	8:16 PM	Monday						
+30	22-Jun-20	null	null	Monday						
+29	23-Jun-20	10:06 AM	9:24 PM	Tuesday						
+36	23-Jun-20	10:06 AM	8:58 PM	Tuesday						
+35	23-Jun-20	10:21 AM	8:04 PM	Tuesday						
+33	23-Jun-20	11:30 AM	8:05 PM	Tuesday						
+30	23-Jun-20	null	null	Tuesday						
+33	24-Jun-20	9:51 AM	8:05 PM	Wednesday						
+36	24-Jun-20	10:10 AM	7:26 PM	Wednesday						
+29	24-Jun-20	10:10 AM	9:34 PM	Wednesday						
+35	24-Jun-20	10:19 AM	7:58 PM	Wednesday						
+30	24-Jun-20	null	null	Wednesday						
+33	25-Jun-20	9:50 AM	9:15 PM	Thursday						
+36	25-Jun-20	10:04 AM	8:04 PM	Thursday						
+29	25-Jun-20	10:17 AM	8:57 PM	Thursday						
+35	25-Jun-20	10:33 AM	9:14 PM	Thursday						
+30	25-Jun-20	null	null	Thursday						
+33	26-Jun-20	9:50 AM	8:15 PM	Friday						
+29	26-Jun-20	9:55 AM	9:22 PM	Friday						
+36	26-Jun-20	9:59 AM	7:15 PM	Friday						
+35	26-Jun-20	10:39 AM	8:05 PM	Friday						
+30	26-Jun-20	null	null	Friday						
+35	27-Jun-20	8:45 AM	2:28 PM	Saturday						
+36	27-Jun-20	10:03 AM	3:39 PM	Saturday						
+33	27-Jun-20	10:12 AM	7:33 PM	Saturday						
+29	29-Jun-20	10:13 AM	9:55 PM	Monday						
+33	29-Jun-20	9:51 AM	8:05 PM	Monday						
+36	29-Jun-20	10:05 AM	8:50 PM	Monday						
+35	29-Jun-20	10:35 AM	8:05 PM	Monday						
+30	29-Jun-20	null	null	Monday						
+33	30-Jun-20	9:51 AM	9:30 PM	Tuesday						
+36	30-Jun-20	9:59 AM	8:55 PM	Tuesday						
+29	30-Jun-20	10:10 AM	8:52 PM	Tuesday						
+30	30-Jun-20	10:14 AM	null	Tuesday						
+35	30-Jun-20	10:45 AM	9:22 PM	Tuesday						
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										

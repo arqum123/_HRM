@@ -258,7 +258,7 @@ namespace HRM.Repository
 				Select scope_identity()";
 				SqlParameter[] parameterArray=new SqlParameter[]{
 					 new SqlParameter("@PayrollID",entity.PayrollId ?? (object)DBNull.Value)
-                    , new SqlParameter("@PayrollPolicyID",entity.PayrollPolicyId )
+                    , new SqlParameter("@PayrollPolicyID",entity.PayrollPolicyId ?? (object)DBNull.Value)
                     , new SqlParameter("@Amount",entity.Amount ?? (object)DBNull.Value)
 					, new SqlParameter("@IsActive",entity.IsActive ?? (object)DBNull.Value)
 					, new SqlParameter("@CreationDate",entity.CreationDate ?? (object)DBNull.Value)
@@ -356,7 +356,7 @@ namespace HRM.Repository
 			}
 			if (dr.Table.Columns.Contains("PayrollPolicyID"))
 			{
-                entity.PayrollPolicyId = Convert.ToInt32(dr["PayrollPolicyID"]);
+                entity.PayrollPolicyId = dr["PayrollPolicyId"] == DBNull.Value ? (System.Int32?)null : (System.Int32?)dr["PayrollPolicyId"];
             }
 			if (dr.Table.Columns.Contains("Amount"))
 			{

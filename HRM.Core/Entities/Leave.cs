@@ -13,6 +13,8 @@ namespace HRM.Core.Entities
 	{
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
-        
-	}
+        public Boolean? IsApproved { get; set; }
+
+
+    }
 }

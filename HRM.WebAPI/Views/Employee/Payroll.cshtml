@@ -1,0 +1,116 @@
+﻿@model HRM.Core.Model.VMEmpPayroll
+@{
+    ViewBag.Title = "Payroll";
+}
+@{
+    ViewBag.Title = "HRMS - Run Payroll";
+
+}
+
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>View Final Payroll</h3>
+    @using (Html.BeginForm("Payroll", "Employee", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "RunPayrollForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            <label for="PayrollCycle" class="col-sm-4 control-label lblforinput">Payroll Cycle: </label>
+            <div class="col-sm-6">
+
+                @Html.DropDownListFor(m => m.PayrollCycleId, ViewBag.PayrollCycle as SelectList, "Select All", new { @class = "form-control" })
+
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Search</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+    }
+
+    @if (Model.VMEmpPayrollServiceList != null && Model.VMEmpPayrollServiceList.Count > 0)
+    {
+        <table class="table table-striped table-hover datatable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Salary</th>
+                    <th>Addition</th>
+                    <th>Deduction</th>
+                    <th>NetSalary</th>
+                    <th></th>
+                </tr>
+            </thead>
+            @for (int i = 0; i < Model.VMEmpPayrollServiceList.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Model.VMEmpPayrollServiceList[i].Name
+                    </td>
+                    <td>
+                        @Model.VMEmpPayrollServiceList[i].Salary
+                    </td>
+                    <td>
+                        @Model.VMEmpPayrollServiceList[i].Addition
+                    </td>
+                    <td>
+                        @Model.VMEmpPayrollServiceList[i].Deduction
+                    </td>
+                    <td>
+                        @Model.VMEmpPayrollServiceList[i].NetSalary
+                    </td>
+                    <td><a target="_blank" href="/Employee/PayrollDetail?PayrollCycleId=@Model.VMEmpPayrollServiceList[i].PayrollCycleId&UserId=@Model.VMEmpPayrollServiceList[i].UserId">Detail</a></td>
+                </tr>
+            }
+        </table>
+        if (ViewBag.TotalPages != null)
+        {
+            double TotalPages = ViewBag.TotalPages;
+            if (TotalPages > 1)
+            {
+            <ul class="pagination">
+                <li>@Html.ActionLink("First", "Payroll", new { PageNumber = 1 })</li>
+
+                @if (ViewBag.PageNumber == 1)
+                {
+                    <li>@Html.ActionLink("Previous", "Payroll", new { PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Previous", "Payroll", new { PageNumber = ViewBag.PageNumber - 1 })</li>
+                }
+
+                @for (int i = 1; i <= TotalPages; i++)
+                {
+
+
+                    if (i == ViewBag.PageNumber)
+                    {
+                        <li class="active">@Html.ActionLink(i.ToString(), "Payroll", new { PageNumber = ViewBag.PageNumber == 0 ? 1 : ViewBag.PageNumber })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink(i.ToString(), "Payroll", new { PageNumber = i.ToString() })</li>
+                    }
+
+
+                }
+                @if (ViewBag.PageNumber == TotalPages)
+                {
+                    <li>@Html.ActionLink("Next", "Payroll", new { PageNumber = ViewBag.PageNumber })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Next", "Payroll", new { PageNumber = ViewBag.PageNumber + 1 })</li>
+                }
+                <li>@Html.ActionLink("Last", "Payroll", new { PageNumber = TotalPages })</li>
+            </ul>
+            }
+        }
+    }
+
+
+

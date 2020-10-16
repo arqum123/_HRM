@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "Excel Attendance";
+}
+
+<h2>ExcelAttendance</h2>
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-linecons-database"></i>Browse Attendance Data</h3>
+    @using (Html.BeginForm("ExcelAttendance", "Attendance", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "BrowseAttendanceDataForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @*<div class="form-group">
+                <label for="AttendanceDate" class="col-sm-4 control-label lblforinput">Select Date</label>
+                <div class="col-sm-6">
+                    <input type="text" id="AttendanceDate" name="AttendanceDate" maxlength="50" class="form-control bootstrap-datepicker " placeholder="MM/DD/YYYY" value="@DateTime.Now.ToString("MM/dd/yyyy")" />
+                </div>
+            </div>*@
+        <div class="form-group">
+            <label class="col-sm-4 control-label lblforinput">Sample</label>
+            <div class="col-sm-6">
+                <a href="/Uploads/AttendanceData/Sample/Sample.csv" target="_blank">Click here</a> to download sample sheet
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label lblforinput">Browse</label>
+            <div class="col-sm-6">
+                <input type="file" name="fuAttendanceData" id="fuAttendanceData" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-block btn-success">Upload Attendance and Process</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+        if (ViewBag.Message != null && ((string[])ViewBag.Message).Length > 0)
+        {
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    @foreach (string msg in (string[])ViewBag.Message)
+                    {
+                        @msg<br />
+                    }
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        }
+    }
+</div>

@@ -119,5 +119,16 @@ namespace HRM.Core.DataTransfer.User
 		[DataMember (EmitDefaultValue=false)]
 		public System.String AccountNumber{ get; set; }
 
-	}	
+        [IgnoreDataMember]
+        public System.DateTime? JoiningDate { get; set; }
+
+
+        [DataMember(EmitDefaultValue = false)]
+        public string JoiningDateStr
+        {
+            get { if (JoiningDate.HasValue) return JoiningDate.Value.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); else return string.Empty; }
+            set { DateTime date = new DateTime(); if (DateTime.TryParse(value, out date)) { JoiningDate = date.ToUniversalTime(); } }
+        }
+
+    }	
 }

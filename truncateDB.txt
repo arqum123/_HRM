@@ -1,0 +1,36 @@
+truncate table Payroll
+truncate table PayrollDetail
+truncate table PayrollPolicy
+truncate table PayrollVariable
+truncate table PayrollCycle
+truncate table PayrollVariable
+truncate table Attendance
+truncate table AttendanceDetail
+truncate table AttendancePolicy
+truncate table AttendanceStatus
+truncate table BranchShift
+truncate table BranchDepartment
+truncate table [Configuration]
+truncate table Device
+truncate table Leave
+truncate table Shift
+truncate table ShiftOffDay
+truncate table BranchShift
+truncate table UserContact
+truncate table UserDepartment
+truncate table UserShift
+truncate table Device
+truncate table Leave
+truncate table [Configuration]
+
+select * from [User]
+
+truncate table City /*Forein key problem*/
+truncate table Department /*Forein key problem*/
+truncate table [User] /*Forein key problem*/
+truncate table UserType /*Forein key problem*/
+truncate table ContactType  /*Forein key problem*/
+truncate table AttendanceType /*Forein key problem*/
+truncate table AttendanceVariable /*Forein key problem*/
+
+delete from [User] where id in(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29)

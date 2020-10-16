@@ -49,7 +49,8 @@ namespace HRM.Core.Entities
 			 set  {  DateTime date = new DateTime(); if (DateTime.TryParse(value, out date)) { DateOfBirth = date.ToUniversalTime();  }  } 
 		}
 
-		[FieldNameAttribute("NICNo",true,false,50)]
+ 
+        [FieldNameAttribute("NICNo",true,false,50)]
 		[DataMember (EmitDefaultValue=false)]
 		public virtual System.String NicNo{ get; set; }
 
@@ -112,14 +113,23 @@ namespace HRM.Core.Entities
 		[FieldNameAttribute("CreationDate",true,false,8)]
 		[IgnoreDataMember]
 		public virtual System.DateTime? CreationDate{ get; set;}
+        [DataMember(EmitDefaultValue = false)]
+        public virtual string CreationDateStr
+        {
+            get { if (CreationDate.HasValue) return CreationDate.Value.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); else return string.Empty; }
+            set { DateTime date = new DateTime(); if (DateTime.TryParse(value, out date)) { CreationDate = date.ToUniversalTime(); } }
+        }
 
-
-		[DataMember (EmitDefaultValue=false)]
-		public virtual string CreationDateStr
-		{
-			 get {if(CreationDate.HasValue) return CreationDate.Value.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); else return string.Empty;}
-			 set  {  DateTime date = new DateTime(); if (DateTime.TryParse(value, out date)) { CreationDate = date.ToUniversalTime();  }  } 
-		}
+        [FieldNameAttribute("JoiningDate", true, false, 8)]
+        [IgnoreDataMember]
+        public virtual System.DateTime? JoiningDate { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public virtual string JoiningDateStr
+        {
+            get { if (JoiningDate.HasValue) return JoiningDate.Value.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); else return string.Empty; }
+            set { DateTime date = new DateTime(); if (DateTime.TryParse(value, out date)) { JoiningDate = date.ToUniversalTime(); } }
+        }
+        
 
 		[FieldNameAttribute("UpdateDate",true,false,8)]
 		[IgnoreDataMember]
@@ -164,7 +174,7 @@ namespace HRM.Core.Entities
 
         public virtual bool Equals(UserBase other)
         {
-			if(this.Id==other.Id  && this.FirstName==other.FirstName  && this.MiddleName==other.MiddleName  && this.LastName==other.LastName  && this.UserTypeId==other.UserTypeId  && this.GenderId==other.GenderId  && this.DateOfBirth==other.DateOfBirth  && this.NicNo==other.NicNo  && this.ReligionId==other.ReligionId  && this.Address1==other.Address1  && this.Address2==other.Address2  && this.ZipCode==other.ZipCode  && this.CountryId==other.CountryId  && this.CityId==other.CityId  && this.StateId==other.StateId  && this.AcadmicQualification==other.AcadmicQualification  && this.Designation==other.Designation  && this.Salary==other.Salary  && this.LoginId==other.LoginId  && this.Password==other.Password  && this.ImagePath==other.ImagePath  && this.IsActive==other.IsActive  && this.CreationDate==other.CreationDate  && this.UpdateDate==other.UpdateDate  && this.UpdateBy==other.UpdateBy  && this.UserIp==other.UserIp )
+			if(this.Id==other.Id  && this.FirstName==other.FirstName  && this.MiddleName==other.MiddleName  && this.LastName==other.LastName  && this.UserTypeId==other.UserTypeId  && this.GenderId==other.GenderId  && this.DateOfBirth==other.DateOfBirth  && this.NicNo==other.NicNo  && this.ReligionId==other.ReligionId  && this.Address1==other.Address1  && this.Address2==other.Address2  && this.ZipCode==other.ZipCode  && this.CountryId==other.CountryId  && this.CityId==other.CityId  && this.StateId==other.StateId  && this.AcadmicQualification==other.AcadmicQualification  && this.Designation==other.Designation  && this.Salary==other.Salary  && this.LoginId==other.LoginId  && this.Password==other.Password  && this.ImagePath==other.ImagePath  && this.IsActive==other.IsActive  && this.CreationDate==other.CreationDate  && this.UpdateDate==other.UpdateDate  && this.UpdateBy==other.UpdateBy  && this.UserIp==other.UserIp && this.JoiningDate == other.JoiningDate)
 			{
 				return true;
 			}
@@ -205,7 +215,8 @@ namespace HRM.Core.Entities
 				this.UpdateDate=other.UpdateDate;
 				this.UpdateBy=other.UpdateBy;
 				this.UserIp=other.UserIp;
-			}
+                this.JoiningDate = other.JoiningDate;
+            }
 			
 		
 		}

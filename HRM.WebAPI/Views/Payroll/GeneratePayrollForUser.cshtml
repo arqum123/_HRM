@@ -1,0 +1,39 @@
+﻿@model HRM.Core.Model.VMGeneratePayrollForUser
+@{
+    ViewBag.Title = "Individual Payroll";
+}
+
+<h2>GeneratePayrollForUser</h2>
+<div class="page-box content-box mrg25B">
+    <h3 class="content-box-header bg-blue text-left mrg25B"><i class="glyph-icon icon-table"></i>Run Payroll</h3>
+    @using (Html.BeginForm("GeneratePayrollForUser", "Payroll", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "GeneratePayrollForm", @class = "form-horizontal customclass" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div class="form-group">
+            <label for="PayrollCycle" class="col-sm-4 control-label lblforinput">Employee: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.UserId, ViewBag.User as SelectList, "--Select Employee--", new { @class = "form-control" })
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="PayrollCycle" class="col-sm-4 control-label lblforinput">Payroll Cycle: </label>
+            <div class="col-sm-6">
+                @Html.DropDownListFor(m => m.PayrollCycleId, ViewBag.PayrollCycle as SelectList, "--Select Payroll Cycle--", new { @class = "form-control" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-6"></div>
+            <div class="col-sm-2">
+                <button class="btn btn-block btn-success" onclick="javascript:return RunPayroll(0);">Test Run</button>
+            </div>
+            @*<div class="col-sm-2">
+                <button class="btn btn-block btn-success" onclick="javascript:return RunPayroll(1);">Final Run</button>
+            </div>*@
+            <div class="col-sm-3"></div>
+        </div>
+    
+    }
